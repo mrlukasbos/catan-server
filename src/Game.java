@@ -9,7 +9,7 @@ class Game {
     Game(int amountOfPlayers) {
         board = new Board();
         for (int i = 0; i < amountOfPlayers; i++) {
-            players.add(new Player(i,"player " + i));
+            players.add(new Player(i, "player " + i));
         }
     }
 
@@ -37,6 +37,10 @@ class Game {
 
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    public Board getBoard() {
+        return board;
     }
 }
 

@@ -16,9 +16,9 @@ public class Server extends Thread {
     }
 
     public void run() {
-        while(true) {
+        while (true) {
             try {
-                System.out.println("Waiting for clients on port " +  serverSocket.getLocalPort() + "...");
+                System.out.println("Waiting for clients on port " + serverSocket.getLocalPort() + "...");
                 Socket server = serverSocket.accept();
 
                 System.out.println("Just connected to " + server.getRemoteSocketAddress());
@@ -40,7 +40,7 @@ public class Server extends Thread {
         }
     }
 
-    public static void main(String [] args) {
+    public static void main(String[] args) {
         int port = Integer.parseInt(args[0]);
         try {
             Thread t = new Server(port);

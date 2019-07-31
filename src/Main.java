@@ -5,6 +5,7 @@ public class Main {
 
         Game game = new Game(amountOfPlayers);
         System.out.println("New game created.");
+        System.out.println(game.getBoard());
 
         /*
          * Start of the game with the player that throws highest with the dice.

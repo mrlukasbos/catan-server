@@ -18,7 +18,7 @@ class Player {
 
     // return a random number between 1 and 12
     int throwDice() {
-        Random r  = new Random();
+        Random r = new Random();
         lastDiceThrow = Math.abs(r.nextInt() % 12) + 1;
         return lastDiceThrow;
     }
