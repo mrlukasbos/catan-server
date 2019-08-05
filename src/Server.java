@@ -1,31 +1,23 @@
 import java.io.*;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 
 public class Server extends Thread {
 
     private ServerSocket serverSocket;
-    private ArrayList<Socket> sockets = new ArrayList<Socket>();
-    private int amountOfConnections;
     private boolean hasEnoughConnections = false;
+    private Game game;
 
     // start a server on this device
-    public Server(int port, int amountOfConnections) throws IOException {
+    public Server(int port, Game game) throws IOException {
         serverSocket = new ServerSocket(port);
         serverSocket.setSoTimeout(100000);
-        this.amountOfConnections = amountOfConnections;
+        this.game = game;
     }
 
     public void run() {
         while (true) {
             try {
-<<<<<<< HEAD
-=======
-                System.out.println("Waiting for clients on port " + serverSocket.getLocalPort() + "...");
-                Socket server = serverSocket.accept();
->>>>>>> 4913f051564eb6810f0f217b785a8a7b1bcd45d2
 
                 // this is blocking
                 if (!hasEnoughPlayers()) {
@@ -33,7 +25,9 @@ public class Server extends Thread {
                     ensureConnections();
                 }
 
-                // At this point we are guaranteed to have enough players connected
+
+                System.out.println("Playing the game!");
+                sendBoardData();
 
 
             } catch (SocketTimeoutException s) {
@@ -46,12 +40,10 @@ public class Server extends Thread {
         }
     }
 
-<<<<<<< HEAD
-
     public void shutDown() {
-        for (Socket socket : sockets) {
+        for (Player p : game.getPlayers()) {
             try {
-                socket.close();
+                p.getSocket().close();
             } catch (IOException e) {
                 e.printStackTrace();
                 break;
@@ -61,30 +53,34 @@ public class Server extends Thread {
 
     private void ensureConnections() throws IOException {
         // the sockets we get from the server need to be assigned to players
-        for (int i = 0; i < amountOfConnections; i++) {
-            Socket listener = serverSocket.accept();
-            sockets.add(listener);
+        for (Player p : game.getPlayers()) {
+            p.setSocket(serverSocket.accept());
+            System.out.println("Just connected to " + p.getSocket().getRemoteSocketAddress());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getSocket().getInputStream()));
+            String line = reader.readLine();
 
-            System.out.println("Just connected to " + listener.getRemoteSocketAddress());
-
-            DataOutputStream out = new DataOutputStream(listener.getOutputStream());
-            out.writeUTF("You are connected to Catan server: " + listener.getLocalSocketAddress());
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(listener.getInputStream()));
-            String line = reader.readLine();    // reads a line of text
             System.out.println("Ready to receive ");
             System.out.println("I received something: " + line);
-=======
-    public static void main(String[] args) {
-        int port = Integer.parseInt(args[0]);
-        try {
-            Thread t = new Server(port);
-            t.start();
-        } catch (IOException e) {
-            e.printStackTrace();
->>>>>>> 4913f051564eb6810f0f217b785a8a7b1bcd45d2
+
+            DataOutputStream out = new DataOutputStream(p.getSocket().getOutputStream());
+            out.writeUTF(line);
         }
         hasEnoughConnections = true;
+    }
+
+    public void sendBoardData() {
+
+
+        for (Player p : game.getPlayers()) {
+            // At this point we are guaranteed to have enough players connected
+            try {
+                DataOutputStream out = new DataOutputStream(p.getSocket().getOutputStream());
+                out.writeUTF(game.getBoard().toString());
+            } catch (IOException e) {
+            e.printStackTrace();
+            break;
+        }
+        }
     }
 
     boolean hasEnoughPlayers() {

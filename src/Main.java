@@ -3,18 +3,16 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) {
+        Game game = new Game(1);
 
-        int amountOfPlayers = 2;
-
-        // Boot the server
-        Server server;
         try {
-            server = new Server(10006, amountOfPlayers);
+
+            // Boot the server
+            Server server = new Server(10006, game);
             server.start();
 
 
         // start the game
-        Game game = new Game(amountOfPlayers);
         System.out.println("New game created.");
         System.out.println(game.getBoard());
 
@@ -56,7 +54,7 @@ public class Main {
          */
         currentPlayer = game.progressToNextPlayer();
 
-        server.shutDown();
+       // server.shutDown();
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -8,12 +9,20 @@ class Player {
     private int lastDiceThrow = 0;
     private ArrayList<Resources> resources = new ArrayList<Resources>();
 
+    public Socket getSocket() {
+        return socket;
+    }
+
+    private Socket socket;
+
     Player(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-
+    void setSocket(Socket s) {
+        socket = s;
+    }
 
     String getName() {
         return name;
