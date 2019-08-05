@@ -1,5 +1,8 @@
 // a board consists of multiple tiles
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 class Board {
     private Tile[][] tiles = new Tile[7][];
 
@@ -70,5 +73,25 @@ class Board {
 
     void placeStreet(Player p) {
 
+    }
+
+    @Override
+    public String toString() {
+        String tilesString = "[";
+        // TODO: remove hardcoded values
+        for (int i = 0; i < 7; i++) {
+            tilesString = tilesString.concat(Arrays.toString(tiles[i]));
+            if (i < 6) {
+                tilesString = tilesString.concat(",");
+            }
+        }
+        tilesString = tilesString.concat("]");
+
+        return "{" +
+                "\"model\": \"board\"," +
+                "\"attributes\": {" +
+                "\"tiles\": " + tilesString +
+                "}" +
+                '}';
     }
 }

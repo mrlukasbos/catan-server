@@ -19,8 +19,13 @@ public class Server extends Thread {
     }
 
     public void run() {
-        while(true) {
+        while (true) {
             try {
+<<<<<<< HEAD
+=======
+                System.out.println("Waiting for clients on port " + serverSocket.getLocalPort() + "...");
+                Socket server = serverSocket.accept();
+>>>>>>> 4913f051564eb6810f0f217b785a8a7b1bcd45d2
 
                 // this is blocking
                 if (!hasEnoughPlayers()) {
@@ -41,6 +46,7 @@ public class Server extends Thread {
         }
     }
 
+<<<<<<< HEAD
 
     public void shutDown() {
         for (Socket socket : sockets) {
@@ -68,6 +74,15 @@ public class Server extends Thread {
             String line = reader.readLine();    // reads a line of text
             System.out.println("Ready to receive ");
             System.out.println("I received something: " + line);
+=======
+    public static void main(String[] args) {
+        int port = Integer.parseInt(args[0]);
+        try {
+            Thread t = new Server(port);
+            t.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+>>>>>>> 4913f051564eb6810f0f217b785a8a7b1bcd45d2
         }
         hasEnoughConnections = true;
     }
