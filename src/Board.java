@@ -4,7 +4,7 @@ class Board {
     private static final int SIZE = 7;
     private static final Type[] POSSIBLE_TYPES = {Type.WHOOL, Type.WHOOL, Type.WHOOL, Type.WHOOL, Type.WOOD, Type.WOOD, Type.WOOD, Type.WOOD, Type.GRAIN, Type.GRAIN, Type.GRAIN, Type.GRAIN, Type.ORE, Type.ORE, Type.ORE, Type.STONE, Type.STONE, Type.STONE};
     private static final int[] TILE_NUMBERS = {5, 2, 6, 10, 9, 4, 3, 8, 11, 5, 8, 4, 3, 6, 10, 11, 12, 9};
-    private ArrayList<Type> availableTypes = new ArrayList<>(Arrays.asList(POSSIBLE_TYPES));
+    private ArrayList<Type> availableTypes;
 
     private List<Tile> tiles = new ArrayList<>();
     private List<Edge> edges = new ArrayList<>();
@@ -15,16 +15,30 @@ class Board {
     private Map<String, Node> nodeMap = new HashMap<>();
 
     Board() {
+        init();
+    }
+
+    private void init() {
+        availableTypes = new ArrayList<>(Arrays.asList(POSSIBLE_TYPES));
         int tileNumberIndex = 0;
+
         for (int y = 0; y < SIZE; y++) {
             for (int x = 0; x < SIZE; x++) {
                 int distanceFromCenter = calculateDistanceFromCenter(x, y);
 
                 if (distanceFromCenter == 0) {
-                    addTile(new Tile(x, y, Type.DESERT));
+                    Tile tile = new Tile(x, y, Type.DESERT);
+
+                    addTile(tile);
+                    createEdgesForTile(tile);
+                    createNodesForTile(tile);
                 } else if (distanceFromCenter <= 2) {
-                    addTile(new Tile(x, y, getRandomType(), TILE_NUMBERS[tileNumberIndex]));
+                    Tile tile = new Tile(x, y, getRandomType(), TILE_NUMBERS[tileNumberIndex]);
                     tileNumberIndex++;
+
+                    addTile(tile);
+                    createEdgesForTile(tile);
+                    createNodesForTile(tile);
                 } else if (distanceFromCenter == 3) {
                     addTile(new Tile(x, y, Type.SEA));
                 }
@@ -52,6 +66,24 @@ class Board {
     private void addTile(Tile tile) {
         tiles.add(tile);
         tileMap.put(tile.getKey(), tile);
+    }
+
+    private void createEdgesForTile(Tile tile) {
+
+    }
+
+    private void createNodesForTile(Tile tile) {
+
+    }
+
+    private void addEdge(Edge edge) {
+        edges.add(edge);
+        edgeMap.put(edge.getKey(), edge);
+    }
+
+    private void addNode(Node node) {
+        nodes.add(node);
+        nodeMap.put(node.getKey(), node);
     }
 
     void placeVillage(Player p) {
