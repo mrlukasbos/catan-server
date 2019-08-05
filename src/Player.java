@@ -1,3 +1,4 @@
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -8,11 +9,6 @@ class Player {
     private int id;
     private int lastDiceThrow = 0;
     private ArrayList<Resources> resources = new ArrayList<Resources>();
-
-    public Socket getSocket() {
-        return socket;
-    }
-
     private Socket socket;
 
     Player(int id, String name) {
@@ -20,9 +16,24 @@ class Player {
         this.name = name;
     }
 
-    void setSocket(Socket s) {
+    synchronized void setSocket(Socket s) {
         socket = s;
     }
+
+    synchronized Socket getSocket() {
+        return socket;
+    }
+
+    synchronized void send(String str) {
+        try {
+            DataOutputStream out = new DataOutputStream(getSocket().getOutputStream());
+            out.writeUTF(str);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     String getName() {
         return name;
