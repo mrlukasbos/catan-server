@@ -75,11 +75,13 @@ class Tile {
     @java.lang.Override
     public java.lang.String toString() {
         return "{" +
-                "\"model\": \"tile\"," +
-                "\"key\": \"" + getKey() + "\","  +
+                "\"model\": \"tile\", " +
+                "\"key\": \"" + getKey() + "\", "  +
                 "\"attributes\": {" +
-                "\"type\": \"" + typeToString(this.type) + "\"," +
-                "\"number\": " + number +
+                "\"type\": \"" + typeToString(this.type) + "\", " +
+                "\"number\": " + number + ", " +
+                "\"x\": " + x + ", " +
+                "\"y\": " + y +
                 "}" +
                 "}";
     }
