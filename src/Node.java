@@ -1,9 +1,11 @@
 import java.util.ArrayList;
 
 public class Node {
-    private ArrayList<Tile> tiles;
+    private Tile a;
+    private Tile b;
 
-    Node(ArrayList<Tile> tiles) {
-        this.tiles = tiles;
+    Node(Tile a, Tile b) {
+        this.a = a;
+        this.b = b;
     }
 }

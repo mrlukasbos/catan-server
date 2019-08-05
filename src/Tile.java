@@ -1,23 +1,23 @@
 // a tile can either be land
 
 class Tile {
+    private int x;
+    private int y;
     private Type type;
     private int number; // the number of the dice to be hit
-    private Tile[] sides = new Tile[6];
 
-    Tile(Type type) {
+    Tile(int x, int y, Type type) {
+        this.x = x;
+        this.y = y;
         this.type = type;
         this.number = 0;
     }
 
-    Tile(Type type, int number) {
+    Tile(int x, int y, Type type, int number) {
+        this.x = x;
+        this.y = y;
         this.type = type;
         this.number = number;
-    }
-
-    void setSides(Tile[] sides) {
-        assert sides.length == 6;
-        this.sides = sides;
     }
 
     public String typeToString(Type type) {
@@ -76,11 +76,16 @@ class Tile {
     public java.lang.String toString() {
         return "{" +
                 "\"model\": \"tile\"," +
+                "\"key\": \"" + getKey() + "\","  +
                 "\"attributes\": {" +
                 "\"type\": \"" + typeToString(this.type) + "\"," +
                 "\"number\": " + number +
                 "}" +
                 "}";
+    }
+
+    public String getKey() {
+        return "[" + x + "," + y + "]";
     }
 }
 
