@@ -11,9 +11,7 @@ public class Main {
         try {
             server = new Server(10006, amountOfPlayers);
             server.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
 
         // start the game
         Game game = new Game(amountOfPlayers);
@@ -58,5 +56,9 @@ public class Main {
         currentPlayer = game.progressToNextPlayer();
 
         server.shutDown();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
