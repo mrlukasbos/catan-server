@@ -1,8 +1,21 @@
+import java.io.IOException;
+
 public class Main {
 
     public static void main(String[] args) {
+
         int amountOfPlayers = 2;
 
+        // Boot the server
+        Server server;
+        try {
+            server = new Server(10006, amountOfPlayers);
+            server.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // start the game
         Game game = new Game(amountOfPlayers);
         System.out.println("New game created.");
 
@@ -43,5 +56,7 @@ public class Main {
          * Progress to to next player to do his move.
          */
         currentPlayer = game.progressToNextPlayer();
+
+        server.shutDown();
     }
 }
