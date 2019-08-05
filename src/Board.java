@@ -88,7 +88,7 @@ class Board {
         tilesString = tilesString.concat("]");
 
         return "{" +
-                "\"type\": \"board\"," +
+                "\"model\": \"board\"," +
                 "\"attributes\": {" +
                 "\"tiles\": " + tilesString +
                 "}" +
