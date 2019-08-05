@@ -25,7 +25,7 @@ public class Server extends Thread {
                     ensureConnections();
                 }
 
-                System.out.println("Playing the game!");
+          //      System.out.println("Playing the game!");
 
             } catch (SocketTimeoutException s) {
                 System.out.println("Socket timed out!");
