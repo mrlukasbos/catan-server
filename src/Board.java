@@ -2,9 +2,22 @@ import java.util.*;
 
 class Board {
     private static final int SIZE = 7;
-    private static final Type[] POSSIBLE_TYPES = {Type.WHOOL, Type.WHOOL, Type.WHOOL, Type.WHOOL, Type.WOOD, Type.WOOD, Type.WOOD, Type.WOOD, Type.GRAIN, Type.GRAIN, Type.GRAIN, Type.GRAIN, Type.ORE, Type.ORE, Type.ORE, Type.STONE, Type.STONE, Type.STONE};
+    private static final Type[] POSSIBLE_TERRAINS = {Type.WOOL, Type.WOOL, Type.WOOL, Type.WOOL, Type.WOOD, Type.WOOD, Type.WOOD, Type.WOOD, Type.GRAIN, Type.GRAIN, Type.GRAIN, Type.GRAIN, Type.ORE, Type.ORE, Type.ORE, Type.STONE, Type.STONE, Type.STONE};
+    private static final Type[] POSSIBLE_HARBORS = {Type.HARBOUR_GRAIN, Type.HARBOUR_ORE, Type.HARBOUR_WOOL, Type.HARBOUR_STONE, Type.HARBOUR_WOOD, Type.HARBOUR_ALL, Type.HARBOUR_ALL, Type.HARBOUR_ALL, Type.HARBOUR_ALL};
     private static final int[] TILE_NUMBERS = {5, 2, 6, 10, 9, 4, 3, 8, 11, 5, 8, 4, 3, 6, 10, 11, 12, 9};
-    private ArrayList<Type> availableTypes;
+    private static final Map<String, Orientation> HARBOR_ORIENTATIONS  = new HashMap<String, Orientation>() {{
+        put("[1,0]", Orientation.BOTTOM_RIGHT);
+        put("[3,0]", Orientation.BOTTOM_LEFT);
+        put("[5,1]", Orientation.BOTTOM_LEFT);
+        put("[6,3]", Orientation.LEFT);
+        put("[5,5]", Orientation.TOP_LEFT);
+        put("[3,6]", Orientation.TOP_LEFT);
+        put("[1,6]", Orientation.TOP_RIGHT);
+        put("[0,4]", Orientation.RIGHT);
+        put("[0,2]", Orientation.RIGHT);
+    }};
+    private ArrayList<Type> availableTerrains;
+    private ArrayList<Type> availableHarbors;
 
     private List<Tile> tiles = new ArrayList<>();
     private List<Edge> edges = new ArrayList<>();
@@ -19,7 +32,8 @@ class Board {
     }
 
     private void init() {
-        availableTypes = new ArrayList<>(Arrays.asList(POSSIBLE_TYPES));
+        availableTerrains = new ArrayList<>(Arrays.asList(POSSIBLE_TERRAINS));
+        availableHarbors = new ArrayList<>(Arrays.asList(POSSIBLE_HARBORS));
         int tileNumberIndex = 0;
 
         for (int y = 0; y < SIZE; y++) {
@@ -30,17 +44,17 @@ class Board {
                     Tile tile = new Tile(x, y, Type.DESERT);
 
                     addTile(tile);
-                    createEdgesForTile(tile);
-                    createNodesForTile(tile);
                 } else if (distanceFromCenter <= 2) {
-                    Tile tile = new Tile(x, y, getRandomType(), TILE_NUMBERS[tileNumberIndex]);
+                    Tile tile = new Tile(x, y, getRandomTerrainType(), TILE_NUMBERS[tileNumberIndex]);
                     tileNumberIndex++;
 
                     addTile(tile);
-                    createEdgesForTile(tile);
-                    createNodesForTile(tile);
                 } else if (distanceFromCenter == 3) {
-                    addTile(new Tile(x, y, Type.SEA));
+                    if (HARBOR_ORIENTATIONS.containsKey(tileCoordinatesToKey(x,y))) {
+                        addTile(new Tile(x, y, getRandomHarborType(), HARBOR_ORIENTATIONS.get(tileCoordinatesToKey(x,y))));
+                    } else {
+                        addTile(new Tile(x, y, Type.SEA));
+                    }
                 }
             }
         }
@@ -59,8 +73,16 @@ class Board {
         return (Math.abs(centerX - x) + Math.abs(centerY - y) + Math.abs(centerZ - z)) / 2;
     }
 
-    private Type getRandomType() {
-        return availableTypes.remove(new Random().nextInt(availableTypes.size()));
+    private Type getRandomTerrainType() {
+        return availableTerrains.remove(new Random().nextInt(availableTerrains.size()));
+    }
+
+    private Type getRandomHarborType() {
+        return availableHarbors.remove(new Random().nextInt(availableHarbors.size()));
+    }
+
+    public String tileCoordinatesToKey(int x, int y) {
+        return "[" + x + "," + y + "]";
     }
 
     private void addTile(Tile tile) {

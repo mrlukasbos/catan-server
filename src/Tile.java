@@ -5,12 +5,14 @@ class Tile {
     private int y;
     private Type type;
     private int number; // the number of the dice to be hit
+    private Orientation orientation;
 
     Tile(int x, int y, Type type) {
         this.x = x;
         this.y = y;
         this.type = type;
         this.number = 0;
+        this.orientation = Orientation.NONE;
     }
 
     Tile(int x, int y, Type type, int number) {
@@ -18,14 +20,23 @@ class Tile {
         this.y = y;
         this.type = type;
         this.number = number;
+        this.orientation = Orientation.NONE;
+    }
+
+    Tile(int x, int y, Type type, Orientation orientation) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.number = 0;
+        this.orientation = orientation;
     }
 
     public String typeToString(Type type) {
         switch (type) {
             case DESERT:
                 return "desert";
-            case WHOOL:
-                return "whool";
+            case WOOL:
+                return "wool";
             case WOOD:
                 return "wood";
             case STONE:
@@ -36,8 +47,8 @@ class Tile {
                 return "ore";
             case SEA:
                 return "sea";
-            case HARBOUR_WHOOL:
-                return "harbour_whool";
+            case HARBOUR_WOOL:
+                return "harbour_wool";
             case HARBOUR_WOOD:
                 return "harbour_wood";
             case HARBOUR_STONE:
@@ -67,6 +78,8 @@ class Tile {
                 return "bottom_left";
             case BOTTOM_RIGHT:
                 return "bottom_right";
+            case NONE:
+                return "none";
             default:
                 return "unknown";
         }
@@ -80,6 +93,7 @@ class Tile {
                 "\"attributes\": {" +
                 "\"type\": \"" + typeToString(this.type) + "\", " +
                 "\"number\": " + number + ", " +
+                "\"orientation\": \"" + orientationToString(this.orientation) + "\", " +
                 "\"x\": " + x + ", " +
                 "\"y\": " + y +
                 "}" +
@@ -93,13 +107,13 @@ class Tile {
 
 enum Type {
     DESERT,
-    WHOOL,
+    WOOL,
     WOOD,
     STONE,
     GRAIN,
     ORE,
     SEA,
-    HARBOUR_WHOOL,
+    HARBOUR_WOOL,
     HARBOUR_WOOD,
     HARBOUR_STONE,
     HARBOUR_GRAIN,
@@ -114,5 +128,6 @@ enum Orientation {
     LEFT,
     RIGHT,
     BOTTOM_LEFT,
-    BOTTOM_RIGHT
+    BOTTOM_RIGHT,
+    NONE
 }
