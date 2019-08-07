@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+    .hexagon {
+        fill: white;
+        pointer-events: all;
+    }
+
+    .hexagon path {
+        -webkit-transition: fill 250ms linear;
+        transition: fill 250ms linear;
+    }
+
+    .hexagon .desert {
+        fill: sandybrown;
+    }
+
+    .hexagon .wool {
+        fill: greenyellow;
+    }
+
+    .hexagon .wood {
+        fill: green;
+    }
+
+    .hexagon .stone {
+        fill: brown;
+    }
+
+    .hexagon .grain {
+        fill: yellow;
+    }
+
+    .hexagon .ore {
+        fill: slategray;
+    }
+
+    .hexagon .sea {
+        fill: lightblue;
+    }
+
+    .hexagon .harbour_wool,
+    .hexagon .harbour_wood,
+    .hexagon .harbour_stone,
+    .hexagon .harbour_grain,
+    .hexagon .harbour_ore,
+    .hexagon .harbour_all {
+        fill: lightskyblue;
+    }
+
+    .mesh {
+        fill: none;
+        stroke: #000;
+        stroke-opacity: .2;
+        pointer-events: none;
+    }
+
+    .border {
+        fill: none;
+        stroke: #000;
+        stroke-width: 4px;
+        pointer-events: none;
+    }
+
+    .numbers {
+        font-size: 25px;
+    }
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+    var data = JSON.parse("{\"model\": \"board\", \"attributes\": {\"tiles\": [{\"model\": \"tile\", \"key\": \"[1,0]\", \"attributes\": {\"type\": \"harbour_stone\", \"number\": 0, \"orientation\": \"bottom_right\", \"x\": 1, \"y\": 0}},{\"model\": \"tile\", \"key\": \"[2,0]\", \"attributes\": {\"type\": \"sea\", \"number\": 0, \"orientation\": \"none\", \"x\": 2, \"y\": 0}},{\"model\": \"tile\", \"key\": \"[3,0]\", \"attributes\": {\"type\": \"harbour_grain\", \"number\": 0, \"orientation\": \"bottom_left\", \"x\": 3, \"y\": 0}},{\"model\": \"tile\", \"key\": \"[4,0]\", \"attributes\": {\"type\": \"sea\", \"number\": 0, \"orientation\": \"none\", \"x\": 4, \"y\": 0}},{\"model\": \"tile\", \"key\": \"[1,1]\", \"attributes\": {\"type\": \"sea\", \"number\": 0, \"orientation\": \"none\", \"x\": 1, \"y\": 1}},{\"model\": \"tile\", \"key\": \"[2,1]\", \"attributes\": {\"type\": \"wool\", \"number\": 5, \"orientation\": \"none\", \"x\": 2, \"y\": 1}},{\"model\": \"tile\", \"key\": \"[3,1]\", \"attributes\": {\"type\": \"grain\", \"number\": 2, \"orientation\": \"none\", \"x\": 3, \"y\": 1}},{\"model\": \"tile\", \"key\": \"[4,1]\", \"attributes\": {\"type\": \"grain\", \"number\": 6, \"orientation\": \"none\", \"x\": 4, \"y\": 1}},{\"model\": \"tile\", \"key\": \"[5,1]\", \"attributes\": {\"type\": \"harbour_all\", \"number\": 0, \"orientation\": \"bottom_left\", \"x\": 5, \"y\": 1}},{\"model\": \"tile\", \"key\": \"[0,2]\", \"attributes\": {\"type\": \"harbour_all\", \"number\": 0, \"orientation\": \"right\", \"x\": 0, \"y\": 2}},{\"model\": \"tile\", \"key\": \"[1,2]\", \"attributes\": {\"type\": \"wood\", \"number\": 10, \"orientation\": \"none\", \"x\": 1, \"y\": 2}},{\"model\": \"tile\", \"key\": \"[2,2]\", \"attributes\": {\"type\": \"wool\", \"number\": 9, \"orientation\": \"none\", \"x\": 2, \"y\": 2}},{\"model\": \"tile\", \"key\": \"[3,2]\", \"attributes\": {\"type\": \"wood\", \"number\": 4, \"orientation\": \"none\", \"x\": 3, \"y\": 2}},{\"model\": \"tile\", \"key\": \"[4,2]\", \"attributes\": {\"type\": \"stone\", \"number\": 3, \"orientation\": \"none\", \"x\": 4, \"y\": 2}},{\"model\": \"tile\", \"key\": \"[5,2]\", \"attributes\": {\"type\": \"sea\", \"number\": 0, \"orientation\": \"none\", \"x\": 5, \"y\": 2}},{\"model\": \"tile\", \"key\": \"[0,3]\", \"attributes\": {\"type\": \"sea\", \"number\": 0, \"orientation\": \"none\", \"x\": 0, \"y\": 3}},{\"model\": \"tile\", \"key\": \"[1,3]\", \"attributes\": {\"type\": \"ore\", \"number\": 8, \"orientation\": \"none\", \"x\": 1, \"y\": 3}},{\"model\": \"tile\", \"key\": \"[2,3]\", \"attributes\": {\"type\": \"wool\", \"number\": 11, \"orientation\": \"none\", \"x\": 2, \"y\": 3}},{\"model\": \"tile\", \"key\": \"[3,3]\", \"attributes\": {\"type\": \"desert\", \"number\": 0, \"orientation\": \"none\", \"x\": 3, \"y\": 3}},{\"model\": \"tile\", \"key\": \"[4,3]\", \"attributes\": {\"type\": \"ore\", \"number\": 5, \"orientation\": \"none\", \"x\": 4, \"y\": 3}},{\"model\": \"tile\", \"key\": \"[5,3]\", \"attributes\": {\"type\": \"stone\", \"number\": 8, \"orientation\": \"none\", \"x\": 5, \"y\": 3}},{\"model\": \"tile\", \"key\": \"[6,3]\", \"attributes\": {\"type\": \"harbour_wool\", \"number\": 0, \"orientation\": \"left\", \"x\": 6, \"y\": 3}},{\"model\": \"tile\", \"key\": \"[0,4]\", \"attributes\": {\"type\": \"harbour_all\", \"number\": 0, \"orientation\": \"right\", \"x\": 0, \"y\": 4}},{\"model\": \"tile\", \"key\": \"[1,4]\", \"attributes\": {\"type\": \"grain\", \"number\": 4, \"orientation\": \"none\", \"x\": 1, \"y\": 4}},{\"model\": \"tile\", \"key\": \"[2,4]\", \"attributes\": {\"type\": \"stone\", \"number\": 3, \"orientation\": \"none\", \"x\": 2, \"y\": 4}},{\"model\": \"tile\", \"key\": \"[3,4]\", \"attributes\": {\"type\": \"wood\", \"number\": 6, \"orientation\": \"none\", \"x\": 3, \"y\": 4}},{\"model\": \"tile\", \"key\": \"[4,4]\", \"attributes\": {\"type\": \"wood\", \"number\": 10, \"orientation\": \"none\", \"x\": 4, \"y\": 4}},{\"model\": \"tile\", \"key\": \"[5,4]\", \"attributes\": {\"type\": \"sea\", \"number\": 0, \"orientation\": \"none\", \"x\": 5, \"y\": 4}},{\"model\": \"tile\", \"key\": \"[1,5]\", \"attributes\": {\"type\": \"sea\", \"number\": 0, \"orientation\": \"none\", \"x\": 1, \"y\": 5}},{\"model\": \"tile\", \"key\": \"[2,5]\", \"attributes\": {\"type\": \"grain\", \"number\": 11, \"orientation\": \"none\", \"x\": 2, \"y\": 5}},{\"model\": \"tile\", \"key\": \"[3,5]\", \"attributes\": {\"type\": \"wool\", \"number\": 12, \"orientation\": \"none\", \"x\": 3, \"y\": 5}},{\"model\": \"tile\", \"key\": \"[4,5]\", \"attributes\": {\"type\": \"ore\", \"number\": 9, \"orientation\": \"none\", \"x\": 4, \"y\": 5}},{\"model\": \"tile\", \"key\": \"[5,5]\", \"attributes\": {\"type\": \"harbour_wood\", \"number\": 0, \"orientation\": \"top_left\", \"x\": 5, \"y\": 5}},{\"model\": \"tile\", \"key\": \"[1,6]\", \"attributes\": {\"type\": \"harbour_all\", \"number\": 0, \"orientation\": \"top_right\", \"x\": 1, \"y\": 6}},{\"model\": \"tile\", \"key\": \"[2,6]\", \"attributes\": {\"type\": \"sea\", \"number\": 0, \"orientation\": \"none\", \"x\": 2, \"y\": 6}},{\"model\": \"tile\", \"key\": \"[3,6]\", \"attributes\": {\"type\": \"harbour_ore\", \"number\": 0, \"orientation\": \"top_left\", \"x\": 3, \"y\": 6}},{\"model\": \"tile\", \"key\": \"[4,6]\", \"attributes\": {\"type\": \"sea\", \"number\": 0, \"orientation\": \"none\", \"x\": 4, \"y\": 6}}], \"edges\": [{\"model\": \"edge\", \"key\": \"([2,1],[1,0])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,1],[2,0])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,1],[3,1])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,1],[2,2])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,1],[1,2])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,1],[1,1])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,1],[2,0])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,1],[3,0])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,1],[4,1])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,1],[3,2])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,1],[2,2])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,1],[3,0])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,1],[4,0])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,1],[5,1])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,1],[4,2])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,1],[3,2])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,2],[1,1])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,2],[2,1])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,2],[2,2])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,2],[2,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,2],[1,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,2],[0,2])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,2],[3,1])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,2],[3,2])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,2],[3,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,2],[2,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,2],[4,1])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,2],[4,2])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,2],[4,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,2],[3,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,2],[5,1])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,2],[5,2])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,2],[5,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,2],[4,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,3],[0,2])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,3],[2,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,3],[1,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,3],[0,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,3],[0,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,3],[3,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,3],[2,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,3],[1,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,3],[4,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,3],[3,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,3],[2,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,3],[5,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,3],[4,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,3],[3,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([5,3],[5,2])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([5,3],[6,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([5,3],[5,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([5,3],[4,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,4],[2,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,4],[2,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,4],[2,5])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,4],[1,5])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([1,4],[0,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,4],[3,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,4],[3,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,4],[3,5])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,4],[2,5])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,4],[4,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,4],[4,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,4],[4,5])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,4],[3,5])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,4],[5,3])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,4],[5,4])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,4],[5,5])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,4],[4,5])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,5],[3,5])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,5],[2,6])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,5],[1,6])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([2,5],[1,5])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,5],[4,5])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,5],[3,6])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([3,5],[2,6])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,5],[5,5])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,5],[4,6])\", \"attributes\": {\"road\": false}},{\"model\": \"edge\", \"key\": \"([4,5],[3,6])\", \"attributes\": {\"road\": false}}], \"nodes\": [{\"model\": \"node\", \"key\": \"([2,1],[2,0],[1,0])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,1],[3,1],[2,0])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,1],[2,2],[3,1])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,1],[1,2],[2,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,1],[1,1],[1,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,1],[1,0],[1,1])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,1],[3,0],[2,0])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,1],[4,1],[3,0])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,1],[3,2],[4,1])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,1],[2,2],[3,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,1],[2,1],[2,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,1],[2,0],[2,1])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,1],[4,0],[3,0])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,1],[5,1],[4,0])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,1],[4,2],[5,1])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,1],[3,2],[4,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,1],[3,1],[3,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,1],[3,0],[3,1])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,2],[2,1],[1,1])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,2],[2,2],[2,1])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,2],[2,3],[2,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,2],[1,3],[2,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,2],[0,2],[1,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,2],[1,1],[0,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,2],[3,2],[3,1])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,2],[3,3],[3,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,2],[2,3],[3,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,2],[1,2],[2,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,2],[2,1],[1,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,2],[4,2],[4,1])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,2],[4,3],[4,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,2],[3,3],[4,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,2],[2,2],[3,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,2],[3,1],[2,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,2],[5,2],[5,1])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,2],[5,3],[5,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,2],[4,3],[5,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,2],[3,2],[4,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,2],[4,1],[3,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,3],[1,2],[0,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,3],[1,4],[2,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,3],[0,4],[1,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,3],[0,3],[0,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,3],[0,2],[0,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,3],[2,2],[1,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,3],[2,4],[3,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,3],[1,4],[2,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,3],[1,3],[1,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,3],[3,2],[2,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,3],[3,4],[4,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,3],[2,4],[3,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,3],[2,3],[2,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,3],[4,2],[3,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,3],[4,4],[5,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,3],[3,4],[4,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,3],[3,3],[3,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([5,3],[5,2],[4,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([5,3],[6,3],[5,2])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([5,3],[5,4],[6,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([5,3],[4,4],[5,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([5,3],[4,3],[4,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,4],[2,4],[2,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,4],[2,5],[2,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,4],[1,5],[2,5])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,4],[0,4],[1,5])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([1,4],[1,3],[0,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,4],[3,4],[3,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,4],[3,5],[3,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,4],[2,5],[3,5])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,4],[1,4],[2,5])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,4],[2,3],[1,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,4],[4,4],[4,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,4],[4,5],[4,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,4],[3,5],[4,5])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,4],[2,4],[3,5])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,4],[3,3],[2,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,4],[5,4],[5,3])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,4],[5,5],[5,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,4],[4,5],[5,5])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,4],[3,4],[4,5])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,4],[4,3],[3,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,5],[2,4],[1,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,5],[2,6],[3,5])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,5],[1,6],[2,6])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([2,5],[1,5],[1,6])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,5],[3,4],[2,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,5],[3,6],[4,5])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,5],[2,6],[3,6])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([3,5],[2,5],[2,6])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,5],[4,4],[3,4])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,5],[4,6],[5,5])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,5],[3,6],[4,6])\", \"attributes\": {\"structure\": \"none\"}},{\"model\": \"node\", \"key\": \"([4,5],[3,5],[3,6])\", \"attributes\": {\"structure\": \"none\"}}], \"development_cards\": [\"knight\",\"knight\",\"knight\",\"knight\",\"knight\",\"knight\",\"knight\",\"knight\",\"knight\",\"knight\",\"knight\",\"knight\",\"knight\",\"knight\",\"victory_point\",\"victory_point\",\"victory_point\",\"victory_point\",\"victory_point\",\"monopoly\",\"monopoly\",\"road_building\",\"road_building\",\"year_of_plenty\",\"year_of_plenty\"]}}\n");
+    var tiles = data.attributes.tiles,
+        edges = data.attributes.edges,
+        nodes = data.attributes.nodes;
+
+    var width = 1050,
+        height = 900,
+        radius = 75;
+
+    var topology = hexTopology(radius, width, height);
+
+    var projection = hexProjection(radius);
+
+    var path = d3.geo.path()
+        .projection(projection);
+
+    var svg = d3.select("body").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    svg.append("g")
+        .attr("class", "hexagon")
+        .selectAll("path")
+        .data(topology.objects.hexagons.geometries)
+        .enter().append("path")
+        .attr("d", function (d) {
+            return path(topojson.feature(topology, d));
+        })
+        .attr("class", function (d) {
+            return d.tile.attributes.type;
+        });
+
+    svg.append("g")
+        .attr("class", "numbers")
+        .selectAll("path")
+        .data(topology.objects.hexagons.geometries)
+        .enter().append("text")
+        .attr("x", function (d) {
+            return path.centroid(topojson.feature(topology, d))[0];
+        })
+        .attr("y", function (d) {
+            return path.centroid(topojson.feature(topology, d))[1]-20;
+        })
+        .text(function (d) {
+            if (d.tile.attributes.number > 0) return d.tile.attributes.number;
+            return "";
+        })
+        .attr("text-anchor", "middle");
+
+    svg.append("g")
+        .attr("class", "labels")
+        .selectAll("path")
+        .data(topology.objects.hexagons.geometries)
+        .enter().append("text")
+        .attr("x", function (d) {
+            return path.centroid(topojson.feature(topology, d))[0];
+        })
+        .attr("y", function (d) {
+            return path.centroid(topojson.feature(topology, d))[1];
+        })
+        .text(function (d) {
+            return d.tile.key;
+        })
+        .attr("text-anchor", "middle");
+
+    svg.append("g")
+        .attr("class", "types")
+        .selectAll("path")
+        .data(topology.objects.hexagons.geometries)
+        .enter().append("text")
+        .attr("x", function (d) {
+            return path.centroid(topojson.feature(topology, d))[0];
+        })
+        .attr("y", function (d) {
+            return path.centroid(topojson.feature(topology, d))[1]+15;
+        })
+        .text(function (d) {
+            return d.tile.attributes.type;
+        })
+        .attr("text-anchor", "middle");
+
+    svg.append("path")
+        .datum(topojson.mesh(topology, topology.objects.hexagons))
+        .attr("class", "mesh")
+        .attr("d", path);
+
+    var border = svg.append("path")
+        .attr("class", "border")
+        .call(redraw);
+
+    function redraw(border) {
+        border.attr("d", path(topojson.mesh(topology, topology.objects.hexagons, function (a, b) {
+            return getEdge(a.tile.key, b.tile.key) || getEdge(b.tile.key, a.tile.key);
+        })));
+    }
+
+    function hexTopology(radius, width, height) {
+        var dx = radius * 2 * Math.sin(Math.PI / 3),
+            dy = radius * 1.5,
+            m = Math.ceil((height + radius) / dy) + 1,
+            n = Math.ceil(width / dx) + 1,
+            geometries = [],
+            arcs = [];
+
+        for (var j = -1; j <= m; ++j) {
+            for (var i = -1; i <= n; ++i) {
+                var y = j * 2, x = (i + (j & 1) / 2) * 2;
+                arcs.push([[x, y - 1], [1, 1]], [[x + 1, y], [0, 1]], [[x + 1, y + 1], [-1, 1]]);
+            }
+        }
+
+        for (var j = 0, q = 3; j < m; ++j, q += 6) {
+            for (var i = 0; i < n; ++i, q += 3) {
+                if (getTile(i - 1, j - 2)) {
+                    geometries.push({
+                        type: "Polygon",
+                        arcs: [[q, q + 1, q + 2, ~(q + (n + 2 - (j & 1)) * 3), ~(q - 2), ~(q - (n + 2 + (j & 1)) * 3 + 2)]],
+                        tile: getTile(i - 1, j - 2)
+                    });
+                }
+            }
+        }
+
+        return {
+            transform: {translate: [0, 0], scale: [1, 1]},
+            objects: {hexagons: {type: "GeometryCollection", geometries: geometries}},
+            arcs: arcs
+        };
+    }
+
+    function getTile(x, y) {
+        var key = `[${x},${y}]`;
+        return tiles.find(matchKey, key);
+    }
+
+    function getEdge(a, b) {
+        var key = `(${a},${b})`;
+        return edges.find(matchKey, key);
+    }
+
+    function matchKey(item) {
+        return item.key == this;
+    }
+
+    function hexProjection(radius) {
+        var dx = radius * 2 * Math.sin(Math.PI / 3),
+            dy = radius * 1.5;
+        return {
+            stream: function (stream) {
+                return {
+                    point: function (x, y) {
+                        stream.point(x * dx / 2, (y - (2 - (y & 1)) / 3) * dy / 2);
+                    },
+                    lineStart: function () {
+                        stream.lineStart();
+                    },
+                    lineEnd: function () {
+                        stream.lineEnd();
+                    },
+                    polygonStart: function () {
+                        stream.polygonStart();
+                    },
+                    polygonEnd: function () {
+                        stream.polygonEnd();
+                    }
+                };
+            }
+        };
+    }
+
+</script>
