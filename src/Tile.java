@@ -1,6 +1,8 @@
 // a tile can either be land
 
-class Tile {
+import java.util.ArrayList;
+
+class Tile implements Comparable<Tile> {
     private int x;
     private int y;
     private Type type;
@@ -89,11 +91,11 @@ class Tile {
     public java.lang.String toString() {
         return "{" +
                 "\"model\": \"tile\", " +
-                "\"key\": \"" + getKey() + "\", "  +
+                "\"key\": \"" + getKey() + "\", " +
                 "\"attributes\": {" +
-                "\"type\": \"" + typeToString(this.type) + "\", " +
+                "\"type\": \"" + typeToString(type) + "\", " +
                 "\"number\": " + number + ", " +
-                "\"orientation\": \"" + orientationToString(this.orientation) + "\", " +
+                "\"orientation\": \"" + orientationToString(orientation) + "\", " +
                 "\"x\": " + x + ", " +
                 "\"y\": " + y +
                 "}" +
@@ -102,6 +104,27 @@ class Tile {
 
     public String getKey() {
         return "[" + x + "," + y + "]";
+    }
+
+    public boolean isTerrain() {
+        return (orientation == Orientation.NONE && type != Type.SEA);
+    }
+
+    public Integer getCoordinateSum() {
+        return x + y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    @Override
+    public int compareTo(Tile tile) {
+        return getCoordinateSum().compareTo(tile.getCoordinateSum());
     }
 }
 

@@ -2,10 +2,31 @@ import java.util.*;
 
 class Board {
     private static final int SIZE = 7;
-    private static final Type[] POSSIBLE_TERRAINS = {Type.WOOL, Type.WOOL, Type.WOOL, Type.WOOL, Type.WOOD, Type.WOOD, Type.WOOD, Type.WOOD, Type.GRAIN, Type.GRAIN, Type.GRAIN, Type.GRAIN, Type.ORE, Type.ORE, Type.ORE, Type.STONE, Type.STONE, Type.STONE};
-    private static final Type[] POSSIBLE_HARBORS = {Type.HARBOUR_GRAIN, Type.HARBOUR_ORE, Type.HARBOUR_WOOL, Type.HARBOUR_STONE, Type.HARBOUR_WOOD, Type.HARBOUR_ALL, Type.HARBOUR_ALL, Type.HARBOUR_ALL, Type.HARBOUR_ALL};
+    private static final ArrayList<Type> TERRAIN_TILES = new ArrayList<>() {{
+        for (int i = 0; i < 4; i++) add(Type.GRAIN);
+        for (int i = 0; i < 4; i++) add(Type.WOOD);
+        for (int i = 0; i < 4; i++) add(Type.WOOL);
+        for (int i = 0; i < 3; i++) add(Type.ORE);
+        for (int i = 0; i < 3; i++) add(Type.STONE);
+    }};
+    private static final ArrayList<Type> HARBOR_TILES = new ArrayList<>() {{
+        for (int i = 0; i < 4; i++) add(Type.HARBOUR_ALL);
+        add(Type.HARBOUR_WOOL);
+        add(Type.HARBOUR_WOOD);
+        add(Type.HARBOUR_ORE);
+        add(Type.HARBOUR_STONE);
+        add(Type.HARBOUR_GRAIN);
+    }};
+    private static final ArrayList<DevelopmentCard> DEVELOPMENT_CARDS = new ArrayList<>() {{
+        for (int i = 0; i < 14; i++) add(DevelopmentCard.KNIGHT);
+        for (int i = 0; i < 5; i++) add(DevelopmentCard.VICTORY_POINT);
+        for (int i = 0; i < 2; i++) add(DevelopmentCard.MONOPOLY);
+        for (int i = 0; i < 2; i++) add(DevelopmentCard.ROAD_BUILDING);
+        for (int i = 0; i < 2; i++) add(DevelopmentCard.YEAR_OF_PLENTY);
+
+    }};
     private static final int[] TILE_NUMBERS = {5, 2, 6, 10, 9, 4, 3, 8, 11, 5, 8, 4, 3, 6, 10, 11, 12, 9};
-    private static final Map<String, Orientation> HARBOR_ORIENTATIONS  = new HashMap<String, Orientation>() {{
+    private static final Map<String, Orientation> HARBOR_ORIENTATIONS = new HashMap<String, Orientation>() {{
         put("[1,0]", Orientation.BOTTOM_RIGHT);
         put("[3,0]", Orientation.BOTTOM_LEFT);
         put("[5,1]", Orientation.BOTTOM_LEFT);
@@ -16,24 +37,48 @@ class Board {
         put("[0,4]", Orientation.RIGHT);
         put("[0,2]", Orientation.RIGHT);
     }};
-    private ArrayList<Type> availableTerrains;
-    private ArrayList<Type> availableHarbors;
+    private static final int[][] AXIAL_DIRECTIONS_ODD = {
+            {-1, -1},
+            {0, -1},
+            {1, 0},
+            {0, 1},
+            {-1, 1},
+            {-1, 0}
+    };
+    private static final int[][] AXIAL_DIRECTIONS_EVEN = {
+            {0, -1},
+            {1, -1},
+            {1, 0},
+            {1, 1},
+            {0, 1},
+            {-1, 0}
+    };
 
-    private List<Tile> tiles = new ArrayList<>();
-    private List<Edge> edges = new ArrayList<>();
-    private List<Node> nodes = new ArrayList<>();
+    private List<Tile> tiles;
+    private List<Edge> edges;
+    private List<Node> nodes;
+    private List<DevelopmentCard> developmentCards;
 
-    private Map<String, Tile> tileMap = new HashMap<>();
-    private Map<String, Edge> edgeMap = new HashMap<>();
-    private Map<String, Node> nodeMap = new HashMap<>();
+    private Map<String, Tile> tileMap;
+    private Map<String, Edge> edgeMap;
+    private Map<String, Node> nodeMap;
 
     Board() {
         init();
     }
 
     private void init() {
-        availableTerrains = new ArrayList<>(Arrays.asList(POSSIBLE_TERRAINS));
-        availableHarbors = new ArrayList<>(Arrays.asList(POSSIBLE_HARBORS));
+        tiles = new ArrayList<>();
+        edges = new ArrayList<>();
+        nodes = new ArrayList<>();
+        developmentCards = new ArrayList<>(DEVELOPMENT_CARDS);
+
+        tileMap = new HashMap<>();
+        edgeMap = new HashMap<>();
+        nodeMap = new HashMap<>();
+
+        ArrayList<Type> availableTerrains = new ArrayList<>(TERRAIN_TILES);
+        ArrayList<Type> availableHarbors = new ArrayList<>(HARBOR_TILES);
         int tileNumberIndex = 0;
 
         for (int y = 0; y < SIZE; y++) {
@@ -45,17 +90,24 @@ class Board {
 
                     addTile(tile);
                 } else if (distanceFromCenter <= 2) {
-                    Tile tile = new Tile(x, y, getRandomTerrainType(), TILE_NUMBERS[tileNumberIndex]);
+                    Tile tile = new Tile(x, y, getRandomTerrainType(availableTerrains), TILE_NUMBERS[tileNumberIndex]);
                     tileNumberIndex++;
 
                     addTile(tile);
                 } else if (distanceFromCenter == 3) {
-                    if (HARBOR_ORIENTATIONS.containsKey(tileCoordinatesToKey(x,y))) {
-                        addTile(new Tile(x, y, getRandomHarborType(), HARBOR_ORIENTATIONS.get(tileCoordinatesToKey(x,y))));
+                    if (HARBOR_ORIENTATIONS.containsKey(tileCoordinatesToKey(x, y))) {
+                        addTile(new Tile(x, y, getRandomHarborType(availableHarbors), HARBOR_ORIENTATIONS.get(tileCoordinatesToKey(x, y))));
                     } else {
                         addTile(new Tile(x, y, Type.SEA));
                     }
                 }
+            }
+        }
+
+        for (Tile tile : tiles) {
+            if (tile.isTerrain()) {
+                createEdgesForTile(tile);
+                createNodesForTile(tile);
             }
         }
     }
@@ -73,11 +125,11 @@ class Board {
         return (Math.abs(centerX - x) + Math.abs(centerY - y) + Math.abs(centerZ - z)) / 2;
     }
 
-    private Type getRandomTerrainType() {
+    private Type getRandomTerrainType(ArrayList<Type> availableTerrains) {
         return availableTerrains.remove(new Random().nextInt(availableTerrains.size()));
     }
 
-    private Type getRandomHarborType() {
+    private Type getRandomHarborType(ArrayList<Type> availableHarbors) {
         return availableHarbors.remove(new Random().nextInt(availableHarbors.size()));
     }
 
@@ -85,17 +137,54 @@ class Board {
         return "[" + x + "," + y + "]";
     }
 
+    public String edgeKeyFromTiles(Tile a, Tile b) {
+        Tile[] neighbors = {a, b};
+        Arrays.sort(neighbors);
+        return "(" + neighbors[0].getKey() + "," + neighbors[1].getKey() + ")";
+    }
+
+    public String nodeKeyFromTiles(Tile a, Tile b, Tile c) {
+        Tile[] neighbors = {a, b, c};
+        Arrays.sort(neighbors);
+        return "(" + neighbors[0].getKey() + "," + neighbors[1].getKey() + "," + neighbors[2].getKey() + ")";
+    }
+
     private void addTile(Tile tile) {
         tiles.add(tile);
         tileMap.put(tile.getKey(), tile);
     }
 
-    private void createEdgesForTile(Tile tile) {
-
+    private void createEdgesForTile(Tile a) {
+        int [][] directions;
+        if (a.getY()%2 == 0) {
+            directions = AXIAL_DIRECTIONS_EVEN;
+        } else {
+            directions = AXIAL_DIRECTIONS_ODD;
+        }
+        for (int i = 0; i < 6; i++) {
+            Tile b = tileMap.get(tileCoordinatesToKey(a.getX() + directions[i][0], a.getY() + directions[i][1]));
+            String edgeKey = edgeKeyFromTiles(a, b);
+            if (!edgeMap.containsKey(edgeKey)) {
+                addEdge(new Edge(a, b));
+            }
+        }
     }
 
-    private void createNodesForTile(Tile tile) {
-
+    private void createNodesForTile(Tile a) {
+        int [][] directions;
+        if (a.getY()%2 == 0) {
+            directions = AXIAL_DIRECTIONS_EVEN;
+        } else {
+            directions = AXIAL_DIRECTIONS_ODD;
+        }
+        for (int i = 0; i < 6; i++) {
+            Tile b = tileMap.get(tileCoordinatesToKey(a.getX() + directions[i][0], a.getY() + directions[i][1]));
+            Tile c = tileMap.get(tileCoordinatesToKey(a.getX() + directions[(i+1)%6][0], a.getY() + directions[(i+1)%6][1]));
+            String nodeKey = nodeKeyFromTiles(a, b, c);
+            if (!nodeMap.containsKey(nodeKey)) {
+                addNode(new Node(a, b, c));
+            }
+        }
     }
 
     private void addEdge(Edge edge) {
@@ -120,6 +209,23 @@ class Board {
 
     }
 
+    private String developmentCardToString(DevelopmentCard developmentCard) {
+        switch (developmentCard) {
+            case KNIGHT:
+                return "knight";
+            case MONOPOLY:
+                return "monopoly";
+            case ROAD_BUILDING:
+                return "road_building";
+            case VICTORY_POINT:
+                return "victory_point";
+            case YEAR_OF_PLENTY:
+                return "year_of_plenty";
+            default:
+                return "unknown";
+        }
+    }
+
     @Override
     public String toString() {
         String tilesString = "[";
@@ -129,11 +235,43 @@ class Board {
         tilesString = tilesString.substring(0, tilesString.length() - 1);
         tilesString = tilesString.concat("]");
 
+        String edgeString = "[";
+        for (Edge edge : edges) {
+            edgeString = edgeString.concat(edge.toString() + ",");
+        }
+        edgeString = edgeString.substring(0, edgeString.length() - 1);
+        edgeString = edgeString.concat("]");
+
+        String nodeString = "[";
+        for (Node node : nodes) {
+            nodeString = nodeString.concat(node.toString() + ",");
+        }
+        nodeString = nodeString.substring(0, nodeString.length() - 1);
+        nodeString = nodeString.concat("]");
+
+        String developmentCardsString = "[";
+        for (DevelopmentCard developmentCard : developmentCards) {
+            developmentCardsString = developmentCardsString.concat("\"" + developmentCardToString(developmentCard) + "\",");
+        }
+        developmentCardsString = developmentCardsString.substring(0, developmentCardsString.length() - 1);
+        developmentCardsString = developmentCardsString.concat("]");
+
         return "{" +
                 "\"model\": \"board\", " +
                 "\"attributes\": {" +
-                "\"tiles\": " + tilesString +
+                "\"tiles\": " + tilesString + ", " +
+                "\"edges\": " + edgeString + ", " +
+                "\"nodes\": " + nodeString + ", " +
+                "\"development_cards\": " + developmentCardsString +
                 "}" +
                 '}';
     }
+}
+
+enum DevelopmentCard {
+    KNIGHT,
+    MONOPOLY,
+    ROAD_BUILDING,
+    YEAR_OF_PLENTY,
+    VICTORY_POINT
 }
