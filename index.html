@@ -96,7 +96,8 @@
         d3.select("svg").remove();
     var tiles = json.attributes.tiles,
         edges = json.attributes.edges,
-        nodes = json.attributes.nodes;
+        nodes = json.attributes.nodes,
+        bandits = json.attributes.bandits;
 
     var width = 1050,
         height = 900,
@@ -179,6 +180,21 @@
         .attr("class", "mesh")
         .attr("d", path);
 
+    var border = svg.append("path")
+        .attr("class", "border")
+        .call(redraw);
+
+    function redraw(border) {
+        border.attr("d", path(topojson.mesh(topology, topology.objects.hexagons, function (a, b) {
+            if (getEdge(a.tile.key, b.tile.key)) {
+                return getEdge(a.tile.key, b.tile.key).attributes.road;
+            } else if (getEdge(b.tile.key, a.tile.key)) {
+                return getEdge(b.tile.key, a.tile.key).attributes.road;
+            }
+            return false;
+        })));
+    }
+
     svg.append("g")
         .attr("class", "nodes")
         .selectAll("path")
@@ -199,23 +215,20 @@
                 return "M-12 -2 L1 -2 L1 -10 L6 -12 L11 -10 L11 12 L-12 12 L-12 -2 Z"
             }
         }).attr('fill', function (d) {
-            return d.attributes.player_color
-    }).attr('stroke', '#000000');
+        return d.attributes.player_color;
+        }).attr('stroke', '#000000');
 
-    var border = svg.append("path")
-        .attr("class", "border")
-        .call(redraw);
 
-    function redraw(border) {
-        border.attr("d", path(topojson.mesh(topology, topology.objects.hexagons, function (a, b) {
-            if (getEdge(a.tile.key, b.tile.key)) {
-                return getEdge(a.tile.key, b.tile.key).attributes.road;
-            } else if (getEdge(b.tile.key, a.tile.key)) {
-                return getEdge(b.tile.key, a.tile.key).attributes.road;
-            }
-            return false;
-        })));
-    }
+    svg.append("g")
+        .attr("class", "bandits")
+        .selectAll("path")
+        .data(bandits)
+        .enter().append("path")
+        .attr("transform", function (d) {
+            var coordinate = path.centroid(topojson.feature(topology, getHexByKey(d.attributes.tile_key)));
+            return "translate(" + coordinate[0] + "," + coordinate[1] + ")";
+        })
+        .attr("d", "M-10 35 m -5, 0 a 10,10 0 1,0 30,0 a 10,10 0 1,0 -30,0");
 
     function hexTopology(radius, width, height) {
         var dx = radius * 2 * Math.sin(Math.PI / 3),

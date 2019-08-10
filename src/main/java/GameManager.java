@@ -1,4 +1,4 @@
-public class GameManager  {
+public class GameManager {
     public Game getCurrentGame() {
         return currentGame;
     }
@@ -6,7 +6,7 @@ public class GameManager  {
     private Game currentGame;
     private int amountOfPlayers = 1;
 
-    GameManager()  {
+    GameManager() {
         restart();
     }
 
@@ -16,7 +16,9 @@ public class GameManager  {
 
     void run(Sock s) throws InterruptedException {
 
-        var wrapper = new Object(){ int nodeId = 0; };
+        var wrapper = new Object() {
+            int nodeId = 0;
+        };
 
         while (true) {
             // output to visualization
@@ -24,11 +26,16 @@ public class GameManager  {
 
             // output to players
             currentGame.getPlayers().forEach((p) -> p.send(currentGame.getBoard().toString()));
-            System.out.println( "broadcasting visuals on" + s.getAddress() + s.getPort() );
+            System.out.println("broadcasting visuals on" + s.getAddress() + s.getPort());
             Thread.sleep(1000);
 
             currentGame.getPlayers().forEach((p) -> {
-                currentGame.getBoard().placeCity(p, currentGame.getBoard().getNodes().get(wrapper.nodeId));
+                if (wrapper.nodeId < currentGame.getBoard().getNodes().size()) {
+                    currentGame.getBoard().placeCity(p, currentGame.getBoard().getNodes().get(wrapper.nodeId));
+                }
+                if (wrapper.nodeId < currentGame.getBoard().getEdges().size()) {
+                    currentGame.getBoard().placeStreet(p, currentGame.getBoard().getEdges().get(wrapper.nodeId));
+                }
             });
 
             wrapper.nodeId++;

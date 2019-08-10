@@ -58,6 +58,7 @@ class Board {
     private List<Edge> edges;
     private List<Node> nodes;
     private List<DevelopmentCard> developmentCards;
+    private Bandit bandit;
 
     private Map<String, Tile> tileMap;
     private Map<String, Edge> edgeMap;
@@ -87,6 +88,7 @@ class Board {
 
                 if (distanceFromCenter == 0) {
                     Tile tile = new Tile(x, y, Type.DESERT);
+                    bandit = new Bandit(tile);
 
                     addTile(tile);
                 } else if (distanceFromCenter <= 2) {
@@ -111,7 +113,6 @@ class Board {
             }
         }
     }
-
 
 
     private int calculateDistanceFromCenter(int col, int row) {
@@ -157,8 +158,8 @@ class Board {
     }
 
     private void createEdgesForTile(Tile a) {
-        int [][] directions;
-        if (a.getY()%2 == 0) {
+        int[][] directions;
+        if (a.getY() % 2 == 0) {
             directions = AXIAL_DIRECTIONS_EVEN;
         } else {
             directions = AXIAL_DIRECTIONS_ODD;
@@ -173,15 +174,15 @@ class Board {
     }
 
     private void createNodesForTile(Tile a) {
-        int [][] directions;
-        if (a.getY()%2 == 0) {
+        int[][] directions;
+        if (a.getY() % 2 == 0) {
             directions = AXIAL_DIRECTIONS_EVEN;
         } else {
             directions = AXIAL_DIRECTIONS_ODD;
         }
         for (int i = 0; i < 6; i++) {
             Tile b = tileMap.get(tileCoordinatesToKey(a.getX() + directions[i][0], a.getY() + directions[i][1]));
-            Tile c = tileMap.get(tileCoordinatesToKey(a.getX() + directions[(i+1)%6][0], a.getY() + directions[(i+1)%6][1]));
+            Tile c = tileMap.get(tileCoordinatesToKey(a.getX() + directions[(i + 1) % 6][0], a.getY() + directions[(i + 1) % 6][1]));
             String nodeKey = nodeKeyFromTiles(a, b, c);
             if (!nodeMap.containsKey(nodeKey)) {
                 addNode(new Node(a, b, c));
@@ -211,6 +212,7 @@ class Board {
 
     void placeStreet(Player p, Edge edge) {
         edge.setPlayer(p);
+        edge.setRoad(true);
     }
 
     private String developmentCardToString(DevelopmentCard developmentCard) {
@@ -266,7 +268,8 @@ class Board {
                 "\"tiles\": " + tilesString + ", " +
                 "\"edges\": " + edgeString + ", " +
                 "\"nodes\": " + nodeString + ", " +
-                "\"development_cards\": " + developmentCardsString +
+                "\"development_cards\": " + developmentCardsString + ", " +
+                "\"bandits\": [" + bandit.toString() + "]" +
                 "}" +
                 '}';
     }

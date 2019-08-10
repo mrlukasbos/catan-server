@@ -18,7 +18,6 @@ public class Main {
             // main thread has to wait now to make sure the server has enough players connected
             while(!server.hasEnoughPlayers()) Thread.sleep(1000);
 
-
             gm.run(s);
             // game.start();
             // server.shutDown();
