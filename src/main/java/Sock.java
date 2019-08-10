@@ -1,4 +1,9 @@
 /*
+Communication with the visualization. There the game is shown and a game can be started there as well
+ */
+
+
+/*
  * Copyright (c) 2010-2019 Nathan Rajlich
  *
  *  Permission is hereby granted, free of charge, to any person

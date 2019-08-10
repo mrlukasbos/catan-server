@@ -1,3 +1,7 @@
+/*
+All game mechanics
+ */
+
 import java.util.ArrayList;
 
 class Game {

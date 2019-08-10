@@ -1,3 +1,7 @@
+/*
+A node is a junction between tiles. It can support settlements and cities in the game
+ */
+
 import java.util.Arrays;
 
 public class Node {

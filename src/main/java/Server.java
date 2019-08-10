@@ -1,3 +1,7 @@
+/*
+The Server maintains a TCP connection with the players
+ */
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;

@@ -46,7 +46,12 @@ class Player {
     // return a random number between 1 and 12
     int throwDice() {
         Random r = new Random();
-        lastDiceThrow = Math.abs(r.nextInt() % 12) + 1;
+
+        // Catan works with two dice of 6 sides, which gives a different distribution than if we would throw one dice of 12 sides
+        // (there is only two ways of throwing 2, which is 1+1 and 1+1, but there are multiple number combinations for 7: 1+6, 2+5, 3+4, 4+3, 5+2 and 6+1
+        int dice1 = Math.abs(r.nextInt() % 6) + 1;
+        int dice2 = Math.abs(r.nextInt() % 6) + 1;
+        lastDiceThrow = dice1 + dice2;
         return lastDiceThrow;
     }
 

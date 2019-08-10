@@ -1,6 +1,4 @@
-// a tile can either be land
-
-import java.util.ArrayList;
+// a tile can either be land or water
 
 class Tile implements Comparable<Tile> {
     private int x;

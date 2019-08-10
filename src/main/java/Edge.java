@@ -1,3 +1,6 @@
+/*
+An Edge is the edge between two tiles on the board, and can be a road in the game.
+ */
 import java.util.Arrays;
 
 public class Edge {

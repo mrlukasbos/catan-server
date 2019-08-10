@@ -1,3 +1,7 @@
+/*
+The gamemanager is responsible that the game can run. It connects the game with the players and the visualization.
+ */
+
 
 public class GameManager  {
 

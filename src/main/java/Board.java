@@ -1,3 +1,7 @@
+/*
+The grid system of the board, including nodes and edges
+ */
+
 import java.util.*;
 
 class Board {
