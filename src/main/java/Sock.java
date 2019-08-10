@@ -23,22 +23,13 @@
  *  OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import java.io.BufferedReader;
-        import java.io.IOException;
-        import java.io.InputStreamReader;
-        import java.net.InetSocketAddress;
-        import java.net.UnknownHostException;
-        import java.nio.ByteBuffer;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import org.java_websocket.WebSocket;
+import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.WebSocketServer;
 
-        import org.java_websocket.WebSocket;
-        import org.java_websocket.WebSocketImpl;
-        import org.java_websocket.framing.Framedata;
-        import org.java_websocket.handshake.ClientHandshake;
-        import org.java_websocket.server.WebSocketServer;
-
-/**
- * A simple WebSocketServer implementation. Keeps track of a "chatroom".
- */
 public class Sock extends WebSocketServer {
 
     public Sock( int port ) throws UnknownHostException {
@@ -53,26 +44,28 @@ public class Sock extends WebSocketServer {
     public void onOpen( WebSocket conn, ClientHandshake handshake ) {
         conn.send("Welcome to the server!"); //This method sends a message to the new client
         broadcast( "new connection: " + handshake.getResourceDescriptor() ); //This method sends a message to all clients connected
-        System.out.println( conn.getRemoteSocketAddress().getAddress().getHostAddress() + " entered the room!" );
+        System.out.println( conn.getRemoteSocketAddress().getAddress().getHostAddress() + " joined!" );
     }
 
     @Override
     public void onClose( WebSocket conn, int code, String reason, boolean remote ) {
-        broadcast( conn + " has left the room!" );
-        System.out.println( conn + " has left the room!" );
+        // broadcast( conn + " left" );
+        System.out.println( conn + " left" );
     }
 
+
+    // these messages allow for the websocket to send data back, we probably won't use it
     @Override
     public void onMessage( WebSocket conn, String message ) {
         broadcast( message );
         System.out.println( conn + ": " + message );
     }
+
     @Override
     public void onMessage( WebSocket conn, ByteBuffer message ) {
         broadcast( message.array() );
         System.out.println( conn + ": " + message );
     }
-
 
     @Override
     public void onError( WebSocket conn, Exception ex ) {
@@ -88,5 +81,4 @@ public class Sock extends WebSocketServer {
         setConnectionLostTimeout(0);
         setConnectionLostTimeout(100);
     }
-
 }

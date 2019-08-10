@@ -24,15 +24,10 @@ public class Main {
             while (true) {
                 s.broadcast(game.getBoard().toString());
                 System.out.println( "broadcasting visuals on" + s.getAddress() + s.getPort() );
-
                 Thread.sleep(3000);
             }
 
-          //  game.start();
-
-
-
-
+            // game.start();
             // server.shutDown();
         } catch (IOException e) {
             e.printStackTrace();
