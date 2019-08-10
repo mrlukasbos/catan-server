@@ -1,0 +1,67 @@
+
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.hexagon {
+    fill: white;
+    pointer-events: all;
+}
+
+.hexagon path {
+    -webkit-transition: fill 250ms linear;
+    transition: fill 250ms linear;
+}
+
+.hexagon .desert {
+    fill: sandybrown;
+}
+
+.hexagon .wool {
+    fill: lawngreen;
+}
+
+.hexagon .wood {
+    fill: forestgreen;
+}
+
+.hexagon .stone {
+    fill: rosybrown;
+}
+
+.hexagon .grain {
+    fill: yellow;
+}
+
+.hexagon .ore {
+    fill: lightgray;
+}
+
+.hexagon .sea {
+    fill: lightskyblue;
+}
+
+.hexagon .harbour_wool,
+.hexagon .harbour_wood,
+.hexagon .harbour_stone,
+.hexagon .harbour_grain,
+.hexagon .harbour_ore,
+.hexagon .harbour_all {
+    fill: lightskyblue;
+}
+
+.mesh {
+    fill: none;
+    stroke-opacity: .2;
+    pointer-events: none;
+}
+
+.border {
+    fill: none;
+    stroke-width: 4px;
+    pointer-events: none;
+}
+
+.numbers {
+    font-size: 25px;
+}
