@@ -50,21 +50,18 @@ public class Sock extends WebSocketServer {
 
     @Override
     public void onClose( WebSocket conn, int code, String reason, boolean remote ) {
-        // broadcast( conn + " left" );
         System.out.println( conn + " left" );
     }
 
 
-    // these messages allow for the websocket to send data back, we probably won't use it
     @Override
     public void onMessage( WebSocket conn, String message ) {
-        broadcast( message );
-        System.out.println( conn + ": " + message );
-
         if (message.contains("START")) {
-            // first shut down the server, so we can kill the sockets which are hooked to the players
-           // server.shutDown();
             gm.start();
+        } else if (message.contains("END")) {
+            // first shut down the server, so we can kill the sockets which are hooked to the players
+            server.shutDown();
+            gm.end();
         }
     }
 
@@ -85,7 +82,6 @@ public class Sock extends WebSocketServer {
     @Override
     public void onStart() {
         System.out.println("Server started!");
-      //  setConnectionLostTimeout(0);
-        setConnectionLostTimeout(10);
+        setConnectionLostTimeout(0);
     }
 }

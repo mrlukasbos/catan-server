@@ -1,25 +1,10 @@
 public class GameManager  {
-    public Game getCurrentGame() {
-        return currentGame;
-    }
 
     private Game currentGame;
-
-    public boolean IsRunning() {
-        return gameIsRunning;
-    }
-
-    public void setGameIsRunning(boolean gameIsRunning) {
-        this.gameIsRunning = gameIsRunning;
-    }
-
     private boolean gameIsRunning = false;
 
     GameManager()  {
         currentGame = new Game();
-
-        // default start a game with two players
-        //start();
     }
 
     void start() {
@@ -44,15 +29,20 @@ public class GameManager  {
             System.out.println( "broadcasting visuals on" + sock.getAddress() + sock.getPort() );
             Thread.sleep(1000);
 
-            currentGame.getPlayers().forEach((p) -> {
-                currentGame.getBoard().placeCity(p, currentGame.getBoard().getNodes().get(wrapper.nodeId));
-            });
+            Player p = currentGame.getPlayers().get(wrapper.nodeId % currentGame.getPlayers().size());
 
-            currentGame.getPlayers().forEach((p) -> {
-                currentGame.getBoard().placeStreet(p, currentGame.getBoard().getEdges().get(wrapper.nodeId));
-            });
+            currentGame.getBoard().placeCity(p, currentGame.getBoard().getNodes().get(wrapper.nodeId));
+            currentGame.getBoard().placeStreet(p, currentGame.getBoard().getEdges().get(wrapper.nodeId));
 
             wrapper.nodeId++;
         }
+    }
+
+    Game getCurrentGame() {
+        return currentGame;
+    }
+
+    boolean IsRunning() {
+        return gameIsRunning;
     }
 }

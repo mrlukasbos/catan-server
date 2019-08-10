@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 class Player {
-    public void setName(String name) {
-        this.name = name;
-    }
-
     private String name;
     private int id;
     private int lastDiceThrow = 0;
