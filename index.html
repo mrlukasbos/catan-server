@@ -80,7 +80,7 @@
         <input v-on:keyup.enter="connect" v-model="ip">
         <input v-on:keyup.enter="connect" v-model="port">
         <button v-on:click="connect">Connect</button> <br>
-        <button v-on:click="restart">Restart game</button> <br>
+        <button v-on:click="restart">Start game</button>
 
         <div id="d3-holder"></div>
         <code>
@@ -322,7 +322,8 @@
             status: 'NOT_CONNECTED',
             json: '',
             socket: null,
-            systemMsg: ''
+            systemMsg: '',
+            gameRunning: false
         },
         methods: {
             connect: function (event) {
@@ -356,8 +357,9 @@
                 }
             },
             restart: function(event) {
-                if (this.socket) {
-                    this.socket.send("RESTART");
+                if (this.socket && (!this.gameRunning || confirm("Are you sure you want to start a new game?"))) {
+                    this.socket.send("START");
+                    this.gameRunning = true;
                 }
             },
             killSocket: function () {
