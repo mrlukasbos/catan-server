@@ -181,6 +181,7 @@
         .attr("class", "mesh")
         .attr("d", path);
 
+    for (var i = 0; i < players.length;)
     var border = svg.append("path")
         .attr("class", "border")
         .call(redraw);

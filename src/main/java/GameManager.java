@@ -35,8 +35,12 @@ public class GameManager  {
             Thread.sleep(1000);
 
             Player p = currentGame.getPlayers().get(wrapper.nodeId % currentGame.getPlayers().size());
-            currentGame.getBoard().placeCity(p, currentGame.getBoard().getNodes().get(wrapper.nodeId));
-            currentGame.getBoard().placeStreet(p, currentGame.getBoard().getEdges().get(wrapper.nodeId));
+            if (wrapper.nodeId < currentGame.getBoard().getNodes().size()) {
+                currentGame.getBoard().placeCity(p, currentGame.getBoard().getNodes().get(wrapper.nodeId));
+            }
+            if (wrapper.nodeId < currentGame.getBoard().getEdges().size()) {
+                currentGame.getBoard().placeStreet(p, currentGame.getBoard().getEdges().get(wrapper.nodeId));
+            }
 
             wrapper.nodeId++;
         }
