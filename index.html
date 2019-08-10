@@ -7,8 +7,8 @@
     <div id="app">
         <h1> Connect to Catan </h1>
         {{status}} <br>
-        <input v-on:submit="connect" v-model="ip">
-        <input v-on:submit="connect" v-model="port">
+        <input v-on:keyup.enter="connect" v-model="ip">
+        <input v-on:keyup.enter="connect" v-model="port">
         <button v-on:click="connect">Connect</button> <br>
 
         <code>
