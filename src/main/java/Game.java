@@ -6,11 +6,8 @@ class Game {
     private ArrayList<Player> players = new ArrayList<Player>();
     private int currentPlayerId = 0;
 
-    Game(int amountOfPlayers) {
+    Game() {
         board = new Board();
-        for (int i = 0; i < amountOfPlayers; i++) {
-            players.add(new Player(i, "player " + i));
-        }
     }
 
     void restart() {
@@ -42,6 +39,10 @@ class Game {
 
     ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    void addPlayer(Player p) {
+        players.add(p);
     }
 
     Board getBoard() {

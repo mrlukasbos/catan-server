@@ -4,27 +4,44 @@ public class GameManager  {
     }
 
     private Game currentGame;
-    private int amountOfPlayers = 1;
+
+    public boolean IsRunning() {
+        return gameIsRunning;
+    }
+
+    public void setGameIsRunning(boolean gameIsRunning) {
+        this.gameIsRunning = gameIsRunning;
+    }
+
+    private boolean gameIsRunning = false;
 
     GameManager()  {
-        restart();
+        currentGame = new Game();
+
+        // default start a game with two players
+        //start();
     }
 
-    void restart() {
-        currentGame = new Game(amountOfPlayers);
+    void start() {
+        gameIsRunning = true;
     }
 
-    void run(Sock s) throws InterruptedException {
+    void end() {
+        currentGame = new Game();
+        gameIsRunning = false;
+    }
+
+    void run(Sock sock, Server server) throws InterruptedException {
 
         var wrapper = new Object(){ int nodeId = 0; };
 
-        while (true) {
+        while(IsRunning()) {
             // output to visualization
-            s.broadcast(currentGame.getBoard().toString());
+            sock.broadcast(currentGame.getBoard().toString());
 
             // output to players
             currentGame.getPlayers().forEach((p) -> p.send(currentGame.getBoard().toString()));
-            System.out.println( "broadcasting visuals on" + s.getAddress() + s.getPort() );
+            System.out.println( "broadcasting visuals on" + sock.getAddress() + sock.getPort() );
             Thread.sleep(1000);
 
             currentGame.getPlayers().forEach((p) -> {

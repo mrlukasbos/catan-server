@@ -11,19 +11,27 @@ public class Main {
             Server server = new Server(10006, gm);
             server.start();
 
-            Sock s = new Sock( 10007, gm);
+            Sock s = new Sock( 10007, gm, server);
             s.start();
             System.out.println( "Visualization started on " + s.getAddress() + s.getPort() );
 
+
             // main thread has to wait now to make sure the server has enough players connected
-            while(!server.hasEnoughPlayers()) {
-                System.out.println( "Waiting for more players to join");
-                s.broadcast("SYSTEM_MSG:" + "Current amount of players: " + server.getAmountOfConnections());
+            while(!gm.IsRunning()) {
+                System.out.println( "Waiting for game to be started");
+
+
+                String names = "";
+                for (Player p : gm.getCurrentGame().getPlayers()) {
+                    names += p.getName() + ",";
+                }
+
+                s.broadcast("SYSTEM_MSG:" + "Current connected players: " + names + "(" + server.getAmountOfConnections() + ")");
                 Thread.sleep(1000);
             }
 
 
-            gm.run(s);
+            gm.run(s, server);
             // game.start();
             // server.shutDown();
         } catch (IOException e) {

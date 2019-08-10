@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 public class Server extends Thread {
@@ -25,7 +26,7 @@ public class Server extends Thread {
             try {
 
                 // this is blocking
-                if (!hasEnoughPlayers()) {
+                if (!gm.IsRunning()) {
                     System.out.println("Waiting for clients on port " +  serverSocket.getLocalPort() + "...");
                     ensureConnections();
                 }
@@ -53,17 +54,14 @@ public class Server extends Thread {
 
     private void ensureConnections() throws IOException {
         // the sockets we get from the server need to be assigned to players
-        for (Player p : gm.getCurrentGame().getPlayers()) {
-            p.setSocket(serverSocket.accept());
-            System.out.println("Just connected to " + p.getSocket().getRemoteSocketAddress());
-            amountOfConnections++;
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getSocket().getInputStream()));
-//            String line = reader.readLine();
-//            System.out.println("Ready to receive ");
-//            System.out.println("I received something: " + line);
-//            DataOutputStream out = new DataOutputStream(p.getSocket().getOutputStream());
-//            out.writeUTF(line);
-        }
+        Socket newConnection = serverSocket.accept();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(newConnection.getInputStream()));
+        String line = reader.readLine();
+        System.out.println("Just connected to " + line + " on address: " + newConnection.getRemoteSocketAddress());
+        Player newPlayer = new Player(amountOfConnections, line);
+        newPlayer.setSocket(newConnection);
+        amountOfConnections++;
+        gm.getCurrentGame().addPlayer(newPlayer);
     }
 
     boolean hasEnoughPlayers() {

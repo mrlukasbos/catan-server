@@ -33,9 +33,12 @@ import org.java_websocket.server.WebSocketServer;
 public class Sock extends WebSocketServer {
 
     GameManager gm;
-    public Sock( int port , GameManager gm) throws UnknownHostException {
+    Server server;
+
+    public Sock( int port , GameManager gm, Server server) throws UnknownHostException {
         super( new InetSocketAddress( port ) );
         this.gm = gm;
+        this.server = server;
     }
 
     @Override
@@ -58,8 +61,10 @@ public class Sock extends WebSocketServer {
         broadcast( message );
         System.out.println( conn + ": " + message );
 
-        if (message.contains("RESTART")) {
-            gm.restart();
+        if (message.contains("START")) {
+            // first shut down the server, so we can kill the sockets which are hooked to the players
+           // server.shutDown();
+            gm.start();
         }
     }
 
