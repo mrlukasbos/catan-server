@@ -18,6 +18,9 @@ public class Main {
             // main thread has to wait now to make sure the server has enough players connected
             while(!server.hasEnoughPlayers()) Thread.sleep(1000);
 
+
+            var wrapper = new Object(){ int nodeId = 0; };
+
             while (true) {
                 // output to visualization
                 s.broadcast(game.getBoard().toString());
@@ -25,7 +28,14 @@ public class Main {
                 // output to players
                 game.getPlayers().forEach((p) -> p.send(game.getBoard().toString()));
                 System.out.println( "broadcasting visuals on" + s.getAddress() + s.getPort() );
-                Thread.sleep(3000);
+                Thread.sleep(1000);
+
+                game.getPlayers().forEach((p) -> {
+                    game.getBoard().placeCity(p, game.getBoard().getNodes().get(wrapper.nodeId));
+                });
+
+                wrapper.nodeId++;
+
             }
 
             // game.start();

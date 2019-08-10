@@ -3,6 +3,15 @@ public class Node {
     private Tile t;
     private Tile l;
     private Tile r;
+
+    public Structure getStructure() {
+        return structure;
+    }
+
+    public void setStructure(Structure structure) {
+        this.structure = structure;
+    }
+
     private Structure structure;
     private Player player;
 

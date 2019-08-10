@@ -112,6 +112,8 @@ class Board {
         }
     }
 
+
+
     private int calculateDistanceFromCenter(int col, int row) {
         int x = col - (row + (row & 1)) / 2;
         int z = row;
@@ -197,16 +199,18 @@ class Board {
         nodeMap.put(node.getKey(), node);
     }
 
-    void placeVillage(Player p) {
-
+    void placeVillage(Player p, Node node) {
+        node.setPlayer(p);
+        node.setStructure(Structure.SETTLEMENT);
     }
 
-    void placeCity(Player p) {
-
+    void placeCity(Player p, Node node) {
+        node.setPlayer(p);
+        node.setStructure(Structure.CITY);
     }
 
-    void placeStreet(Player p) {
-
+    void placeStreet(Player p, Edge edge) {
+        edge.setPlayer(p);
     }
 
     private String developmentCardToString(DevelopmentCard developmentCard) {
@@ -265,6 +269,30 @@ class Board {
                 "\"development_cards\": " + developmentCardsString +
                 "}" +
                 '}';
+    }
+
+    public List<Tile> getTiles() {
+        return tiles;
+    }
+
+    public void setTiles(List<Tile> tiles) {
+        this.tiles = tiles;
+    }
+
+    public List<Edge> getEdges() {
+        return edges;
+    }
+
+    public void setEdges(List<Edge> edges) {
+        this.edges = edges;
+    }
+
+    public List<Node> getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(List<Node> nodes) {
+        this.nodes = nodes;
     }
 }
 
