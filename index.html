@@ -1,16 +1,61 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
 
-<body> Catan </body>
+<body>
+    <div id="app">
+        <h1> Connect to Catan </h1>
+        {{status}} <br>
+        <input v-on:submit="connect" v-model="ip">
+        <input v-on:submit="connect" v-model="port">
+        <button v-on:click="connect">Connect</button> <br>
 
+        <code>
+            {{json}}
+        </code>
+    </div>
+</body>
 
 
 <script>
-var socket = new WebSocket("ws://localhost:10007");
 
-socket.onmessage = (data) => {
-    console.log("receiving")
-    console.log('onRecv', data)
-}
+var app = new Vue({
+    el: '#app',
+    data: {
+        ip: 'localhost',
+        port: '10007',
+        status: 'NOT_CONNECTED',
+        json: '',
+        socket: null,
+    },
+    methods: {
+        connect: function (event) {
+            this.json = null;
+            this.status = 'CONNECTING';
+
+            if (this.socket) {
+                this.socket.close();
+                delete this.socket;
+            }
+
+            this.socket = new WebSocket("ws:" + this.ip + ":" + this.port);
+
+            this.socket.onerror = (err) => {
+                this.status = "CONNECTION_FAILURE";
+            }
+
+            this.socket.onopen = () => {
+                this.status = "CONNECTED";
+            }
+
+            this.socket.onmessage = (data) => {
+                this.json = data.data;
+            }
+        }
+    }
+})
+
+
 
 </script>

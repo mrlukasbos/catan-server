@@ -15,7 +15,7 @@ public class Main {
 
             Sock s = new Sock( 10007);
             s.start();
-            System.out.println( "Visualization started on port: " + s.getPort() );
+            System.out.println( "Visualization started on " + s.getAddress() + s.getPort() );
 
 
             // main thread has to wait now to make sure the server has enough players connected
@@ -23,6 +23,8 @@ public class Main {
 
             while (true) {
                 s.broadcast(game.getBoard().toString());
+                System.out.println( "broadcasting visuals on" + s.getAddress() + s.getPort() );
+
                 Thread.sleep(3000);
             }
 
