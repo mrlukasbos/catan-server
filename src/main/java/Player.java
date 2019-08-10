@@ -87,6 +87,18 @@ class Player {
             }
         }
     }
+
+    @java.lang.Override
+    public java.lang.String toString() {
+        return "{" +
+                "\"model\": \"player\", " +
+                "\"id\": " + getId() + ", " +
+                "\"attributes\": {" +
+                "\"color\": \"" + getColor() + "\", " +
+                "\"name\": \"" + getName() + "\"" +
+                "}" +
+                "}";
+    }
 }
 
 enum Resources {

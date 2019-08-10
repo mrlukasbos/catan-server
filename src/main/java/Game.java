@@ -7,12 +7,12 @@ class Game {
     private int currentPlayerId = 0;
 
     Game() {
-        board = new Board();
+        board = new Board(players);
     }
 
     void restart() {
-        board = new Board();
         players = new ArrayList<Player>();
+        board = new Board(players);
     }
 
     // throw the dice, the highest throw can start

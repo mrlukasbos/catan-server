@@ -59,12 +59,14 @@ class Board {
     private List<Node> nodes;
     private List<DevelopmentCard> developmentCards;
     private Bandit bandit;
+    private List<Player> players;
 
     private Map<String, Tile> tileMap;
     private Map<String, Edge> edgeMap;
     private Map<String, Node> nodeMap;
 
-    Board() {
+    Board(ArrayList<Player> players) {
+        this.players = players;
         init();
     }
 
@@ -252,12 +254,20 @@ class Board {
         developmentCardsString = developmentCardsString.substring(0, developmentCardsString.length() - 1);
         developmentCardsString = developmentCardsString.concat("]");
 
+        String playersString = "[";
+        for (Player player : players) {
+            playersString = playersString.concat(player.toString() + ",");
+        }
+        playersString = playersString.substring(0, playersString.length() - 1);
+        playersString = playersString.concat("]");
+
         return "{" +
                 "\"model\": \"board\", " +
                 "\"attributes\": {" +
                 "\"tiles\": " + tilesString + ", " +
                 "\"edges\": " + edgeString + ", " +
                 "\"nodes\": " + nodeString + ", " +
+                "\"players\": " + playersString + ", " +
                 "\"development_cards\": " + developmentCardsString + ", " +
                 "\"bandits\": [" + bandit.toString() + "]" +
                 "}" +
