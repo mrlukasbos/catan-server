@@ -33,16 +33,16 @@ var app = new Vue({
         connect: function (event) {
             this.json = null;
             this.status = 'CONNECTING';
-
-            if (this.socket) {
-                this.socket.close();
-                delete this.socket;
-            }
+            this.killSocket();
 
             this.socket = new WebSocket("ws:" + this.ip + ":" + this.port);
 
             this.socket.onerror = (err) => {
                 this.status = "CONNECTION_FAILURE";
+            }
+
+            this.socket.onclose = () => {
+                this.killSocket();
             }
 
             this.socket.onopen = () => {
@@ -51,6 +51,12 @@ var app = new Vue({
 
             this.socket.onmessage = (data) => {
                 this.json = data.data;
+            }
+        },
+        killSocket: function () {
+            if (this.socket) {
+                this.socket.close();
+                delete this.socket;
             }
         }
     }
