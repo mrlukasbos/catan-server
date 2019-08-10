@@ -58,14 +58,12 @@
 
     .mesh {
         fill: none;
-        stroke: #000;
         stroke-opacity: .2;
         pointer-events: none;
     }
 
     .border {
         fill: none;
-        stroke: #000;
         stroke-width: 4px;
         pointer-events: none;
     }
@@ -99,9 +97,11 @@
 
     function draw() {
         d3.select("svg").remove();
+
     var tiles = json.attributes.tiles,
         edges = json.attributes.edges,
         nodes = json.attributes.nodes,
+        players = json.attributes.players,
         bandits = json.attributes.bandits;
 
     var width = 1050,
@@ -185,20 +185,27 @@
         .attr("class", "mesh")
         .attr("d", path);
 
-    for (var i = 0; i < players.length;)
-    var border = svg.append("path")
-        .attr("class", "border")
-        .call(redraw);
+    for (var i = 0; i < players.length; i++) {
+        var player = players[i];
 
-    function redraw(border) {
-        border.attr("d", path(topojson.mesh(topology, topology.objects.hexagons, function (a, b) {
-            if (getEdge(a.tile.key, b.tile.key)) {
-                return getEdge(a.tile.key, b.tile.key).attributes.road;
-            } else if (getEdge(b.tile.key, a.tile.key)) {
-                return getEdge(b.tile.key, a.tile.key).attributes.road;
-            }
-            return false;
-        })));
+        var border = svg.append("path")
+            .attr("class", "border")
+            .attr("stroke", player.attributes.color)
+            .call(redraw);
+
+        function redraw(border) {
+            border.attr("d", path(topojson.mesh(topology, topology.objects.hexagons, function (a, b) {
+                var edge1 = getEdge(a.tile.key, b.tile.key);
+                var edge2 = getEdge(b.tile.key, a.tile.key);
+
+                if (edge1 && edge1.attributes.player == player.id) {
+                    return edge1.attributes.road;
+                } else if (edge2 && edge2.attributes.player == player.id) {
+                    return edge2.attributes.road;
+                }
+                return false;
+            })));
+        }
     }
 
     svg.append("g")
