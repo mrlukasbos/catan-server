@@ -6,14 +6,20 @@ class Player {
     private int id;
     private int lastDiceThrow = 0;
     private ArrayList<Resources> resources = new ArrayList<Resources>();
+    private String color;
 
     Player(int id, String name) {
         this.id = id;
         this.name = name;
+        this.color = String.format("#%06x", new Random().nextInt(0xffffff + 1));
     }
 
     String getName() {
         return name;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     // return a random number between 1 and 12

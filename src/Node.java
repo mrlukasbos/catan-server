@@ -4,12 +4,21 @@ public class Node {
     private Tile l;
     private Tile r;
     private Structure structure;
+    private Player player;
 
     Node(Tile t, Tile r, Tile l) {
         this.t = t;
         this.r = r;
         this.l = l;
         this.structure = Structure.NONE;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public String getKey() {
@@ -31,11 +40,20 @@ public class Node {
 
     @java.lang.Override
     public java.lang.String toString() {
+        String playerString = "";
+        if (player != null) {
+            playerString = "\"player\": " + player.getId() + "," +
+                    "\"player_color\": \"" + player.getColor() + "\",";
+        }
         return "{" +
                 "\"model\": \"node\", " +
                 "\"key\": \"" + getKey() + "\", " +
                 "\"attributes\": {" +
-                "\"structure\": \"" + structureToString(structure) + "\"" +
+                "\"structure\": \"" + structureToString(structure) + "\"," +
+                playerString +
+                "\"t_key\": \"" + t.getKey() + "\"," +
+                "\"r_key\": \"" + r.getKey()+ "\"," +
+                "\"l_key\": \"" + l.getKey() + "\"" +
                 "}" +
                 "}";
     }
