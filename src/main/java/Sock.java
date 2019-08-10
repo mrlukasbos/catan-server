@@ -80,7 +80,7 @@ public class Sock extends WebSocketServer {
     @Override
     public void onStart() {
         System.out.println("Server started!");
-        setConnectionLostTimeout(0);
-        setConnectionLostTimeout(100);
+      //  setConnectionLostTimeout(0);
+        setConnectionLostTimeout(10);
     }
 }

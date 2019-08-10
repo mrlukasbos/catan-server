@@ -16,7 +16,11 @@ public class Main {
             System.out.println( "Visualization started on " + s.getAddress() + s.getPort() );
 
             // main thread has to wait now to make sure the server has enough players connected
-            while(!server.hasEnoughPlayers()) Thread.sleep(1000);
+            while(!server.hasEnoughPlayers()) {
+                System.out.println( "Waiting for more players to join");
+                s.broadcast("SYSTEM_MSG:" + "Current amount of players: " + server.getAmountOfConnections());
+                Thread.sleep(1000);
+            }
 
 
             gm.run(s);

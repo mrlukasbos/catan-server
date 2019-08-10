@@ -211,6 +211,7 @@ class Board {
 
     void placeStreet(Player p, Edge edge) {
         edge.setPlayer(p);
+        edge.setRoad(true);
     }
 
     private String developmentCardToString(DevelopmentCard developmentCard) {

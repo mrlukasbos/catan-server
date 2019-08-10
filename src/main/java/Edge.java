@@ -1,6 +1,15 @@
 public class Edge {
     private Tile a;
     private Tile b;
+
+    public boolean isRoad() {
+        return road;
+    }
+
+    public void setRoad(boolean road) {
+        this.road = road;
+    }
+
     private boolean road;
     private Player player;
 

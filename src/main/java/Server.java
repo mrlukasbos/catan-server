@@ -5,7 +5,12 @@ import java.net.SocketTimeoutException;
 public class Server extends Thread {
 
     private ServerSocket serverSocket;
-    private boolean hasEnoughConnections = false;
+
+    public int getAmountOfConnections() {
+        return amountOfConnections;
+    }
+
+    private int amountOfConnections = 0;
     private GameManager gm;
 
     // start a server on this device
@@ -51,6 +56,7 @@ public class Server extends Thread {
         for (Player p : gm.getCurrentGame().getPlayers()) {
             p.setSocket(serverSocket.accept());
             System.out.println("Just connected to " + p.getSocket().getRemoteSocketAddress());
+            amountOfConnections++;
 //            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getSocket().getInputStream()));
 //            String line = reader.readLine();
 //            System.out.println("Ready to receive ");
@@ -58,10 +64,9 @@ public class Server extends Thread {
 //            DataOutputStream out = new DataOutputStream(p.getSocket().getOutputStream());
 //            out.writeUTF(line);
         }
-        hasEnoughConnections = true;
     }
 
     boolean hasEnoughPlayers() {
-        return hasEnoughConnections;
+        return amountOfConnections >= gm.getCurrentGame().getPlayers().size();
     }
 }

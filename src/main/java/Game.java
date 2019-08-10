@@ -40,11 +40,11 @@ class Game {
         return nextPlayer;
     }
 
-    public ArrayList<Player> getPlayers() {
+    ArrayList<Player> getPlayers() {
         return players;
     }
 
-    public Board getBoard() {
+    Board getBoard() {
         return board;
     }
 }

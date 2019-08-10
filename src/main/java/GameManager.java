@@ -31,6 +31,10 @@ public class GameManager  {
                 currentGame.getBoard().placeCity(p, currentGame.getBoard().getNodes().get(wrapper.nodeId));
             });
 
+            currentGame.getPlayers().forEach((p) -> {
+                currentGame.getBoard().placeStreet(p, currentGame.getBoard().getEdges().get(wrapper.nodeId));
+            });
+
             wrapper.nodeId++;
         }
     }
