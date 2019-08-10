@@ -1,31 +1,44 @@
 // a tile can either be land
 
-class Tile {
+import java.util.ArrayList;
+
+class Tile implements Comparable<Tile> {
+    private int x;
+    private int y;
     private Type type;
     private int number; // the number of the dice to be hit
-    private Tile[] sides = new Tile[6];
+    private Orientation orientation;
 
-    Tile(Type type) {
+    Tile(int x, int y, Type type) {
+        this.x = x;
+        this.y = y;
         this.type = type;
         this.number = 0;
+        this.orientation = Orientation.NONE;
     }
 
-    Tile(Type type, int number) {
+    Tile(int x, int y, Type type, int number) {
+        this.x = x;
+        this.y = y;
         this.type = type;
         this.number = number;
+        this.orientation = Orientation.NONE;
     }
 
-    void setSides(Tile[] sides) {
-        assert sides.length == 6;
-        this.sides = sides;
+    Tile(int x, int y, Type type, Orientation orientation) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.number = 0;
+        this.orientation = orientation;
     }
 
     public String typeToString(Type type) {
         switch (type) {
             case DESERT:
                 return "desert";
-            case WHOOL:
-                return "whool";
+            case WOOL:
+                return "wool";
             case WOOD:
                 return "wood";
             case STONE:
@@ -36,8 +49,8 @@ class Tile {
                 return "ore";
             case SEA:
                 return "sea";
-            case HARBOUR_WHOOL:
-                return "harbour_whool";
+            case HARBOUR_WOOL:
+                return "harbour_wool";
             case HARBOUR_WOOD:
                 return "harbour_wood";
             case HARBOUR_STONE:
@@ -67,6 +80,8 @@ class Tile {
                 return "bottom_left";
             case BOTTOM_RIGHT:
                 return "bottom_right";
+            case NONE:
+                return "none";
             default:
                 return "unknown";
         }
@@ -75,24 +90,53 @@ class Tile {
     @java.lang.Override
     public java.lang.String toString() {
         return "{" +
-                "\"model\": \"tile\"," +
+                "\"model\": \"tile\", " +
+                "\"key\": \"" + getKey() + "\", " +
                 "\"attributes\": {" +
-                "\"type\": \"" + typeToString(this.type) + "\"," +
-                "\"number\": " + number +
+                "\"type\": \"" + typeToString(type) + "\", " +
+                "\"number\": " + number + ", " +
+                "\"orientation\": \"" + orientationToString(orientation) + "\", " +
+                "\"x\": " + x + ", " +
+                "\"y\": " + y +
                 "}" +
                 "}";
+    }
+
+    public String getKey() {
+        return "[" + x + "," + y + "]";
+    }
+
+    public boolean isTerrain() {
+        return (orientation == Orientation.NONE && type != Type.SEA);
+    }
+
+    public Integer getCoordinateSum() {
+        return x + y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    @Override
+    public int compareTo(Tile tile) {
+        return getCoordinateSum().compareTo(tile.getCoordinateSum());
     }
 }
 
 enum Type {
     DESERT,
-    WHOOL,
+    WOOL,
     WOOD,
     STONE,
     GRAIN,
     ORE,
     SEA,
-    HARBOUR_WHOOL,
+    HARBOUR_WOOL,
     HARBOUR_WOOD,
     HARBOUR_STONE,
     HARBOUR_GRAIN,
@@ -107,5 +151,6 @@ enum Orientation {
     LEFT,
     RIGHT,
     BOTTOM_LEFT,
-    BOTTOM_RIGHT
+    BOTTOM_RIGHT,
+    NONE
 }
