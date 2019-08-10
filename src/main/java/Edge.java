@@ -27,6 +27,14 @@ public class Edge {
         this.player = player;
     }
 
+    public boolean isRoad() {
+        return road;
+    }
+
+    public void setRoad(boolean road) {
+        this.road = road;
+    }
+
     public String getKey() {
         return "(" + a.getKey() + "," + b.getKey() + ")";
     }

@@ -111,7 +111,7 @@ class Tile implements Comparable<Tile> {
     }
 
     public Integer getCoordinateSum() {
-        return x + y;
+        return (x*10) + y;
     }
 
     public int getX() {

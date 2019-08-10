@@ -22,7 +22,6 @@ public class Main {
                 Thread.sleep(1000);
             }
 
-
             gm.run(s);
             // game.start();
             // server.shutDown();
