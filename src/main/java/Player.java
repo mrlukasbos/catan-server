@@ -1,3 +1,6 @@
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -7,11 +10,29 @@ class Player {
     private int lastDiceThrow = 0;
     private ArrayList<Resources> resources = new ArrayList<Resources>();
     private String color;
+    private Socket socket;
 
     Player(int id, String name) {
         this.id = id;
         this.name = name;
         this.color = String.format("#%06x", new Random().nextInt(0xffffff + 1));
+    }
+
+    synchronized void setSocket(Socket s) {
+        socket = s;
+    }
+
+    synchronized Socket getSocket() {
+        return socket;
+    }
+
+    synchronized void send(String str) {
+        try {
+            DataOutputStream out = new DataOutputStream(getSocket().getOutputStream());
+            out.writeUTF(str);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     String getName() {

@@ -13,6 +13,10 @@ class Game {
         }
     }
 
+    void start() {
+
+    }
+
     // throw the dice, the highest throw can start
     Player determineFirstPlayer() {
         int highestDiceThrow = 0;
