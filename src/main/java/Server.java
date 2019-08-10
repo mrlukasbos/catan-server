@@ -25,8 +25,6 @@ public class Server extends Thread {
                     ensureConnections();
                 }
 
-          //      System.out.println("Playing the game!");
-
             } catch (SocketTimeoutException s) {
                 System.out.println("Socket timed out!");
                 break;
@@ -53,12 +51,12 @@ public class Server extends Thread {
         for (Player p : game.getPlayers()) {
             p.setSocket(serverSocket.accept());
             System.out.println("Just connected to " + p.getSocket().getRemoteSocketAddress());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getSocket().getInputStream()));
-            String line = reader.readLine();
-            System.out.println("Ready to receive ");
-            System.out.println("I received something: " + line);
-            DataOutputStream out = new DataOutputStream(p.getSocket().getOutputStream());
-            out.writeUTF(line);
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getSocket().getInputStream()));
+//            String line = reader.readLine();
+//            System.out.println("Ready to receive ");
+//            System.out.println("I received something: " + line);
+//            DataOutputStream out = new DataOutputStream(p.getSocket().getOutputStream());
+//            out.writeUTF(line);
         }
         hasEnoughConnections = true;
     }

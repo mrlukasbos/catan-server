@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class Main {
 
@@ -17,12 +15,15 @@ public class Main {
             s.start();
             System.out.println( "Visualization started on " + s.getAddress() + s.getPort() );
 
-
             // main thread has to wait now to make sure the server has enough players connected
             while(!server.hasEnoughPlayers()) Thread.sleep(1000);
 
             while (true) {
+                // output to visualization
                 s.broadcast(game.getBoard().toString());
+
+                // output to players
+                game.getPlayers().forEach((p) -> p.send(game.getBoard().toString()));
                 System.out.println( "broadcasting visuals on" + s.getAddress() + s.getPort() );
                 Thread.sleep(3000);
             }

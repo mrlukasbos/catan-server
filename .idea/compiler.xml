@@ -20,8 +20,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="catan" target="1.5" />
-      <module name="catan-server" target="1.5" />
+      <module name="catan" target="10" />
     </bytecodeTargetLevel>
   </component>
 </project>
