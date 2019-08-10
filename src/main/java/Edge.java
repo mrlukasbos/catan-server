@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Edge {
     private Tile a;
     private Tile b;
@@ -14,7 +16,7 @@ public class Edge {
         return player;
     }
 
-    public void setPlayer(Player player) {
+    void setPlayer(Player player) {
         this.player = player;
     }
 
@@ -22,12 +24,14 @@ public class Edge {
         return road;
     }
 
-    public void setRoad(boolean road) {
+    void setRoad(boolean road) {
         this.road = road;
     }
 
-    public String getKey() {
-        return "(" + a.getKey() + "," + b.getKey() + ")";
+    String getKey() {
+        Tile[] neighbors = {a, b};
+        Arrays.sort(neighbors);
+        return "(" + neighbors[0].getKey() + "," + neighbors[1].getKey() + ")";
     }
 
     @java.lang.Override

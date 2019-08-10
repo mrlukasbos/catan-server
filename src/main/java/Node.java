@@ -1,3 +1,4 @@
+import java.util.Arrays;
 
 public class Node {
     private Tile t;
@@ -31,7 +32,9 @@ public class Node {
     }
 
     public String getKey() {
-        return "(" + t.getKey() + "," + l.getKey() + "," + r.getKey() + ")";
+        Tile[] neighbors = {t, l, r};
+        Arrays.sort(neighbors);
+        return "(" + neighbors[0].getKey() + "," + neighbors[1].getKey() + "," + neighbors[2].getKey() + ")";
     }
 
     public String structureToString(Structure structure) {
