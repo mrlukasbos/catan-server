@@ -13,8 +13,9 @@ class Game {
         }
     }
 
-    void start() {
-
+    void restart() {
+        board = new Board();
+        players = new ArrayList<Player>();
     }
 
     // throw the dice, the highest throw can start

@@ -32,12 +32,10 @@ import org.java_websocket.server.WebSocketServer;
 
 public class Sock extends WebSocketServer {
 
-    public Sock( int port ) throws UnknownHostException {
+    GameManager gm;
+    public Sock( int port , GameManager gm) throws UnknownHostException {
         super( new InetSocketAddress( port ) );
-    }
-
-    public Sock( InetSocketAddress address ) {
-        super( address );
+        this.gm = gm;
     }
 
     @Override
@@ -59,6 +57,10 @@ public class Sock extends WebSocketServer {
     public void onMessage( WebSocket conn, String message ) {
         broadcast( message );
         System.out.println( conn + ": " + message );
+
+        if (message.contains("RESTART")) {
+            gm.restart();
+        }
     }
 
     @Override

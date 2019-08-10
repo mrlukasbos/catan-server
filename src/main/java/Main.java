@@ -3,15 +3,15 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-        Game game = new Game(1);
+        GameManager gm = new GameManager();
         try {
 
             // Boot the server
             // the server will first make connections with the amount of players we want
-            Server server = new Server(10006, game);
+            Server server = new Server(10006, gm);
             server.start();
 
-            Sock s = new Sock( 10007);
+            Sock s = new Sock( 10007, gm);
             s.start();
             System.out.println( "Visualization started on " + s.getAddress() + s.getPort() );
 
@@ -19,25 +19,7 @@ public class Main {
             while(!server.hasEnoughPlayers()) Thread.sleep(1000);
 
 
-            var wrapper = new Object(){ int nodeId = 0; };
-
-            while (true) {
-                // output to visualization
-                s.broadcast(game.getBoard().toString());
-
-                // output to players
-                game.getPlayers().forEach((p) -> p.send(game.getBoard().toString()));
-                System.out.println( "broadcasting visuals on" + s.getAddress() + s.getPort() );
-                Thread.sleep(1000);
-
-                game.getPlayers().forEach((p) -> {
-                    game.getBoard().placeCity(p, game.getBoard().getNodes().get(wrapper.nodeId));
-                });
-
-                wrapper.nodeId++;
-
-            }
-
+            gm.run(s);
             // game.start();
             // server.shutDown();
         } catch (IOException e) {
