@@ -142,17 +142,6 @@ class Board {
         return "[" + x + "," + y + "]";
     }
 
-    public String edgeKeyFromTiles(Tile a, Tile b) {
-        Tile[] neighbors = {a, b};
-        Arrays.sort(neighbors);
-        return "(" + neighbors[0].getKey() + "," + neighbors[1].getKey() + ")";
-    }
-
-    public String nodeKeyFromTiles(Tile a, Tile b, Tile c) {
-        Tile[] neighbors = {a, b, c};
-        Arrays.sort(neighbors);
-        return "(" + neighbors[0].getKey() + "," + neighbors[1].getKey() + "," + neighbors[2].getKey() + ")";
-    }
 
     private void addTile(Tile tile) {
         tiles.add(tile);
@@ -168,8 +157,9 @@ class Board {
         }
         for (int i = 0; i < 6; i++) {
             Tile b = tileMap.get(tileCoordinatesToKey(a.getX() + directions[i][0], a.getY() + directions[i][1]));
-            String edgeKey = edgeKeyFromTiles(a, b);
-            if (!edgeMap.containsKey(edgeKey)) {
+
+            Edge newEdge = new Edge(a,b);
+            if (!edgeMap.containsKey(newEdge.getKey())) {
                 addEdge(new Edge(a, b));
             }
         }
@@ -185,8 +175,8 @@ class Board {
         for (int i = 0; i < 6; i++) {
             Tile b = tileMap.get(tileCoordinatesToKey(a.getX() + directions[i][0], a.getY() + directions[i][1]));
             Tile c = tileMap.get(tileCoordinatesToKey(a.getX() + directions[(i + 1) % 6][0], a.getY() + directions[(i + 1) % 6][1]));
-            String nodeKey = nodeKeyFromTiles(a, b, c);
-            if (!nodeMap.containsKey(nodeKey)) {
+            Node n = new Node(a, b, c);
+            if (!nodeMap.containsKey(n.getKey())) {
                 addNode(new Node(a, b, c));
             }
         }

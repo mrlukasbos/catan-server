@@ -5,6 +5,10 @@
 
 <style>
 
+    * {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
     .hexagon {
         fill: white;
         pointer-events: all;
@@ -370,8 +374,23 @@
                 }
             }
         },
-        created: function () {
+        mounted: function() {
+            if (localStorage.ip) {
+                this.ip = localStorage.ip;
+            }
+            if (localStorage.port) {
+                this.port = localStorage.port;
+            }
             this.connect();
+
+        },
+        watch: {
+            ip: function (newIp) {
+                localStorage.ip = newIp;
+            },
+            port: function (newPort) {
+                localStorage.port = newPort;
+            }
         }
     })
 </script>
