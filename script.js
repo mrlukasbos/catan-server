@@ -240,7 +240,8 @@ var app = new Vue({
         json: '',
         socket: null,
         systemMsg: '',
-        gameRunning: false
+        gameRunning: false,
+        players: []
     },
     methods: {
         connect: function (event) {
@@ -263,20 +264,42 @@ var app = new Vue({
             }
 
             this.socket.onmessage = (data) => {
-                if (data.data.toString().includes("SYSTEM_MSG")) {
-                    this.systemMsg = data.data;
-                    return;
+
+                // get the first three characters of the new data
+                // it should indicate what to do with the data
+                var identifier = data.data.toString().substring(0, 3);
+                var message = data.data.toString().substring(3, data.data.length);
+
+                switch (identifier) {
+                    case "BOA": {
+                        json = JSON.parse(message);
+                        draw();
+                        break;
+                    }
+                    case "COM": {
+                        this.systemMsg = message;
+                        break;
+                    }
+                    case "GRU": {
+                       // console.log(message);
+                        this.gameRunning = message === "true";
+                        break;
+                    }
+                    case "PLA": {
+                        console.log(message)
+                        this.players = JSON.parse(message);
+                    }
                 }
-                this.systemMsg = '';
-                this.json = data.data;
-                json = JSON.parse(data.data);
-                draw();
             }
         },
-        restart: function(event) {
-            if (this.socket && (!this.gameRunning || confirm("Are you sure you want to start a new game?"))) {
+        startGame: function(event) {
+            if (this.socket && (!this.gameRunning || confirm("Are you sure you want to start?"))) {
                 this.socket.send("START");
-                this.gameRunning = true;
+            }
+        },
+        endGame: function(event) {
+            if (this.socket && (this.gameRunning || confirm("Are you sure you want to stop?"))) {
+                this.socket.send("END");
             }
         },
         killSocket: function () {

@@ -3,6 +3,7 @@ The Server maintains a TCP connection with the players
  */
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -14,22 +15,21 @@ public class Server extends Thread {
     private GameManager gm;
 
     // start a server on this device
-    Server(int port, GameManager gm) throws IOException {
-        serverSocket = new ServerSocket(port);
-        serverSocket.setSoTimeout(100000);
-        this.gm = gm;
+    Server(int port, GameManager gm) {
+        try {
+            serverSocket = new ServerSocket(port);
+            serverSocket.setSoTimeout(100000);
+            this.gm = gm;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void run() {
         while (true) {
             try {
-
-                // this is blocking
-                if (!gm.IsRunning()) {
-                    System.out.println("Waiting for clients on port " +  serverSocket.getLocalPort() + "...");
-                    ensureConnections();
-                }
-
+                System.out.println("Players can connect to: " + InetAddress.getLocalHost() + ":" + serverSocket.getLocalPort() + "...");
+                ensureConnections();
             } catch (SocketTimeoutException s) {
                 System.out.println("Socket timed out!");
                 break;
@@ -67,11 +67,9 @@ public class Server extends Thread {
         }
     }
 
-    boolean hasEnoughPlayers() {
-        return amountOfConnections >= gm.getCurrentGame().getPlayers().size();
-    }
-
     int getAmountOfConnections() {
         return amountOfConnections;
     }
+
 }
+

@@ -258,12 +258,7 @@ class Board {
         developmentCardsString = developmentCardsString.substring(0, developmentCardsString.length() - 1);
         developmentCardsString = developmentCardsString.concat("]");
 
-        String playersString = "[";
-        for (Player player : players) {
-            playersString = playersString.concat(player.toString() + ",");
-        }
-        playersString = playersString.substring(0, playersString.length() - 1);
-        playersString = playersString.concat("]");
+
 
         return "{" +
                 "\"model\": \"board\", " +
@@ -271,7 +266,6 @@ class Board {
                 "\"tiles\": " + tilesString + ", " +
                 "\"edges\": " + edgeString + ", " +
                 "\"nodes\": " + nodeString + ", " +
-                "\"players\": " + playersString + ", " +
                 "\"development_cards\": " + developmentCardsString + ", " +
                 "\"bandits\": [" + bandit.toString() + "]" +
                 "}" +

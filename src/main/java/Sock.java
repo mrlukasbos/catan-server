@@ -28,6 +28,7 @@ Communication with the visualization. There the game is shown and a game can be 
  *  OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
@@ -39,33 +40,33 @@ public class Sock extends WebSocketServer {
 
     GameManager gm;
     Server server;
+    boolean readyToStart = false;
 
-    public Sock( int port , GameManager gm, Server server) throws UnknownHostException {
-        super( new InetSocketAddress( port ) );
+    public Sock( int port , GameManager gm, Server server) {
+        super(new InetSocketAddress(port));
         this.gm = gm;
         this.server = server;
     }
 
     @Override
     public void onOpen( WebSocket conn, ClientHandshake handshake ) {
-        System.out.println( conn.getRemoteSocketAddress().getAddress().getHostAddress() + " joined!" );
     }
 
     @Override
     public void onClose( WebSocket conn, int code, String reason, boolean remote ) {
-        System.out.println( conn + " left" );
     }
-
 
     @Override
     public void onMessage( WebSocket conn, String message ) {
         if (message.contains("START")) {
-            gm.start();
+            readyToStart = true;
         } else if (message.contains("END")) {
-            // first shut down the server, so we can kill the sockets which are hooked to the players
-            server.shutDown();
-            gm.end();
+            readyToStart = false;
         }
+    }
+
+    boolean isReadyToStart() {
+        return readyToStart;
     }
 
     @Override
@@ -84,7 +85,70 @@ public class Sock extends WebSocketServer {
 
     @Override
     public void onStart() {
-        System.out.println("Server started!");
-        setConnectionLostTimeout(0);
+        try {
+            System.out.println("Visualization started on:" + InetAddress.getLocalHost() + ":" + getPort());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        setConnectionLostTimeout(10);
     }
+
+    void broadcast(broadcastType type, String str) {
+        broadcast(broadcastTypeToString(type) + str);
+    }
+
+    String broadcastTypeToString(broadcastType type) {
+        switch (type) {
+            case INFO: return "INF";
+            case COMMAND: return "CMD";
+            case SETTING: return "SET";
+            case COMMUNICATION: return "COM";
+            case BOARD: return "BOA";
+            case GAME_RUNNING: return "GRU";
+            case PLAYERS: return "PLA";
+        }
+        return "";
+    }
+
+    public void shutDown() {
+        try {
+            stop();
+        } catch (Exception f) {
+            f.printStackTrace();
+        }
+    }
+}
+
+enum broadcastType {
+    SETTING,
+    COMMAND,
+    INFO,
+    COMMUNICATION,
+    BOARD,
+    GAME_RUNNING,
+    PLAYERS
+    /*
+
+    connection: {
+        status: [WAITING_FOR_CONNECTIONS, WAITING_FOR_TAKEOFF, GAME_RUNNING]
+    }
+
+    */
+    /*
+
+    players: {
+        player {
+            name
+            socket address
+            color
+            ...
+        }
+    }
+
+     */
+
+    /*
+    GAME_STATUS:
+
+     */
 }

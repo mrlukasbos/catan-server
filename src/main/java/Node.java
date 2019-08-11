@@ -8,15 +8,6 @@ public class Node {
     private Tile t;
     private Tile l;
     private Tile r;
-
-    public Structure getStructure() {
-        return structure;
-    }
-
-    public void setStructure(Structure structure) {
-        this.structure = structure;
-    }
-
     private Structure structure;
     private Player player;
 
@@ -31,17 +22,25 @@ public class Node {
         return player;
     }
 
-    public void setPlayer(Player player) {
+    void setPlayer(Player player) {
         this.player = player;
     }
 
-    public String getKey() {
+    public Structure getStructure() {
+        return structure;
+    }
+
+    void setStructure(Structure structure) {
+        this.structure = structure;
+    }
+
+    String getKey() {
         Tile[] neighbors = {t, l, r};
         Arrays.sort(neighbors);
         return "(" + neighbors[0].getKey() + "," + neighbors[1].getKey() + "," + neighbors[2].getKey() + ")";
     }
 
-    public String structureToString(Structure structure) {
+    String structureToString(Structure structure) {
         switch (structure) {
             case NONE:
                 return "none";

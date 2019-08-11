@@ -13,7 +13,24 @@
         <input v-on:keyup.enter="connect" v-model="ip">
         <input v-on:keyup.enter="connect" v-model="port">
         <button v-on:click="connect">Connect</button> <br>
-        <button v-on:click="restart">Start game</button>
+
+        <div v-if="players.length">
+            <strong> Players </strong>
+            <div v-for="player in players" style="display: flex">
+                <div style="width: 20px; height: 20px; border-radius: 50%;" :style="{ 'background-color': player.attributes.color }"></div>
+                <span style="margin: 4px 4px"> {{player.attributes.name}} <small>({{player.id}})</small></span>
+            </div>
+        </div>
+        <div v-else>
+            <strong> No players connected </strong>
+        </div>
+
+        <div v-if="gameRunning">
+            <button v-on:click="endGame">Stop game</button>
+        </div>
+        <div v-else>
+            <button v-on:click="startGame">Start game</button>
+        </div>
 
         <div id="d3-holder"></div>
     </div>

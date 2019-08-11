@@ -1,35 +1,70 @@
-import java.io.IOException;
-
 public class Main {
+    // the amount of players that need to be connected before a game can be started
+    private static final int MINIMUM_AMOUNT_OF_PLAYERS = 1;
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         GameManager gm = new GameManager();
+        Server server = new Server(10006, gm);
+        Sock iface = new Sock( 10007, gm, server);
+
         try {
-
-            // Boot the server which will provide sockets for the players that connect
-            Server server = new Server(10006, gm);
             server.start();
+            iface.start();
 
-            // Boot the visualizer websocket
-            Sock s = new Sock( 10007, gm, server);
-            s.start();
-            System.out.println( "Visualization started on " + s.getAddress() + s.getPort() );
+            while (true) {
+                // handle broadcasting for interface
+                broadcastPlayerConnections(gm, iface); // the names of players connected
+                iface.broadcast(broadcastType.GAME_RUNNING, String.valueOf(readyToStart(server, iface))); // whether the game is running or not
 
-            // main thread has to wait now to make sure the server has enough players connected
-            while(!gm.IsRunning()) {
-                String names = "";
-                for (Player p : gm.getCurrentGame().getPlayers()) {
-                    names += p.getName() + ",";
+
+                // publish player info
+                String playersString = "[";
+                for (Player player :  gm.getCurrentGame().getPlayers()) {
+                    playersString = playersString.concat(player.toString() + ",");
+                }
+                playersString = playersString.substring(0, playersString.length() - 1);
+                playersString = playersString.concat("]");
+                iface.broadcast(broadcastType.PLAYERS, playersString);
+
+
+                if (readyToStart(server, iface)) {
+
+                    // broadcast the board
+                    iface.broadcast(broadcastType.BOARD, gm.getCurrentGame().getBoard().toString());
+                    gm.getCurrentGame().getPlayers().forEach((p) -> p.send(gm.getCurrentGame().getBoard().toString()));
+
+                    gm.run();
+                } else if (gm.IsRunning()) {
+                    // first shut down the server, so we can kill the sockets which are hooked to the players
+                    server.shutDown();
+                    gm.end();
+                } else {
+                    gm.getCurrentGame().getPlayers().forEach((p) -> p.send("MSG Waiting for game to start"));
                 }
 
-                s.broadcast("SYSTEM_MSG:" + "Current connected players: " + names + "(" + server.getAmountOfConnections() + ")");
-                Thread.sleep(400);
+                Thread.sleep(200); // 5fps
             }
-            gm.run(s, server);
-        } catch (IOException e) {
+        } catch (InterruptedException e) {
+            server.shutDown();
+            iface.shutDown();
             e.printStackTrace();
+        } finally {
+            server.shutDown();
+            iface.shutDown();
         }
     }
 
+    private static void broadcastPlayerConnections(GameManager gm, Sock s) {
+        String connectedPlayerNames = "";
+        for (Player p : gm.getCurrentGame().getPlayers()) {
+            connectedPlayerNames += p.getName() + ",";
+        }
+        s.broadcast(broadcastType.COMMUNICATION, connectedPlayerNames);
+    }
 
+    private static boolean readyToStart(Server server, Sock s) {
+        boolean playersAreReady = s.isReadyToStart();
+        boolean enoughPlayers = server.getAmountOfConnections() >= MINIMUM_AMOUNT_OF_PLAYERS;
+        return playersAreReady && enoughPlayers;
+    }
 }
