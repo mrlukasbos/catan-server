@@ -68,7 +68,7 @@ public class Server extends Thread {
     }
 
     private void print(String msg) {
-        System.out.println("[Server] " + msg);
+        System.out.println("[Server] \t" + msg);
     }
 }
 

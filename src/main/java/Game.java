@@ -75,6 +75,7 @@ class Game {
                 // ([3,0],[4,0],[4,1])
                 // ([3,2],[4,1],[4,2])
 
+                currentPlayer.send("Please build if you like.");
                 String nodeKey = currentPlayer.listen();
                 print("Received message from player " + currentPlayer.getName()+ ": " + nodeKey);
 
@@ -146,7 +147,7 @@ class Game {
     }
 
     private void print(String msg) {
-        System.out.println("[Game] " + msg);
+        System.out.println("[Game] \t \t" + msg);
     }
 }
 

@@ -4,7 +4,7 @@ public class Main {
 
     public static void main(String[] args) {
         Server server = new Server(10006);
-        Sock iface = new Sock( 10007);
+        Interface iface = new Interface( 10007);
         Game game = new Game();
 
         server.start();
@@ -45,7 +45,7 @@ public class Main {
         }
     }
 
-    private static void broadcastPlayerInfo(Server server, Sock iface) {
+    private static void broadcastPlayerInfo(Server server, Interface iface) {
         // publish player info
         String playersString = "[";
         for (Player player :  server.getConnections()) {
@@ -56,7 +56,7 @@ public class Main {
         iface.broadcast(broadcastType.PLAYERS, playersString);
     }
 
-    private static void broadcastStatus(Server server, Sock iface) {
+    private static void broadcastStatus(Server server, Interface iface) {
         if (server.getConnections().size() < MINIMUM_AMOUNT_OF_PLAYERS) {
             iface.broadcast(broadcastType.STATUS, "WAITING_FOR_PLAYERS");
         } else if (!iface.isReadyToStart()) {
@@ -66,7 +66,7 @@ public class Main {
         }
     }
 
-    private static boolean readyToStart(Server server, Sock s) {
+    private static boolean readyToStart(Server server, Interface s) {
         boolean playersAreReady = s.isReadyToStart();
         boolean enoughPlayers = server.getConnections().size() >= MINIMUM_AMOUNT_OF_PLAYERS;
         return playersAreReady && enoughPlayers;

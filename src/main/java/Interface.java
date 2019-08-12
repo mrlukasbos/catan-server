@@ -36,11 +36,11 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-public class Sock extends WebSocketServer {
+public class Interface extends WebSocketServer {
 
     boolean readyToStart = false;
 
-    public Sock( int port) {
+    public Interface(int port) {
         super(new InetSocketAddress(port));
     }
 
@@ -118,7 +118,7 @@ public class Sock extends WebSocketServer {
     }
 
     private void print(String msg) {
-        System.out.println("[Iface] " + msg);
+        System.out.println("[Iface] \t" + msg);
     }
 }
 
