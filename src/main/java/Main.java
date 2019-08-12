@@ -7,44 +7,41 @@ public class Main {
         Sock iface = new Sock( 10007);
         Game game = new Game();
 
-        try {
-            server.start();
-            iface.start();
+        server.start();
+        iface.start();
 
-            while (true) {
+        while (true) {
 
-                // Broadcast data to interface
-                broadcastStatus(server, iface); // if the game started, or waiting for players/takeoff
-                broadcastPlayerInfo(server, iface); // the connected players and their colors
+            // Broadcast data to interface
+            broadcastStatus(server, iface); // if the game started, or waiting for players/takeoff
+            broadcastPlayerInfo(server, iface); // the connected players and their colors
 
-                if (readyToStart(server, iface)) {
+            if (readyToStart(server, iface)) {
 
-                    // start a game with the connections from the server
-                    if (!game.isRunning()) {
-                        game.start(server.getConnections());
-                    }
-
-                    // broadcast the board
-                    iface.broadcast(broadcastType.BOARD, game.getBoard().toString());
-                    game.getPlayers().forEach((p) -> p.send(game.getBoard().toString()));
-
-                    game.run();
-                } else {
-                    if (game.isRunning()) {
-                        game.stop();
-                    }
-                    server.getConnections().forEach((p) -> p.send("MSG Waiting for game to start"));
+                // start a game with the connections from the server
+                if (!game.isRunning()) {
+                    game.start(server.getConnections());
                 }
 
-                Thread.sleep(200); // 5fps
+                // broadcast the board
+                iface.broadcast(broadcastType.BOARD, game.getBoard().toString());
+                game.getPlayers().forEach((p) -> p.send(game.getBoard().toString()));
+
+                game.run();
+
+
+            } else {
+                if (game.isRunning()) {
+                    game.stop();
+                }
+               // server.getConnections().forEach((p) -> p.send("MSG Waiting for game to start"));
             }
-        } catch (InterruptedException e) {
-            server.shutDown();
-            iface.shutDown();
-            e.printStackTrace();
-        } finally {
-            server.shutDown();
-            iface.shutDown();
+
+            try {
+                Thread.sleep(200);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

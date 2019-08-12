@@ -30,7 +30,6 @@ class Game {
     }
 
     void run() {
-
         switch (phase) {
 
             /*
@@ -38,7 +37,7 @@ class Game {
              */
             case SETUP: {
                 currentPlayer = determineFirstPlayer();
-                goToPhase(Phase.BUILDING);
+                goToPhase(Phase.THROW_DICE);
                 break;
             }
 
@@ -64,20 +63,29 @@ class Game {
 
                     }
                 }
+                goToPhase(Phase.MOVE_BANDIT);
+                break;
             }
             case MOVE_BANDIT: {
-
+                goToPhase(Phase.BUILDING);
                 break;
             }
             case BUILDING: {
-                print("Received message from player " + currentPlayer.getName()+ ": " + currentPlayer.listen());
+                // example keys
+                // ([3,0],[4,0],[4,1])
+                // ([3,2],[4,1],[4,2])
+
+                String nodeKey = currentPlayer.listen();
+                print("Received message from player " + currentPlayer.getName()+ ": " + nodeKey);
+
+                if (board.getNode(nodeKey) != null) {
+                    board.placeVillage(currentPlayer, board.getNode(nodeKey));
+                } else {
+                    print("Received invalid key!");
+                }
                 break;
             }
-
-
-
         }
-
 
         Player currentPlayer = progressToNextPlayer();
     }

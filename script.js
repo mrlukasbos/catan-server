@@ -133,7 +133,7 @@ svg.append("g")
             return "M-12 -2 L1 -2 L1 -10 L6 -12 L11 -10 L11 12 L-12 12 L-12 -2 Z"
         }
     }).attr('fill', function (d) {
-    return d.attributes.player_color;
+        return d.attributes.player_color;
     }).attr('stroke', '#000000');
 
 
@@ -273,6 +273,8 @@ var app = new Vue({
                 switch (identifier) {
                     case "BOA": {
                         json = JSON.parse(message);
+                        this.json = JSON.stringify(json, null, 4); // Indented 4 spaces
+                        ;
                         draw();
                         break;
                     }
