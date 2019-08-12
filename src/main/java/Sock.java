@@ -56,8 +56,10 @@ public class Sock extends WebSocketServer {
     public void onMessage( WebSocket conn, String message ) {
         if (message.contains("START")) {
             readyToStart = true;
-        } else if (message.contains("END")) {
+            print("Received START signal");
+        } else if (message.contains("STOP")) {
             readyToStart = false;
+            print("Received STOP signal");
         }
     }
 
@@ -68,7 +70,7 @@ public class Sock extends WebSocketServer {
     @Override
     public void onMessage( WebSocket conn, ByteBuffer message ) {
         broadcast( message.array() );
-        System.out.println( conn + ": " + message );
+        print(conn + ": " + message );
     }
 
     @Override
@@ -82,7 +84,7 @@ public class Sock extends WebSocketServer {
     @Override
     public void onStart() {
         try {
-            System.out.println("Visualization started on:" + InetAddress.getLocalHost() + ":" + getPort());
+            print("Visualization started on:" + InetAddress.getLocalHost() + ":" + getPort());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -113,6 +115,10 @@ public class Sock extends WebSocketServer {
         } catch (Exception f) {
             f.printStackTrace();
         }
+    }
+
+    private void print(String msg) {
+        System.out.println("[Iface] " + msg);
     }
 }
 

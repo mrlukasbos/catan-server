@@ -297,7 +297,7 @@ var app = new Vue({
         },
         endGame: function(event) {
             if (this.socket && confirm("Are you sure you want to stop?")) {
-                this.socket.send("END");
+                this.socket.send("STOP");
             }
         },
         killSocket: function () {

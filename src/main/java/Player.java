@@ -124,6 +124,10 @@ class Player {
                 "}" +
                 "}";
     }
+
+    private void print(String msg) {
+        System.out.println("[Player] " + msg);
+    }
 }
 
 enum Resource {

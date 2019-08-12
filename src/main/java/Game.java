@@ -19,12 +19,14 @@ class Game {
         this.board = new Board(players);
         this.players = new ArrayList<Player>(players); // this copies the arraylist
         running = true;
+        print("Starting game");
     }
 
     void stop() {
         this.board = null;
         this.players = null;
         running = false;
+        print("Stopping game");
     }
 
     void run() {
@@ -131,6 +133,10 @@ class Game {
 
     public boolean isRunning() {
         return running;
+    }
+
+    private void print(String msg) {
+        System.out.println("[Game] " + msg);
     }
 }
 

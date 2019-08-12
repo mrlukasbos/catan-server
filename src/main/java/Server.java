@@ -20,6 +20,7 @@ public class Server extends Thread {
         try {
             serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(100000);
+            print("Players can connect to: " + InetAddress.getLocalHost() + ":" + serverSocket.getLocalPort() + "...");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -28,10 +29,9 @@ public class Server extends Thread {
     public void run() {
         while (true) {
             try {
-                System.out.println("Players can connect to: " + InetAddress.getLocalHost() + ":" + serverSocket.getLocalPort() + "...");
                 ensureConnections();
             } catch (SocketTimeoutException s) {
-                System.out.println("Socket timed out!");
+                print("Socket timed out");
                 break;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,12 +60,15 @@ public class Server extends Thread {
         Player newPlayer = new Player(connections.size(), line);
         newPlayer.setSocket(newConnection);
         connections.add(newPlayer);
-        System.out.println("[Server] Just connected to " + line + " on address: " + newConnection.getRemoteSocketAddress());
+        print("Just connected to " + line + " on address: " + newConnection.getRemoteSocketAddress());
     }
 
     ArrayList<Player> getConnections() {
         return connections;
     }
 
+    private void print(String msg) {
+        System.out.println("[Server] " + msg);
+    }
 }
 
