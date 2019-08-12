@@ -2,6 +2,8 @@
 All game mechanics
  */
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -75,52 +77,55 @@ class Game {
             }
             case BUILDING: {
 
+                // Example inputs
+                // [{ "structure": "VILLAGE", "location": "([1,2],[2,1],[2,2])" }]
+                // [{ "structure": "CITY", "location": "([1,2],[2,1],[2,2])" }]
 
-                // { "structure": "VILLAGE", "location": "([1,2],[2,1],[2,2])" }
-                // { "structure": "CITY", "location": "([1,2],[2,1],[2,2])" }
+                // [{ "structure": "VILLAGE", "location": "([2,2],[3,1],[3,2])" }]
+                // [{ "structure": "CITY", "location": "([2,2],[3,1],[3,2])" }]
 
-                // { "structure": "VILLAGE", "location": "([2,2],[3,1],[3,2])" }
-                // { "structure": "CITY", "location": "([2,2],[3,1],[3,2])" }
-
-                // { "structure": "STREET", "location": "([2,2],[3,1])" }
-                // { "structure": "STREET", "location": "([3,1],[3,2])" }
-                // { "structure": "STREET", "location": "([2,2],[3,2])" }
+                // [{ "structure": "STREET", "location": "([2,2],[3,1])" }]
+                // [{ "structure": "STREET", "location": "([3,1],[3,2])" }, { "structure": "STREET", "location": "([2,2],[3,2])" }]
 
                 currentPlayer.send("Please build if you like.");
                 String message = currentPlayer.listen();
                 if (message != null) { // the message is ready
                     print("Received message from player " + currentPlayer.getName() + ": " + message);
 
-                    JsonObject jsonObject = new JsonParser().parse(message).getAsJsonObject();
+                    JsonArray jsonArray = new JsonParser().parse(message).getAsJsonArray();
 
-                    String structure = jsonObject.get("structure").getAsString();
-                    String key = jsonObject.get("location").getAsString();
+                    for (JsonElement element : jsonArray) {
+                        JsonObject object = element.getAsJsonObject();
 
-                    if (board.getNode(key) == null && board.getEdge(key) == null) {
-                        print("Received message with illegal location (key): " + key);
-                    }
+                        String structure = object.get("structure").getAsString();
+                        String key = object.get("location").getAsString();
 
-                    switch (structure) {
-                        case "VILLAGE": {
-                            if (board.getNode(key) != null) {
-                                board.placeVillage(currentPlayer, board.getNode(key));
-                            }
-                            break;
+                        if (board.getNode(key) == null && board.getEdge(key) == null) {
+                            print("Received message with illegal location (key): " + key);
                         }
-                        case "CITY": {
-                            if (board.getNode(key) != null) {
-                                board.placeCity(currentPlayer, board.getNode(key));
+
+                        switch (structure) {
+                            case "VILLAGE": {
+                                if (board.getNode(key) != null) {
+                                    board.placeVillage(currentPlayer, board.getNode(key));
+                                }
+                                break;
                             }
-                            break;
-                        }
-                        case "STREET": {
-                            if (board.getEdge(key) != null) {
-                                board.placeStreet(currentPlayer, board.getEdge(key));
+                            case "CITY": {
+                                if (board.getNode(key) != null) {
+                                    board.placeCity(currentPlayer, board.getNode(key));
+                                }
+                                break;
                             }
-                            break;
-                        }
-                        default: {
-                            print("Received message with illegal structure: " + structure);
+                            case "STREET": {
+                                if (board.getEdge(key) != null) {
+                                    board.placeStreet(currentPlayer, board.getEdge(key));
+                                }
+                                break;
+                            }
+                            default: {
+                                print("Received message with illegal structure: " + structure);
+                            }
                         }
                     }
                     break;
