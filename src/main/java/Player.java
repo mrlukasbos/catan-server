@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,6 +10,7 @@ class Player {
     private ArrayList<Resource> resources = new ArrayList<Resource>();
     private String color;
     private Socket socket;
+    private String mostRecentMessage = "";
 
     Player(int id, String name) {
         this.id = id;
@@ -37,15 +35,19 @@ class Player {
         }
     }
 
-    // blocking, but that is okay since he has to do a move
+    // non-blocking implementation of reading
+    // this function returns a message if it is available, otherwise null
     synchronized String listen() {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(getSocket().getInputStream()));
-            return reader.readLine();
+            InputStream inputStream = getSocket().getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            if (inputStream.available() != 0 && reader.ready()) {
+                return reader.readLine();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "";
+        return null;
     }
 
     String getName() {

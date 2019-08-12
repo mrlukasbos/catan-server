@@ -28,8 +28,6 @@ public class Main {
                 game.getPlayers().forEach((p) -> p.send(game.getBoard().toString()));
 
                 game.run();
-
-
             } else {
                 if (game.isRunning()) {
                     game.stop();

@@ -74,17 +74,20 @@ class Game {
                 // example keys
                 // ([3,0],[4,0],[4,1])
                 // ([3,2],[4,1],[4,2])
+                // ([3,1],[3,2],[4,1])
 
                 currentPlayer.send("Please build if you like.");
                 String nodeKey = currentPlayer.listen();
-                print("Received message from player " + currentPlayer.getName()+ ": " + nodeKey);
+                if (nodeKey != null) { // the message is ready
+                    print("Received message from player " + currentPlayer.getName() + ": " + nodeKey);
 
-                if (board.getNode(nodeKey) != null) {
-                    board.placeVillage(currentPlayer, board.getNode(nodeKey));
-                } else {
-                    print("Received invalid key!");
+                    if (board.getNode(nodeKey) != null) {
+                        board.placeVillage(currentPlayer, board.getNode(nodeKey));
+                    } else {
+                        print("Received invalid key!");
+                    }
+                    break;
                 }
-                break;
             }
         }
 
