@@ -294,7 +294,7 @@ class Board {
         this.edges = edges;
     }
 
-    public List<Node> getNodes() {
+    List<Node> getNodes() {
         return nodes;
     }
 
@@ -302,8 +302,12 @@ class Board {
         this.nodes = nodes;
     }
 
-    public Node getNode(String key) {
+    Node getNode(String key) {
         return nodeMap.get(key);
+    }
+
+    Edge getEdge(String key) {
+        return edgeMap.get(key);
     }
 }
 

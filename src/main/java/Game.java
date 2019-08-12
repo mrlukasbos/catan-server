@@ -2,6 +2,9 @@
 All game mechanics
  */
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.util.ArrayList;
 
 class Game {
@@ -71,20 +74,54 @@ class Game {
                 break;
             }
             case BUILDING: {
-                // example keys
-                // ([3,0],[4,0],[4,1])
-                // ([3,2],[4,1],[4,2])
-                // ([3,1],[3,2],[4,1])
+
+
+                // { "structure": "VILLAGE", "location": "([1,2],[2,1],[2,2])" }
+                // { "structure": "CITY", "location": "([1,2],[2,1],[2,2])" }
+
+                // { "structure": "VILLAGE", "location": "([2,2],[3,1],[3,2])" }
+                // { "structure": "CITY", "location": "([2,2],[3,1],[3,2])" }
+
+                // { "structure": "STREET", "location": "([2,2],[3,1])" }
+                // { "structure": "STREET", "location": "([3,1],[3,2])" }
+                // { "structure": "STREET", "location": "([2,2],[3,2])" }
 
                 currentPlayer.send("Please build if you like.");
-                String nodeKey = currentPlayer.listen();
-                if (nodeKey != null) { // the message is ready
-                    print("Received message from player " + currentPlayer.getName() + ": " + nodeKey);
+                String message = currentPlayer.listen();
+                if (message != null) { // the message is ready
+                    print("Received message from player " + currentPlayer.getName() + ": " + message);
 
-                    if (board.getNode(nodeKey) != null) {
-                        board.placeVillage(currentPlayer, board.getNode(nodeKey));
-                    } else {
-                        print("Received invalid key!");
+                    JsonObject jsonObject = new JsonParser().parse(message).getAsJsonObject();
+
+                    String structure = jsonObject.get("structure").getAsString();
+                    String key = jsonObject.get("location").getAsString();
+
+                    if (board.getNode(key) == null && board.getEdge(key) == null) {
+                        print("Received message with illegal location (key): " + key);
+                    }
+
+                    switch (structure) {
+                        case "VILLAGE": {
+                            if (board.getNode(key) != null) {
+                                board.placeVillage(currentPlayer, board.getNode(key));
+                            }
+                            break;
+                        }
+                        case "CITY": {
+                            if (board.getNode(key) != null) {
+                                board.placeCity(currentPlayer, board.getNode(key));
+                            }
+                            break;
+                        }
+                        case "STREET": {
+                            if (board.getEdge(key) != null) {
+                                board.placeStreet(currentPlayer, board.getEdge(key));
+                            }
+                            break;
+                        }
+                        default: {
+                            print("Received message with illegal structure: " + structure);
+                        }
                     }
                     break;
                 }
