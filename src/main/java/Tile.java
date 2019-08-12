@@ -31,6 +31,17 @@ class Tile implements Comparable<Tile> {
         this.orientation = orientation;
     }
 
+    public Resource typeToResource(Type type) {
+        switch (type) {
+            case WOOL: return Resource.WHOOL;
+            case WOOD: return Resource.WOOD;
+            case STONE: return Resource.STONE;
+            case ORE: return Resource.ORE;
+            case GRAIN: return Resource.GRAIN;
+            default: return Resource.NONE;
+        }
+    }
+
     public String typeToString(Type type) {
         switch (type) {
             case DESERT:
@@ -104,6 +115,10 @@ class Tile implements Comparable<Tile> {
         return "[" + x + "," + y + "]";
     }
 
+    public Type getType() {
+        return type;
+    }
+
     public boolean isTerrain() {
         return (orientation == Orientation.NONE && type != Type.SEA);
     }
@@ -119,6 +134,8 @@ class Tile implements Comparable<Tile> {
     public int getY() {
         return y;
     }
+
+    public int getNumber() { return number; }
 
     @Override
     public int compareTo(Tile tile) {

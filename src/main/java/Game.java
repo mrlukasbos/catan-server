@@ -8,15 +8,80 @@ class Game {
     private int dice = 0;
     private Board board;
     private ArrayList<Player> players = new ArrayList<Player>();
-    private int currentPlayerId = 0;
+    private Player currentPlayer;
+    Phase phase;
 
     Game() {
         board = new Board(players);
+        phase = Phase.SETUP;
     }
 
-    void restart() {
-        players = new ArrayList<Player>();
-        board = new Board(players);
+    void run() {
+
+        switch (phase) {
+
+            /*
+            Determine the player that can start
+             */
+            case SETUP: {
+                currentPlayer = determineFirstPlayer();
+                goToPhase(Phase.BUILDING);
+                break;
+            }
+
+            /*
+            Throw a dice. If it is 7 then move the bandit
+            Otherwise give the players their resources.
+             */
+            case THROW_DICE: {
+                int diceThrow = currentPlayer.throwDice();
+                if (diceThrow == 7) {
+                    goToPhase(Phase.FORCE_DISCARD);
+                } else {
+                    distributeResourcesForDice(diceThrow);
+                    goToPhase(Phase.BUILDING);
+                }
+                break;
+            }
+
+            case FORCE_DISCARD: {
+                for (Player p : getPlayers()) {
+                    if (p.countResources() > 7) {
+
+                    }
+                }
+            }
+            case MOVE_BANDIT: {
+
+                break;
+            }
+            case BUILDING: {
+                break;
+            }
+
+
+
+        }
+
+
+        Player currentPlayer = progressToNextPlayer();
+    }
+
+    private void distributeResourcesForDice(int diceThrow) {
+        for (Node node : getBoard().getNodes()) {
+            if (node.hasPlayer() && node.hasStructure()) {
+                for (Tile tile : node.getTiles()) {
+                    if (tile.isTerrain() && tile.getNumber() == diceThrow) {
+                        int amount = node.getStructure() == Structure.CITY ? 2 : 1;
+                        node.getPlayer().addResources(tile.typeToResource(tile.getType()), amount);
+                    }
+                }
+            }
+        }
+    }
+
+    void goToPhase(Phase phase) {
+        this.phase = phase;
     }
 
     // throw the dice, the highest throw can start
@@ -30,14 +95,14 @@ class Game {
                 highestDiceThrow = newDiceThrow;
             }
         }
-        currentPlayerId = firstPlayer.getId();
+        currentPlayer = firstPlayer;
         return firstPlayer;
     }
 
     // move the currentPlayer id to the next Player in the array.
     Player progressToNextPlayer() {
-        Player nextPlayer = players.get((currentPlayerId + 1) % players.size());
-        currentPlayerId = nextPlayer.getId();
+        Player nextPlayer = players.get((currentPlayer.getId() + 1) % players.size());
+        currentPlayer = nextPlayer;
         return nextPlayer;
     }
 
@@ -57,7 +122,8 @@ class Game {
 enum Phase {
     SETUP,
     THROW_DICE,
-    MOVE_BARBARIAN,
+    FORCE_DISCARD,
+    MOVE_BANDIT,
     GATHER_RESOURCES,
     BUILDING,
     PLAYING_CARD

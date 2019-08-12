@@ -236,23 +236,23 @@ var app = new Vue({
     data: {
         ip: 'localhost',
         port: '10007',
-        status: 'NOT_CONNECTED',
+        connection_status: 'NOT_CONNECTED',
         json: '',
         socket: null,
         systemMsg: '',
-        gameRunning: false,
+        status: "WAITING_FOR_PLAYERS",
         players: []
     },
     methods: {
         connect: function (event) {
             this.json = null;
-            this.status = 'CONNECTING';
+            this.connection_status = 'CONNECTING';
             this.killSocket();
 
             this.socket = new WebSocket("ws:" + this.ip + ":" + this.port);
 
             this.socket.onerror = (err) => {
-                this.status = "CONNECTION_FAILURE";
+                this.connection_status = "CONNECTION_FAILURE";
             }
 
             this.socket.onclose = () => {
@@ -260,7 +260,7 @@ var app = new Vue({
             }
 
             this.socket.onopen = () => {
-                this.status = "CONNECTED";
+                this.connection_status = "CONNECTED";
             }
 
             this.socket.onmessage = (data) => {
@@ -280,25 +280,23 @@ var app = new Vue({
                         this.systemMsg = message;
                         break;
                     }
-                    case "GRU": {
-                       // console.log(message);
-                        this.gameRunning = message === "true";
+                    case "PLA": {
+                        this.players = JSON.parse(message);
                         break;
                     }
-                    case "PLA": {
-                        console.log(message)
-                        this.players = JSON.parse(message);
+                    case "STA": {
+                        this.status = message;
                     }
                 }
             }
         },
         startGame: function(event) {
-            if (this.socket && (!this.gameRunning || confirm("Are you sure you want to start?"))) {
+            if (this.socket && this.status === "WAITING_FOR_TAKEOFF") {
                 this.socket.send("START");
             }
         },
         endGame: function(event) {
-            if (this.socket && (this.gameRunning || confirm("Are you sure you want to stop?"))) {
+            if (this.socket && confirm("Are you sure you want to stop?")) {
                 this.socket.send("END");
             }
         },

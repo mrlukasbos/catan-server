@@ -8,7 +8,7 @@ class Player {
     private String name;
     private int id;
     private int lastDiceThrow = 0;
-    private ArrayList<Resources> resources = new ArrayList<Resources>();
+    private ArrayList<Resource> resources = new ArrayList<Resource>();
     private String color;
     private Socket socket;
 
@@ -64,9 +64,9 @@ class Player {
     }
 
     // count the occurence of a specific resource for the player
-    int countResources(Resources resourceToCount) {
+    int countResources(Resource resourceToCount) {
         int count = 0;
-        for (Resources resourceOnHand : resources) {
+        for (Resource resourceOnHand : resources) {
             if (resourceOnHand == resourceToCount) {
                 count++;
             }
@@ -74,15 +74,22 @@ class Player {
         return count;
     }
 
+    // count the occurence of all resources together
+    int countResources() {
+        return resources.size();
+    }
+
     // add resources to the resources of the player
-    void addResources(Resources resource, int amount) {
-        for (int i = 0; i < amount; i++) {
-            resources.add(resource);
+    void addResources(Resource resource, int amount) {
+        if (resource != Resource.NONE) {
+            for (int i = 0; i < amount; i++) {
+                resources.add(resource);
+            }
         }
     }
 
     // remove resources from the player
-    void removeResources(Resources resource, int amount) {
+    void removeResources(Resource resource, int amount) {
         // iterate over all resources to remove the amount needed.
         int amountOfRemovals = 0;
         for (int i = 0; i < resources.size(); i++) {
@@ -106,8 +113,8 @@ class Player {
     }
 }
 
-enum Resources {
-    DESERT,
+enum Resource {
+    NONE,
     WHOOL,
     WOOD,
     STONE,

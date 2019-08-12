@@ -8,8 +8,9 @@
 <body>
     <div id="app">
         <h1> Catan </h1>
+        {{connection_status}} <br>
         {{status}} <br>
-        {{systemMsg}} <br>
+
         <input v-on:keyup.enter="connect" v-model="ip">
         <input v-on:keyup.enter="connect" v-model="port">
         <button v-on:click="connect">Connect</button> <br>
@@ -25,10 +26,10 @@
             <strong> No players connected </strong>
         </div>
 
-        <div v-if="gameRunning">
+        <div v-if="status==='GAME_RUNNING'">
             <button v-on:click="endGame">Stop game</button>
         </div>
-        <div v-else>
+        <div v-else-if="status==='WAITING_FOR_TAKEOFF'">
             <button v-on:click="startGame">Start game</button>
         </div>
 

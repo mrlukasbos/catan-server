@@ -106,6 +106,8 @@ public class Sock extends WebSocketServer {
             case BOARD: return "BOA";
             case GAME_RUNNING: return "GRU";
             case PLAYERS: return "PLA";
+            case STATUS: return "STA";
+
         }
         return "";
     }
@@ -126,7 +128,8 @@ enum broadcastType {
     COMMUNICATION,
     BOARD,
     GAME_RUNNING,
-    PLAYERS
+    PLAYERS,
+    STATUS
     /*
 
     connection: {

@@ -16,6 +16,13 @@ public class Main {
                 broadcastPlayerConnections(gm, iface); // the names of players connected
                 iface.broadcast(broadcastType.GAME_RUNNING, String.valueOf(readyToStart(server, iface))); // whether the game is running or not
 
+                if (server.getAmountOfConnections() < MINIMUM_AMOUNT_OF_PLAYERS) {
+                    iface.broadcast(broadcastType.STATUS, "WAITING_FOR_PLAYERS");
+                } else if (!iface.isReadyToStart()) {
+                    iface.broadcast(broadcastType.STATUS, "WAITING_FOR_TAKEOFF");
+                } else {
+                    iface.broadcast(broadcastType.STATUS, "GAME_RUNNING");
+                }
 
                 // publish player info
                 String playersString = "[";

@@ -26,12 +26,25 @@ public class Node {
         this.player = player;
     }
 
+    boolean hasPlayer() {
+        return player != null;
+    }
+
+    boolean hasStructure() {
+        return structure != Structure.NONE;
+    }
+
     public Structure getStructure() {
         return structure;
     }
 
     void setStructure(Structure structure) {
         this.structure = structure;
+    }
+
+    Tile[] getTiles() {
+        Tile[] tiles = {t, l, r};
+        return tiles;
     }
 
     String getKey() {
