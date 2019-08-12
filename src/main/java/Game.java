@@ -48,6 +48,7 @@ class Game {
              */
             case THROW_DICE: {
                 int diceThrow = currentPlayer.throwDice();
+                print("Dice thrown: " + diceThrow);
                 if (diceThrow == 7) {
                     goToPhase(Phase.FORCE_DISCARD);
                 } else {
@@ -69,6 +70,7 @@ class Game {
                 break;
             }
             case BUILDING: {
+                print("Received message from player " + currentPlayer.getName()+ ": " + currentPlayer.listen());
                 break;
             }
 
