@@ -76,64 +76,73 @@ class Game {
                 break;
             }
             case BUILDING: {
-
-                // Example inputs
-                // [{ "structure": "VILLAGE", "location": "([1,2],[2,1],[2,2])" }]
-                // [{ "structure": "CITY", "location": "([1,2],[2,1],[2,2])" }]
-
-                // [{ "structure": "VILLAGE", "location": "([2,2],[3,1],[3,2])" }]
-                // [{ "structure": "CITY", "location": "([2,2],[3,1],[3,2])" }]
-
-                // [{ "structure": "STREET", "location": "([2,2],[3,1])" }]
-                // [{ "structure": "STREET", "location": "([3,1],[3,2])" }, { "structure": "STREET", "location": "([2,2],[3,2])" }]
-
-                currentPlayer.send("Please build if you like.");
-                String message = currentPlayer.listen();
-                if (message != null) { // the message is ready
-                    print("Received message from player " + currentPlayer.getName() + ": " + message);
-
-                    JsonArray jsonArray = new JsonParser().parse(message).getAsJsonArray();
-
-                    for (JsonElement element : jsonArray) {
-                        JsonObject object = element.getAsJsonObject();
-
-                        String structure = object.get("structure").getAsString();
-                        String key = object.get("location").getAsString();
-
-                        if (board.getNode(key) == null && board.getEdge(key) == null) {
-                            print("Received message with illegal location (key): " + key);
-                        }
-
-                        switch (structure) {
-                            case "VILLAGE": {
-                                if (board.getNode(key) != null) {
-                                    board.placeVillage(currentPlayer, board.getNode(key));
-                                }
-                                break;
-                            }
-                            case "CITY": {
-                                if (board.getNode(key) != null) {
-                                    board.placeCity(currentPlayer, board.getNode(key));
-                                }
-                                break;
-                            }
-                            case "STREET": {
-                                if (board.getEdge(key) != null) {
-                                    board.placeStreet(currentPlayer, board.getEdge(key));
-                                }
-                                break;
-                            }
-                            default: {
-                                print("Received message with illegal structure: " + structure);
-                            }
-                        }
-                    }
-                    break;
-                }
+                build();
+                break;
             }
         }
+        progressToNextPlayer();
+    }
 
-        Player currentPlayer = progressToNextPlayer();
+
+    // Example inputs
+    // [{ "structure": "VILLAGE", "location": "([1,2],[2,1],[2,2])" }]
+    // [{ "structure": "CITY", "location": "([1,2],[2,1],[2,2])" }]
+
+    // [{ "structure": "VILLAGE", "location": "([2,2],[3,1],[3,2])" }]
+    // [{ "structure": "CITY", "location": "([2,2],[3,1],[3,2])" }]
+
+    // [{ "structure": "STREET", "location": "([2,2],[3,1])" }]
+    // [{ "structure": "STREET", "location": "([3,1],[3,2])" }, { "structure": "STREET", "location": "([2,2],[3,2])" }]
+    private void build() {
+        currentPlayer.send("Please build if you like.");
+
+        String message = currentPlayer.listen();
+        if (message != null) { // the message is ready
+            print("Received message from player " + currentPlayer.getName() + ": " + message);
+
+            JsonArray jsonArray = new JsonParser().parse(message).getAsJsonArray();
+
+            for (JsonElement element : jsonArray) {
+                JsonObject object = element.getAsJsonObject();
+
+                String structureString = object.get("structure").getAsString();
+                Structure structure = stringToStructure(structureString);
+                String key = object.get("location").getAsString();
+
+                if (!isLegal(key)) {
+                    print("Received message with illegal location (key): " + key);
+                    break;
+                }
+
+                if (!isLegal(structure)) {
+                    print("Received message with illegal structure: " + structureString);
+                    break;
+                }
+
+                board.placeStructure(currentPlayer, structure, key);
+            }
+        }
+    }
+
+    private boolean isLegal(String key) {
+        return board.hasEdge(key) || board.hasNode(key);
+    }
+
+    private boolean isLegal(Structure struct) {
+        return struct != Structure.NONE;
+    }
+
+    private Structure stringToStructure(String str) {
+        switch (str) {
+            case "village":
+                return Structure.SETTLEMENT;
+            case "city":
+                return Structure.CITY;
+            case "street":
+                return Structure.STREET;
+            default:
+                return Structure.NONE;
+        }
     }
 
     private void distributeResourcesForDice(int diceThrow) {
@@ -153,8 +162,10 @@ class Game {
         this.phase = phase;
     }
 
+
+
     // throw the dice, the highest throw can start
-    Player determineFirstPlayer() {
+    private Player determineFirstPlayer() {
         int highestDiceThrow = 0;
         Player firstPlayer = players.get(0);
         for (Player player : players) {
@@ -169,7 +180,7 @@ class Game {
     }
 
     // move the currentPlayer id to the next Player in the array.
-    Player progressToNextPlayer() {
+    private Player progressToNextPlayer() {
         Player nextPlayer = players.get((currentPlayer.getId() + 1) % players.size());
         currentPlayer = nextPlayer;
         return nextPlayer;
@@ -187,7 +198,7 @@ class Game {
         return board;
     }
 
-    public boolean isRunning() {
+    boolean isRunning() {
         return running;
     }
 

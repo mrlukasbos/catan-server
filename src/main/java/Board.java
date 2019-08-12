@@ -211,6 +211,17 @@ class Board {
         edge.setRoad(true);
     }
 
+    void placeStructure(Player p, Structure structure, String key) {
+        switch (structure) {
+            case STREET: placeStreet(p, getEdge(key)); break;
+            case SETTLEMENT: placeVillage(p, getNode(key)); break;
+            case CITY: placeCity(p, getNode(key)); break;
+            default: {
+
+            }
+        }
+    }
+
     private String developmentCardToString(DevelopmentCard developmentCard) {
         switch (developmentCard) {
             case KNIGHT:
@@ -306,8 +317,16 @@ class Board {
         return nodeMap.get(key);
     }
 
+    boolean hasNode(String key) {
+        return nodeMap.containsKey(key);
+    }
+
     Edge getEdge(String key) {
         return edgeMap.get(key);
+    }
+
+    boolean hasEdge(String key) {
+        return edgeMap.containsKey(key);
     }
 }
 

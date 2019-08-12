@@ -90,5 +90,6 @@ public class Node {
 enum Structure {
     NONE,
     SETTLEMENT,
-    CITY
+    CITY,
+    STREET
 }
