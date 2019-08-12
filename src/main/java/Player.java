@@ -1,3 +1,5 @@
+import com.google.gson.GsonBuilder;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -117,12 +119,26 @@ class Player {
 
     @java.lang.Override
     public java.lang.String toString() {
+
+        String resourcesString = "[";
+
+        if (resources.size() > 0) {
+            for (Resource resource : resources) {
+                resourcesString = resourcesString.concat("\"" + resourceToString(resource) + "\",");
+            }
+            resourcesString = resourcesString.substring(0, resourcesString.length() - 1);
+            resourcesString = resourcesString.concat("]");
+        } else {
+            resourcesString = "[]";
+        }
+
         return "{" +
                 "\"model\": \"player\", " +
                 "\"id\": " + getId() + ", " +
                 "\"attributes\": {" +
                 "\"color\": \"" + getColor() + "\", " +
-                "\"name\": \"" + getName() + "\"" +
+                "\"name\": \"" + getName() + "\", " +
+                "\"resources\": " + resourcesString +
                 "}" +
                 "}";
     }
@@ -130,6 +146,18 @@ class Player {
     private void print(String msg) {
         System.out.println("[Player] " + msg);
     }
+
+    private String resourceToString(Resource res) {
+        switch (res) {
+            case WHOOL: return "whool";
+            case WOOD: return "wood";
+            case STONE: return "stone";
+            case GRAIN: return "grain";
+            case ORE: return "ore";
+            default: return null;
+        }
+    }
+
 }
 
 enum Resource {

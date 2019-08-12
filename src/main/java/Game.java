@@ -77,6 +77,7 @@ class Game {
             }
             case BUILDING: {
                 build();
+                goToPhase(Phase.THROW_DICE);
                 break;
             }
         }
@@ -85,14 +86,14 @@ class Game {
 
 
     // Example inputs
-    // [{ "structure": "VILLAGE", "location": "([1,2],[2,1],[2,2])" }]
-    // [{ "structure": "CITY", "location": "([1,2],[2,1],[2,2])" }]
+    // [{ "structure": "village", "location": "([1,2],[2,1],[2,2])" }]
+    // [{ "structure": "city", "location": "([1,2],[2,1],[2,2])" }]
 
-    // [{ "structure": "VILLAGE", "location": "([2,2],[3,1],[3,2])" }]
-    // [{ "structure": "CITY", "location": "([2,2],[3,1],[3,2])" }]
+    // [{ "structure": "village", "location": "([2,2],[3,1],[3,2])" }]
+    // [{ "structure": "city", "location": "([2,2],[3,1],[3,2])" }]
 
-    // [{ "structure": "STREET", "location": "([2,2],[3,1])" }]
-    // [{ "structure": "STREET", "location": "([3,1],[3,2])" }, { "structure": "STREET", "location": "([2,2],[3,2])" }]
+    // [{ "structure": "street", "location": "([2,2],[3,1])" }]
+    // [{ "structure": "street", "location": "([3,1],[3,2])" }, { "structure": "street", "location": "([2,2],[3,2])" }]
     private void build() {
         currentPlayer.send("Please build if you like.");
 
