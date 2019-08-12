@@ -12,27 +12,10 @@ public class Main {
             iface.start();
 
             while (true) {
-                // handle broadcasting for interface
-                broadcastPlayerConnections(gm, iface); // the names of players connected
-                iface.broadcast(broadcastType.GAME_RUNNING, String.valueOf(readyToStart(server, iface))); // whether the game is running or not
 
-                if (server.getAmountOfConnections() < MINIMUM_AMOUNT_OF_PLAYERS) {
-                    iface.broadcast(broadcastType.STATUS, "WAITING_FOR_PLAYERS");
-                } else if (!iface.isReadyToStart()) {
-                    iface.broadcast(broadcastType.STATUS, "WAITING_FOR_TAKEOFF");
-                } else {
-                    iface.broadcast(broadcastType.STATUS, "GAME_RUNNING");
-                }
-
-                // publish player info
-                String playersString = "[";
-                for (Player player :  gm.getCurrentGame().getPlayers()) {
-                    playersString = playersString.concat(player.toString() + ",");
-                }
-                playersString = playersString.substring(0, playersString.length() - 1);
-                playersString = playersString.concat("]");
-                iface.broadcast(broadcastType.PLAYERS, playersString);
-
+                // Broadcast data to interface
+                broadcastStatus(server, iface); // if the game started, or waiting for players/takeoff
+                broadcastPlayerInfo(gm, iface); // the connected players and their colors
 
                 if (readyToStart(server, iface)) {
 
@@ -61,12 +44,25 @@ public class Main {
         }
     }
 
-    private static void broadcastPlayerConnections(GameManager gm, Sock s) {
-        String connectedPlayerNames = "";
-        for (Player p : gm.getCurrentGame().getPlayers()) {
-            connectedPlayerNames += p.getName() + ",";
+    private static void broadcastPlayerInfo(GameManager gm, Sock iface) {
+        // publish player info
+        String playersString = "[";
+        for (Player player :  gm.getCurrentGame().getPlayers()) {
+            playersString = playersString.concat(player.toString() + ",");
         }
-        s.broadcast(broadcastType.COMMUNICATION, connectedPlayerNames);
+        playersString = playersString.substring(0, playersString.length() - 1);
+        playersString = playersString.concat("]");
+        iface.broadcast(broadcastType.PLAYERS, playersString);
+    }
+
+    private static void broadcastStatus(Server server, Sock iface) {
+        if (server.getAmountOfConnections() < MINIMUM_AMOUNT_OF_PLAYERS) {
+            iface.broadcast(broadcastType.STATUS, "WAITING_FOR_PLAYERS");
+        } else if (!iface.isReadyToStart()) {
+            iface.broadcast(broadcastType.STATUS, "WAITING_FOR_TAKEOFF");
+        } else {
+            iface.broadcast(broadcastType.STATUS, "GAME_RUNNING");
+        }
     }
 
     private static boolean readyToStart(Server server, Sock s) {
