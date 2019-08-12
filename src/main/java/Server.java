@@ -7,19 +7,19 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 
 public class Server extends Thread {
 
     private ServerSocket serverSocket;
-    private int amountOfConnections = 0;
-    private GameManager gm;
+    private Game game;
+    private ArrayList<Player> connections = new ArrayList<Player>();
 
     // start a server on this device
-    Server(int port, GameManager gm) {
+    Server(int port) {
         try {
             serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(100000);
-            this.gm = gm;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,7 +41,7 @@ public class Server extends Thread {
     }
 
     void shutDown() {
-        for (Player p : gm.getCurrentGame().getPlayers()) {
+        for (Player p : game.getPlayers()) {
             try {
                 p.getSocket().close();
             } catch (IOException e) {
@@ -54,21 +54,17 @@ public class Server extends Thread {
     private void ensureConnections() throws IOException {
         // the sockets we get from the server need to be assigned to players
         Socket newConnection = serverSocket.accept();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(newConnection.getInputStream()));
+        String line = reader.readLine();
 
-        // since serverSocket.accept() is blocking we need to check here if the game hasn't started already.
-        if (!gm.IsRunning()) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(newConnection.getInputStream()));
-            String line = reader.readLine();
-            System.out.println("Just connected to " + line + " on address: " + newConnection.getRemoteSocketAddress());
-            Player newPlayer = new Player(amountOfConnections, line);
-            newPlayer.setSocket(newConnection);
-            amountOfConnections++;
-            gm.getCurrentGame().addPlayer(newPlayer);
-        }
+        Player newPlayer = new Player(connections.size(), line);
+        newPlayer.setSocket(newConnection);
+        connections.add(newPlayer);
+        System.out.println("[Server] Just connected to " + line + " on address: " + newConnection.getRemoteSocketAddress());
     }
 
-    int getAmountOfConnections() {
-        return amountOfConnections;
+    ArrayList<Player> getConnections() {
+        return connections;
     }
 
 }

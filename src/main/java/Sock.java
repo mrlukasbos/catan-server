@@ -38,14 +38,10 @@ import org.java_websocket.server.WebSocketServer;
 
 public class Sock extends WebSocketServer {
 
-    GameManager gm;
-    Server server;
     boolean readyToStart = false;
 
-    public Sock( int port , GameManager gm, Server server) {
+    public Sock( int port) {
         super(new InetSocketAddress(port));
-        this.gm = gm;
-        this.server = server;
     }
 
     @Override
@@ -104,7 +100,6 @@ public class Sock extends WebSocketServer {
             case SETTING: return "SET";
             case COMMUNICATION: return "COM";
             case BOARD: return "BOA";
-            case GAME_RUNNING: return "GRU";
             case PLAYERS: return "PLA";
             case STATUS: return "STA";
 
@@ -127,31 +122,6 @@ enum broadcastType {
     INFO,
     COMMUNICATION,
     BOARD,
-    GAME_RUNNING,
     PLAYERS,
     STATUS
-    /*
-
-    connection: {
-        status: [WAITING_FOR_CONNECTIONS, WAITING_FOR_TAKEOFF, GAME_RUNNING]
-    }
-
-    */
-    /*
-
-    players: {
-        player {
-            name
-            socket address
-            color
-            ...
-        }
-    }
-
-     */
-
-    /*
-    GAME_STATUS:
-
-     */
 }

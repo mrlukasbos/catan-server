@@ -33,7 +33,10 @@
             <button v-on:click="startGame">Start game</button>
         </div>
 
-        <div id="d3-holder"></div>
+
+        <div v-show="status==='GAME_RUNNING'">
+            <div id="d3-holder"></div>
+        </div>
     </div>
 </body>
 <script src="script.js"></script>

@@ -7,13 +7,24 @@ import java.util.ArrayList;
 class Game {
     private int dice = 0;
     private Board board;
-    private ArrayList<Player> players = new ArrayList<Player>();
+    private ArrayList<Player> players;
     private Player currentPlayer;
-    Phase phase;
+    private Phase phase;
+    private boolean running;
 
-    Game() {
-        board = new Board(players);
-        phase = Phase.SETUP;
+    Game() {  }
+
+    void start(ArrayList<Player> players) {
+        this.phase = Phase.SETUP;
+        this.board = new Board(players);
+        this.players = new ArrayList<Player>(players); // this copies the arraylist
+        running = true;
+    }
+
+    void stop() {
+        this.board = null;
+        this.players = null;
+        running = false;
     }
 
     void run() {
@@ -116,6 +127,10 @@ class Game {
 
     Board getBoard() {
         return board;
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 }
 

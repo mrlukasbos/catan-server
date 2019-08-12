@@ -1,5 +1,7 @@
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
@@ -33,6 +35,17 @@ class Player {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // blocking, but that is okay since he has to do a move
+    synchronized String listen() {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(getSocket().getInputStream()));
+            return reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     String getName() {

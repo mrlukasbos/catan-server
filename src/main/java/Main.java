@@ -3,9 +3,9 @@ public class Main {
     private static final int MINIMUM_AMOUNT_OF_PLAYERS = 1;
 
     public static void main(String[] args) {
-        GameManager gm = new GameManager();
-        Server server = new Server(10006, gm);
-        Sock iface = new Sock( 10007, gm, server);
+        Server server = new Server(10006);
+        Sock iface = new Sock( 10007);
+        Game game = new Game();
 
         try {
             server.start();
@@ -15,21 +15,24 @@ public class Main {
 
                 // Broadcast data to interface
                 broadcastStatus(server, iface); // if the game started, or waiting for players/takeoff
-                broadcastPlayerInfo(gm, iface); // the connected players and their colors
+                broadcastPlayerInfo(server, iface); // the connected players and their colors
 
                 if (readyToStart(server, iface)) {
 
-                    // broadcast the board
-                    iface.broadcast(broadcastType.BOARD, gm.getCurrentGame().getBoard().toString());
-                    gm.getCurrentGame().getPlayers().forEach((p) -> p.send(gm.getCurrentGame().getBoard().toString()));
+                    // start a game with the connections from the server
+                    if (!game.isRunning()) {
+                        game.start(server.getConnections());
+                    }
 
-                    gm.run();
-                } else if (gm.IsRunning()) {
-                    // first shut down the server, so we can kill the sockets which are hooked to the players
-                    server.shutDown();
-                    gm.end();
+                    // broadcast the board
+                    iface.broadcast(broadcastType.BOARD, game.getBoard().toString());
+                    game.getPlayers().forEach((p) -> p.send(game.getBoard().toString()));
+
                 } else {
-                    gm.getCurrentGame().getPlayers().forEach((p) -> p.send("MSG Waiting for game to start"));
+                    if (game.isRunning()) {
+                        game.stop();
+                    }
+                    server.getConnections().forEach((p) -> p.send("MSG Waiting for game to start"));
                 }
 
                 Thread.sleep(200); // 5fps
@@ -44,10 +47,10 @@ public class Main {
         }
     }
 
-    private static void broadcastPlayerInfo(GameManager gm, Sock iface) {
+    private static void broadcastPlayerInfo(Server server, Sock iface) {
         // publish player info
         String playersString = "[";
-        for (Player player :  gm.getCurrentGame().getPlayers()) {
+        for (Player player :  server.getConnections()) {
             playersString = playersString.concat(player.toString() + ",");
         }
         playersString = playersString.substring(0, playersString.length() - 1);
@@ -56,7 +59,7 @@ public class Main {
     }
 
     private static void broadcastStatus(Server server, Sock iface) {
-        if (server.getAmountOfConnections() < MINIMUM_AMOUNT_OF_PLAYERS) {
+        if (server.getConnections().size() < MINIMUM_AMOUNT_OF_PLAYERS) {
             iface.broadcast(broadcastType.STATUS, "WAITING_FOR_PLAYERS");
         } else if (!iface.isReadyToStart()) {
             iface.broadcast(broadcastType.STATUS, "WAITING_FOR_TAKEOFF");
@@ -67,7 +70,7 @@ public class Main {
 
     private static boolean readyToStart(Server server, Sock s) {
         boolean playersAreReady = s.isReadyToStart();
-        boolean enoughPlayers = server.getAmountOfConnections() >= MINIMUM_AMOUNT_OF_PLAYERS;
+        boolean enoughPlayers = server.getConnections().size() >= MINIMUM_AMOUNT_OF_PLAYERS;
         return playersAreReady && enoughPlayers;
     }
 }
