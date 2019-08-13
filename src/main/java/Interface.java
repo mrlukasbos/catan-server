@@ -37,15 +37,28 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 public class Interface extends WebSocketServer {
+    // the amount of players that need to be connected before a game can be started
+    private static final int MINIMUM_AMOUNT_OF_PLAYERS = 1;
+    private Game game;
+    private Server server;
 
-    boolean readyToStart = false;
-
-    public Interface(int port) {
+    Interface(int port) {
         super(new InetSocketAddress(port));
+    }
+
+    void start(Server server, Game game) {
+        this.game = game;
+        this.server = server;
+        start();
     }
 
     @Override
     public void onOpen( WebSocket conn, ClientHandshake handshake ) {
+        broadcastPlayerInfo();
+        broadcastStatus();
+        if (game.isRunning()) {
+            broadcast(broadcastType.BOARD, game.getBoard().toString());
+        }
     }
 
     @Override
@@ -55,16 +68,16 @@ public class Interface extends WebSocketServer {
     @Override
     public void onMessage( WebSocket conn, String message ) {
         if (message.contains("START")) {
-            readyToStart = true;
             print("Received START signal");
+            if (server.getConnections().size() >= MINIMUM_AMOUNT_OF_PLAYERS) {
+                game.start(server.getConnections());
+            } else {
+                print("not enough players to start with");
+            }
         } else if (message.contains("STOP")) {
-            readyToStart = false;
             print("Received STOP signal");
+            game.quit();
         }
-    }
-
-    boolean isReadyToStart() {
-        return readyToStart;
     }
 
     @Override
@@ -119,6 +132,27 @@ public class Interface extends WebSocketServer {
 
     private void print(String msg) {
         System.out.println("[Iface] \t" + msg);
+    }
+
+    void broadcastPlayerInfo() {
+        // publish player info
+        String playersString = "[";
+        for (Player player :  server.getConnections()) {
+            playersString = playersString.concat(player.toString() + ",");
+        }
+        playersString = playersString.substring(0, playersString.length() - 1);
+        playersString = playersString.concat("]");
+        broadcast(broadcastType.PLAYERS, playersString);
+    }
+
+    void broadcastStatus() {
+        if (server.getConnections().size() < MINIMUM_AMOUNT_OF_PLAYERS) {
+            broadcast(broadcastType.STATUS, "WAITING_FOR_PLAYERS");
+        } else if (!game.isRunning()) {
+            broadcast(broadcastType.STATUS, "WAITING_FOR_TAKEOFF");
+        } else {
+            broadcast(broadcastType.STATUS, "GAME_RUNNING");
+        }
     }
 }
 

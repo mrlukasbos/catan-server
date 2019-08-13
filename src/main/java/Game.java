@@ -16,8 +16,11 @@ class Game extends Thread {
     private Player currentPlayer;
     private Phase phase;
     private boolean running = false;
+    private Interface iface;
 
-    Game() {  }
+    Game(Interface iface) {
+        this.iface = iface;
+    }
 
     void start(ArrayList<Player> players) {
         this.phase = Phase.SETUP;
@@ -90,13 +93,25 @@ class Game extends Thread {
                         }
                         case BUILDING: {
                             build();
-                            goToPhase(Phase.THROW_DICE);
+                            goToPhase(Phase.END_TURN);
                             break;
                         }
-                    }
-                    getPlayers().forEach((p) -> p.send(getBoard().toString()));
+                        case END_TURN: {
+                            // signal the change
+                            getPlayers().forEach((p) -> p.send(getBoard().toString()));
+                            iface.broadcast(broadcastType.BOARD, getBoard().toString());
+                            iface.broadcastStatus();
+                            iface.broadcastPlayerInfo();
 
-                    progressToNextPlayer();
+                            currentPlayer = getNextPlayer();
+                            print("next player: " + currentPlayer.getName());
+
+                            goToPhase(Phase.THROW_DICE);
+
+                        }
+                    }
+
+
                 }
             }
             try {
@@ -206,9 +221,8 @@ class Game extends Thread {
     }
 
     // move the currentPlayer id to the next Player in the array.
-    private Player progressToNextPlayer() {
+    private Player getNextPlayer() {
         Player nextPlayer = players.get((currentPlayer.getId() + 1) % players.size());
-        currentPlayer = nextPlayer;
         return nextPlayer;
     }
 
@@ -252,5 +266,6 @@ enum Phase {
     MOVE_BANDIT,
     GATHER_RESOURCES,
     BUILDING,
-    PLAYING_CARD
+    PLAYING_CARD,
+    END_TURN
 }

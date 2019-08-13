@@ -14,6 +14,7 @@ public class Server extends Thread {
     private ServerSocket serverSocket;
     private Game game;
     private ArrayList<Player> connections = new ArrayList<Player>();
+    private Interface iface;
 
     // start a server on this device
     Server(int port) {
@@ -24,6 +25,11 @@ public class Server extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    void start(Interface iface) {
+        this.iface = iface;
+        start();
     }
 
     public void run() {
@@ -61,6 +67,10 @@ public class Server extends Thread {
         newPlayer.setSocket(newConnection);
         connections.add(newPlayer);
         print("Just connected to " + line + " on address: " + newConnection.getRemoteSocketAddress());
+
+        // signal the interface something changed.
+        iface.broadcastPlayerInfo();
+        iface.broadcastStatus();
     }
 
     ArrayList<Player> getConnections() {
