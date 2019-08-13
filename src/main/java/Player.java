@@ -37,15 +37,14 @@ class Player {
         }
     }
 
-    // non-blocking implementation of reading
-    // this function returns a message if it is available, otherwise null
+    // blocking implementation of reading
     synchronized String listen() {
         try {
             InputStream inputStream = getSocket().getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            if (inputStream.available() != 0 && reader.ready()) {
-                return reader.readLine();
-            }
+         //   if (inputStream.available() != 0 && reader.ready()) {
+            return reader.readLine();
+          //  }
         } catch (IOException e) {
             e.printStackTrace();
         }

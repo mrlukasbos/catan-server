@@ -25,14 +25,10 @@ public class Main {
 
                 // broadcast the board
                 iface.broadcast(broadcastType.BOARD, game.getBoard().toString());
-                game.getPlayers().forEach((p) -> p.send(game.getBoard().toString()));
-
-                game.run();
             } else {
                 if (game.isRunning()) {
-                    game.stop();
+                    game.quit();
                 }
-               // server.getConnections().forEach((p) -> p.send("MSG Waiting for game to start"));
             }
 
             try {

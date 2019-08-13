@@ -9,13 +9,13 @@ import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 
-class Game {
+class Game extends Thread {
     private int dice = 0;
     private Board board;
     private ArrayList<Player> players;
     private Player currentPlayer;
     private Phase phase;
-    private boolean running;
+    private boolean running = false;
 
     Game() {  }
 
@@ -23,65 +23,89 @@ class Game {
         this.phase = Phase.SETUP;
         this.board = new Board(players);
         this.players = new ArrayList<Player>(players); // this copies the arraylist
-        running = true;
+        this.running = true;
         print("Starting game");
+        start();
     }
 
-    void stop() {
+    void quit() {
         this.board = null;
         this.players = null;
-        running = false;
+        this.running = false;
         print("Stopping game");
+
+        try {
+            join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    void run() {
-        switch (phase) {
+    public void run() {
+        while (true) {
+
+
+            if (isRunning()) {
+                print("running");
+                if (running) {
+                    switch (phase) {
 
             /*
             Determine the player that can start
              */
-            case SETUP: {
-                currentPlayer = determineFirstPlayer();
-                goToPhase(Phase.THROW_DICE);
-                break;
-            }
+                        case SETUP: {
+                            currentPlayer = determineFirstPlayer();
+                            goToPhase(Phase.THROW_DICE);
+                            break;
+                        }
 
             /*
             Throw a dice. If it is 7 then move the bandit
             Otherwise give the players their resources.
              */
-            case THROW_DICE: {
-                int diceThrow = currentPlayer.throwDice();
-                print("Dice thrown: " + diceThrow);
-                if (diceThrow == 7) {
-                    goToPhase(Phase.FORCE_DISCARD);
-                } else {
-                    distributeResourcesForDice(diceThrow);
-                    goToPhase(Phase.BUILDING);
-                }
-                break;
-            }
+                        case THROW_DICE: {
+                            int diceThrow = currentPlayer.throwDice();
+                            print("Dice thrown: " + diceThrow);
+                            if (diceThrow == 7) {
+                                goToPhase(Phase.FORCE_DISCARD);
+                            } else {
+                                distributeResourcesForDice(diceThrow);
+                                goToPhase(Phase.BUILDING);
+                            }
+                            break;
+                        }
 
-            case FORCE_DISCARD: {
-                for (Player p : getPlayers()) {
-                    if (p.countResources() > 7) {
+                        case FORCE_DISCARD: {
+                            for (Player p : getPlayers()) {
+                                if (p.countResources() > 7) {
 
+                                }
+                            }
+                            goToPhase(Phase.MOVE_BANDIT);
+                            break;
+                        }
+                        case MOVE_BANDIT: {
+                            goToPhase(Phase.BUILDING);
+                            break;
+                        }
+                        case BUILDING: {
+                            build();
+                            goToPhase(Phase.THROW_DICE);
+                            break;
+                        }
                     }
+                    getPlayers().forEach((p) -> p.send(getBoard().toString()));
+
+                    progressToNextPlayer();
                 }
-                goToPhase(Phase.MOVE_BANDIT);
-                break;
             }
-            case MOVE_BANDIT: {
-                goToPhase(Phase.BUILDING);
-                break;
-            }
-            case BUILDING: {
-                build();
-                goToPhase(Phase.THROW_DICE);
-                break;
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
-        progressToNextPlayer();
+
     }
 
 
@@ -160,6 +184,7 @@ class Game {
     }
 
     void goToPhase(Phase phase) {
+        print ("going to phase: " + phaseToString(phase));
         this.phase = phase;
     }
 
@@ -206,6 +231,18 @@ class Game {
     private void print(String msg) {
         System.out.println("[Game] \t \t" + msg);
     }
+
+    private String phaseToString(Phase phase) {
+        switch (phase) {
+            case SETUP: return "SETUP";
+            case THROW_DICE: return "THROW_DICE";
+            case FORCE_DISCARD: return "FORCE_DISCARD";
+            case MOVE_BANDIT: return "MOVE_BANDIT";
+            case BUILDING: return "BUILDING";
+            default: return "Unknown";
+        }
+    }
+
 }
 
 enum Phase {
