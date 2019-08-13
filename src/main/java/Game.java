@@ -46,78 +46,66 @@ class Game extends Thread {
 
     public void run() {
         while (true) {
-
-
             if (isRunning()) {
-                print("running");
-                if (running) {
                     switch (phase) {
 
             /*
             Determine the player that can start
              */
-                        case SETUP: {
-                            currentPlayer = determineFirstPlayer();
-                            goToPhase(Phase.THROW_DICE);
-                            break;
-                        }
+                    case SETUP: {
+                        currentPlayer = determineFirstPlayer();
+                        goToPhase(Phase.THROW_DICE);
+                        break;
+                    }
 
             /*
             Throw a dice. If it is 7 then move the bandit
             Otherwise give the players their resources.
              */
-                        case THROW_DICE: {
-                            int diceThrow = currentPlayer.throwDice();
-                            print("Dice thrown: " + diceThrow);
-                            if (diceThrow == 7) {
-                                goToPhase(Phase.FORCE_DISCARD);
-                            } else {
-                                distributeResourcesForDice(diceThrow);
-                                goToPhase(Phase.BUILDING);
-                            }
-                            break;
-                        }
-
-                        case FORCE_DISCARD: {
-                            for (Player p : getPlayers()) {
-                                if (p.countResources() > 7) {
-
-                                }
-                            }
-                            goToPhase(Phase.MOVE_BANDIT);
-                            break;
-                        }
-                        case MOVE_BANDIT: {
+                    case THROW_DICE: {
+                        int diceThrow = currentPlayer.throwDice();
+                        print("Dice thrown: " + diceThrow);
+                        if (diceThrow == 7) {
+                            goToPhase(Phase.FORCE_DISCARD);
+                        } else {
+                            distributeResourcesForDice(diceThrow);
                             goToPhase(Phase.BUILDING);
-                            break;
                         }
-                        case BUILDING: {
-                            build();
-                            goToPhase(Phase.END_TURN);
-                            break;
-                        }
-                        case END_TURN: {
-                            // signal the change
-                            getPlayers().forEach((p) -> p.send(getBoard().toString()));
-                            iface.broadcast(broadcastType.BOARD, getBoard().toString());
-                            iface.broadcastStatus();
-                            iface.broadcastPlayerInfo();
-
-                            currentPlayer = getNextPlayer();
-                            print("next player: " + currentPlayer.getName());
-
-                            goToPhase(Phase.THROW_DICE);
-
-                        }
+                        break;
                     }
 
+                    case FORCE_DISCARD: {
+                        for (Player p : getPlayers()) {
+                            if (p.countResources() > 7) {
 
+                            }
+                        }
+                        goToPhase(Phase.MOVE_BANDIT);
+                        break;
+                    }
+                    case MOVE_BANDIT: {
+                        goToPhase(Phase.BUILDING);
+                        break;
+                    }
+                    case BUILDING: {
+                        build();
+                        goToPhase(Phase.END_TURN);
+                        break;
+                    }
+                    case END_TURN: {
+                        // signal the change
+                        getPlayers().forEach((p) -> p.send(getBoard().toString()));
+                        iface.broadcast(broadcastType.BOARD, getBoard().toString());
+                        iface.broadcastStatus();
+                        iface.broadcastPlayerInfo();
+
+                        currentPlayer = getNextPlayer();
+                        print("next player: " + currentPlayer.getName());
+
+                        goToPhase(Phase.THROW_DICE);
+
+                    }
                 }
-            }
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
 
