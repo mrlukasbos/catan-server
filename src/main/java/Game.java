@@ -22,7 +22,7 @@ class Game extends Thread {
         this.iface = iface;
     }
 
-    void start(ArrayList<Player> players) {
+    synchronized void start(ArrayList<Player> players) {
         this.phase = Phase.SETUP;
         this.board = new Board(players);
         this.players = new ArrayList<Player>(players); // this copies the arraylist

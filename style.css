@@ -17,24 +17,29 @@
     fill: sandybrown;
 }
 
-.hexagon .wool {
+.wool {
     fill: lawngreen;
+    background-color: lawngreen;
 }
 
-.hexagon .wood {
+.wood {
     fill: forestgreen;
+    background-color: forestgreen;
 }
 
-.hexagon .stone {
+.stone {
     fill: rosybrown;
+    background-color: rosybrown;
 }
 
-.hexagon .grain {
+.grain {
     fill: yellow;
+    background-color: yellow;
 }
 
-.hexagon .ore {
+.ore {
     fill: lightgray;
+    background-color: lightgray;
 }
 
 .hexagon .sea {

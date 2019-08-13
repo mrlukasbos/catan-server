@@ -18,10 +18,12 @@
         <div v-if="players.length">
             <strong> Players </strong>
             <div v-for="player in players" style="display: flex">
-                <div style="width: 20px; height: 20px; border-radius: 50%;" :style="{ 'background-color': player.attributes.color }"></div>
+                <div style="width: 30px; height: 30px; border-radius: 50%;" :style="{ 'background-color': player.attributes.color }"></div>
                 <span style="margin: 4px 4px"> {{player.attributes.name}} <small>({{player.id}})</small></span>
 
-                <div v-for="resource in player.attributes.resources" style="display: flex"> {{resource}} </div>
+                <div v-for="resource in player.attributes.resources" style="display: flex">
+                    <div style="width: 20px; height: 30px; border-radius: 10%; margin-right: 4px;" v-bind:class="resource"></div>
+                </div>
             </div>
         </div>
         <div v-else>
@@ -34,7 +36,6 @@
         <div v-else-if="status==='WAITING_FOR_TAKEOFF'">
             <button v-on:click="startGame">Start game</button>
         </div>
-
 
         <div v-show="status==='GAME_RUNNING'">
             <div id="d3-holder"></div>
