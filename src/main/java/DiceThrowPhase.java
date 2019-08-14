@@ -5,6 +5,10 @@ public class DiceThrowPhase implements GamePhase {
         this.game = game;
     }
 
+    public Phase getPhaseType() {
+        return Phase.THROW_DICE;
+    }
+
     public Phase execute() {
         Dice d = new Dice(2);
         int dice = d.throwDice();

@@ -27,7 +27,8 @@ public class Server extends Thread {
         }
     }
 
-    void start(Interface iface) {
+    void start(Interface iface, Game game) {
+        this.game = game;
         this.iface = iface;
         start();
     }
@@ -68,9 +69,10 @@ public class Server extends Thread {
         connections.add(newPlayer);
         print("Just connected to " + line + " on address: " + newConnection.getRemoteSocketAddress());
 
-        // signal the interface something changed.
-        iface.broadcastPlayerInfo();
-        iface.broadcastStatus();
+        if (!game.isRunning()) {
+            game.addPlayer(newPlayer);
+            iface.broadcast(game.toString());
+        }
     }
 
     ArrayList<Player> getConnections() {

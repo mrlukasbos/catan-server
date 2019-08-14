@@ -5,6 +5,10 @@ public class SetupPhase implements GamePhase {
         this.game = game;
     }
 
+    public Phase getPhaseType() {
+        return Phase.SETUP;
+    }
+
     public Phase execute() {
         game.setCurrentPlayer(determineFirstPlayer());
         return Phase.THROW_DICE;

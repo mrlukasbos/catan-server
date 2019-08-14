@@ -38,7 +38,6 @@ import org.java_websocket.server.WebSocketServer;
 
 public class Interface extends WebSocketServer {
     // the amount of players that need to be connected before a game can be started
-    private static final int MINIMUM_AMOUNT_OF_PLAYERS = 1;
     private Game game;
     private Server server;
 
@@ -54,11 +53,7 @@ public class Interface extends WebSocketServer {
 
     @Override
     public void onOpen( WebSocket conn, ClientHandshake handshake ) {
-        broadcastPlayerInfo();
-        broadcastStatus();
-        if (game.isRunning()) {
-            broadcast(broadcastType.BOARD, game.getBoard().toString());
-        }
+        broadcast(game.toString());
     }
 
     @Override
@@ -69,8 +64,8 @@ public class Interface extends WebSocketServer {
     public void onMessage( WebSocket conn, String message ) {
         if (message.contains("START")) {
             print("Received START signal");
-            if (server.getConnections().size() >= MINIMUM_AMOUNT_OF_PLAYERS && !game.isRunning()) {
-                game.start(server.getConnections());
+            if (server.getConnections().size() >= Constants.MINIMUM_AMOUNT_OF_PLAYERS && !game.isRunning()) {
+                game.startGame();
             } else {
                 print("not enough players to start with");
             }
@@ -122,26 +117,6 @@ public class Interface extends WebSocketServer {
         System.out.println("[Iface] \t" + msg);
     }
 
-    void broadcastPlayerInfo() {
-        // publish player info
-        String playersString = "[";
-        for (Player player :  server.getConnections()) {
-            playersString = playersString.concat(player.toString() + ",");
-        }
-        playersString = playersString.substring(0, playersString.length() - 1);
-        playersString = playersString.concat("]");
-        broadcast(broadcastType.PLAYERS, playersString);
-    }
-
-    void broadcastStatus() {
-        if (server.getConnections().size() < MINIMUM_AMOUNT_OF_PLAYERS) {
-            broadcast(broadcastType.STATUS, "WAITING_FOR_PLAYERS");
-        } else if (!game.isRunning()) {
-            broadcast(broadcastType.STATUS, "WAITING_FOR_TAKEOFF");
-        } else {
-            broadcast(broadcastType.STATUS, "GAME_RUNNING");
-        }
-    }
 }
 
 enum broadcastType {

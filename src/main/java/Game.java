@@ -5,33 +5,36 @@ All game mechanics
 import java.util.ArrayList;
 
 class Game extends Thread {
+
     private int lastDiceThrow = 0;
     private Board board;
-    private ArrayList<Player> players;
+    private ArrayList<Player> players = new ArrayList<Player>();
     private Player currentPlayer;
     private boolean running = false;
     private Interface iface;
+    private Server server;
 
-    // all gamePhases
+    // All gamePhases
     private DiceThrowPhase diceThrowPhase = new DiceThrowPhase(this);
     private SetupPhase setupPhase = new SetupPhase(this);
     private BuildPhase buildPhase = new BuildPhase(this);
     private EndTurnPhase endTurnPhase = new EndTurnPhase(this);
 
-    Game(Interface iface) {
+    GamePhase currentPhase = new SetupPhase(this);
+
+    Game(Interface iface, Server server) {
         this.iface = iface;
+        this.server = server;
     }
 
-    synchronized void start(ArrayList<Player> players) {
+    synchronized public void startGame() {
         this.board = new Board(this);
-        this.players = new ArrayList<Player>(players); // this copies the arraylist
         this.running = true;
         print("Starting game");
         start();
     }
 
     public void run() {
-        GamePhase currentPhase = new SetupPhase(this);
         while (true) {
             if (isRunning()) {
                 Phase nextPhase = currentPhase.execute();
@@ -47,9 +50,7 @@ class Game extends Thread {
     private void signalGameChange() {
         // signal the change
         getPlayers().forEach((p) -> p.send(getBoard().toString()));
-        iface.broadcast(broadcastType.BOARD, getBoard().toString());
-        iface.broadcastStatus();
-        iface.broadcastPlayerInfo();
+        iface.broadcast(toString());
     }
 
     Structure stringToStructure(String str) {
@@ -103,6 +104,58 @@ class Game extends Thread {
             case BUILDING: return "BUILDING";
             default: return "Unknown";
         }
+    }
+
+    @Override
+    public String toString() {
+
+        String playersString = "[";
+        if (getPlayers().size() > 0) {
+            for (Player player : getPlayers()) {
+                playersString = playersString.concat(player.toString() + ",");
+            }
+            playersString = playersString.substring(0, playersString.length() - 1);
+            playersString = playersString.concat("]");
+        } else {
+            playersString = "[]";
+        }
+
+        if (isRunning()) {
+
+            return "{" +
+                    "\"model\": \"game\", " +
+                    "\"attributes\": {" +
+                    "\"players\": " + playersString + ", " +
+                    "\"status\": \"" + getGameStatus() + "\", " +
+                    "\"board\": " + getBoard().toString() + ", " +
+                    "\"lastDiceThrow\": " + getLastDiceThrow() + ", " +
+                    "\"phase\": \"" + phaseToString(currentPhase.getPhaseType()) + "\"" +
+                    "}" +
+                    '}';
+        } else {
+            return "{" +
+                    "\"model\": \"game\", " +
+                    "\"attributes\": {" +
+                    "\"players\": " + playersString + ", " +
+                    "\"status\": \"" + getGameStatus() + "\"" +
+                    "}" +
+                    '}';
+        }
+    }
+
+
+    String getGameStatus() {
+        if (getPlayers().size() < Constants.MINIMUM_AMOUNT_OF_PLAYERS) {
+            return "WAITING_FOR_PLAYERS";
+        } else if (!isRunning()) {
+            return "WAITING_FOR_TAKEOFF";
+        } else {
+            return "GAME_RUNNING";
+        }
+    }
+
+    void addPlayer (Player p) {
+        players.add(p);
     }
 
     ArrayList<Player> getPlayers() { return players; }

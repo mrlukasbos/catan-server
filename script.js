@@ -3,11 +3,11 @@ var json = null;
 function draw() {
     d3.select("svg").remove();
 
-var tiles = json.attributes.tiles,
-    edges = json.attributes.edges,
-    nodes = json.attributes.nodes,
-    players = json.attributes.players,
-    bandits = json.attributes.bandits;
+var tiles = json.attributes.board.attributes.tiles,
+    edges = json.attributes.board.attributes.edges,
+    nodes = json.attributes.board.attributes.nodes,
+    bandits = json.attributes.board.attributes.bandits,
+    players = json.attributes.players;
 
 var width = 1050,
     height = 900,
@@ -265,28 +265,18 @@ var app = new Vue({
             }
 
             this.socket.onmessage = (data) => {
+                console.log(data.data);
+                var message = data.data.toString();
+                json = JSON.parse(message);
+            
+                this.json = json;
+                this.lastDiceThrow = json.attributes.lastDiceThrow;
+                this.players = json.attributes.players;
+                this.status = json.attributes.status;
 
-                // get the first three characters of the new data
-                // it should indicate what to do with the data
-                var identifier = data.data.toString().substring(0, 3);
-                var message = data.data.toString().substring(3, data.data.length);
-
-                switch (identifier) {
-                    case "BOA": {
-                        json = JSON.parse(message);
-                        this.json = json;
-                        this.lastDiceThrow = json.attributes.lastDiceThrow;
-                        draw();
-                        break;
-                    }
-                    case "PLA": {
-                        this.players = JSON.parse(message);
-                        break;
-                    }
-                    case "STA": {
-                        this.status = message;
-                    }
-                }
+                if (json.attributes.board) {
+                draw();
+            }
             }
         },
         startGame: function(event) {

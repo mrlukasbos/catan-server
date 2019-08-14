@@ -17,7 +17,7 @@
     fill: sandybrown;
 }
 
-.wool {
+.wool, .whool {
     fill: lawngreen;
     background-color: lawngreen;
 }
