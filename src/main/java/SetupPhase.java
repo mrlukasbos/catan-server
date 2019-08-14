@@ -5,9 +5,9 @@ public class SetupPhase implements GamePhase {
         this.game = game;
     }
 
-    public GamePhase execute() {
+    public Phase execute() {
         game.setCurrentPlayer(determineFirstPlayer());
-        return game.getGamePhase(Phase.THROW_DICE);
+        return Phase.THROW_DICE;
     }
 
     // throw the dice, the highest throw can start

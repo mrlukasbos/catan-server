@@ -1,3 +1,3 @@
 public interface GamePhase {
-    GamePhase execute();
+    Phase execute();
 }

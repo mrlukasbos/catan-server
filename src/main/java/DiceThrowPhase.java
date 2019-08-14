@@ -5,14 +5,15 @@ public class DiceThrowPhase implements GamePhase {
         this.game = game;
     }
 
-    public GamePhase execute() {
+    public Phase execute() {
         Dice d = new Dice(2);
         int dice = d.throwDice();
+        game.setLastDiceThrow(dice);
         if (dice == 7) {
-            return game.getGamePhase(Phase.MOVE_BANDIT);
+            return Phase.MOVE_BANDIT;
         } else {
             distributeResourcesForDice(dice);
-            return game.getGamePhase(Phase.BUILDING);
+            return Phase.BUILDING;
         }
     }
 

@@ -2,33 +2,27 @@
 All game mechanics
  */
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import java.util.ArrayList;
 
 class Game extends Thread {
-    private int dice = 0;
+    private int lastDiceThrow = 0;
     private Board board;
     private ArrayList<Player> players;
     private Player currentPlayer;
-    private Phase phase;
     private boolean running = false;
     private Interface iface;
 
     // all gamePhases
-    DiceThrowPhase diceThrowPhase = new DiceThrowPhase(this);
-    SetupPhase setupPhase = new SetupPhase(this);
-    BuildPhase buildPhase = new BuildPhase(this);
+    private DiceThrowPhase diceThrowPhase = new DiceThrowPhase(this);
+    private SetupPhase setupPhase = new SetupPhase(this);
+    private BuildPhase buildPhase = new BuildPhase(this);
+    private EndTurnPhase endTurnPhase = new EndTurnPhase(this);
 
     Game(Interface iface) {
         this.iface = iface;
     }
 
     synchronized void start(ArrayList<Player> players) {
-        this.phase = Phase.SETUP;
         this.board = new Board(this);
         this.players = new ArrayList<Player>(players); // this copies the arraylist
         this.running = true;
@@ -37,52 +31,15 @@ class Game extends Thread {
     }
 
     public void run() {
-
         GamePhase currentPhase = new SetupPhase(this);
-
-
         while (true) {
             if (isRunning()) {
+                Phase nextPhase = currentPhase.execute();
 
-                currentPhase = currentPhase.execute();
+                print("Going to phase: " + phaseToString(nextPhase));
+                currentPhase = getGamePhase(nextPhase);
+
                 signalGameChange();
-
-//                    case THROW_DICE: {
-//                        Phase nextPhase = diceThrowPhase.execute();
-//                        signalGameChange();
-//                        goToPhase(nextPhase);
-//                        break;
-//                    }
-//
-//                    case FORCE_DISCARD: {
-//                        for (Player p : getPlayers()) {
-//                            if (p.countResources() > 7) {
-//
-//                            }
-//                        }
-//                        goToPhase(Phase.MOVE_BANDIT);
-//                        break;
-//                    }
-//
-//                    case MOVE_BANDIT: {
-//                        goToPhase(Phase.BUILDING);
-//                        break;
-//                    }
-//
-//                    case BUILDING: {
-//                        build();
-//                        goToPhase(Phase.END_TURN);
-//                        break;
-//                    }
-//
-//                    case END_TURN: {
-//                        currentPlayer = getNextPlayer();
-//                        print("next player: " + currentPlayer.getName());
-//                        signalGameChange();
-//                        goToPhase(Phase.THROW_DICE);
-//
-//                    }
-                //               }
             }
         }
     }
@@ -108,45 +65,26 @@ class Game extends Thread {
         }
     }
 
-    private void goToPhase(Phase phase) {
-        print("going to phase: " + phaseToString(phase));
-        this.phase = phase;
-    }
 
 
-    // move the currentPlayer id to the next Player in the array.
-    private Player getNextPlayer() {
-        return players.get((currentPlayer.getId() + 1) % players.size());
-    }
+    ArrayList<Player> getPlayers() { return players; }
 
-    ArrayList<Player> getPlayers() {
-        return players;
-    }
+    Board getBoard() { return board; }
 
-    Board getBoard() {
-        return board;
-    }
-
-    boolean isRunning() {
-        return running;
-    }
+    boolean isRunning() { return running; }
 
     void print(String msg) {
         System.out.println("[Game] \t \t" + msg);
     }
 
 
-    void setCurrentPlayer(Player player) {
-        currentPlayer = player;
-    }
+    void setCurrentPlayer(Player player) { currentPlayer = player; }
 
-    Player getCurrentPlayer() {
-        return currentPlayer;
-    }
+    Player getCurrentPlayer() { return currentPlayer; }
 
-    int getLastDiceThrow() {
-        return dice;
-    }
+    int getLastDiceThrow() { return lastDiceThrow; }
+
+    void setLastDiceThrow(int diceThrow) { lastDiceThrow = diceThrow; }
 
     void quit() {
         this.board = null;
@@ -162,7 +100,7 @@ class Game extends Thread {
     }
 
 
-    GamePhase getGamePhase(Phase phase) {
+    private GamePhase getGamePhase(Phase phase) {
         switch (phase) {
             case SETUP:
                 return setupPhase;
@@ -170,13 +108,15 @@ class Game extends Thread {
                 return diceThrowPhase;
             case BUILDING:
                 return buildPhase;
+            case END_TURN:
+                return endTurnPhase;
             default:
                 return setupPhase;
         }
     }
 
 
-    String phaseToString(Phase phase) {
+    private String phaseToString(Phase phase) {
         switch (phase) {
             case SETUP: return "SETUP";
             case THROW_DICE: return "THROW_DICE";
@@ -194,6 +134,5 @@ enum Phase {
     THROW_DICE,
     FORCE_DISCARD,
     MOVE_BANDIT,
-    BUILDING,
-    PLAYING_CARD,
+    BUILDING
 }

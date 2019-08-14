@@ -10,9 +10,9 @@ class BuildPhase implements GamePhase {
         this.game = game;
     }
 
-    public GamePhase execute() {
+    public Phase execute() {
         build();
-        return game.getGamePhase(Phase.END_TURN);
+        return Phase.END_TURN;
     }
 
 

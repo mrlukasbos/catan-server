@@ -6,7 +6,6 @@ import java.util.Random;
 class Player {
     private String name;
     private int id;
-    private int lastDiceThrow = 0;
     private ArrayList<Resource> resources = new ArrayList<Resource>();
     private String color;
     private Socket socket;
