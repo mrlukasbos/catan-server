@@ -92,6 +92,13 @@ class BuildPhase implements GamePhase {
             }
 
         }
+
+        Tile nodeA = game.getBoard().getTiles().get(0);
+        Tile nodeB = game.getBoard().getTiles().get(game.getLastDiceThrow()*1);
+
+        double distance = nodeA.getDistance(nodeB);
+        game.print("the distance from node: " + nodeA.getKey() + " to node: " + nodeB.getKey() + " is " + distance);
+
         return true;
     }
 

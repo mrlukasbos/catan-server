@@ -41,22 +41,6 @@ class Board {
         put("[0,4]", Orientation.RIGHT);
         put("[0,2]", Orientation.RIGHT);
     }};
-    private static final int[][] AXIAL_DIRECTIONS_ODD = {
-            {-1, -1},
-            {0, -1},
-            {1, 0},
-            {0, 1},
-            {-1, 1},
-            {-1, 0}
-    };
-    private static final int[][] AXIAL_DIRECTIONS_EVEN = {
-            {0, -1},
-            {1, -1},
-            {1, 0},
-            {1, 1},
-            {0, 1},
-            {-1, 0}
-    };
 
     private List<Tile> tiles;
     private List<Edge> edges;
@@ -155,9 +139,9 @@ class Board {
     private void createEdgesForTile(Tile a) {
         int[][] directions;
         if (a.getY() % 2 == 0) {
-            directions = AXIAL_DIRECTIONS_EVEN;
+            directions = Constants.AXIAL_DIRECTIONS_EVEN;
         } else {
-            directions = AXIAL_DIRECTIONS_ODD;
+            directions = Constants.AXIAL_DIRECTIONS_ODD;
         }
         for (int i = 0; i < 6; i++) {
             Tile b = tileMap.get(tileCoordinatesToKey(a.getX() + directions[i][0], a.getY() + directions[i][1]));
@@ -172,9 +156,9 @@ class Board {
     private void createNodesForTile(Tile a) {
         int[][] directions;
         if (a.getY() % 2 == 0) {
-            directions = AXIAL_DIRECTIONS_EVEN;
+            directions = Constants.AXIAL_DIRECTIONS_EVEN;
         } else {
-            directions = AXIAL_DIRECTIONS_ODD;
+            directions = Constants.AXIAL_DIRECTIONS_ODD;
         }
         for (int i = 0; i < 6; i++) {
             Tile b = tileMap.get(tileCoordinatesToKey(a.getX() + directions[i][0], a.getY() + directions[i][1]));

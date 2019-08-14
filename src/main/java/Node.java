@@ -18,6 +18,23 @@ public class Node {
         this.structure = Structure.NONE;
     }
 
+    double getDistanceToNode(Node otherNode) {
+        // pick a surrounding node. We don't care which one as long as it's the same relative to the node.
+        Tile a = this.t;
+        Tile b = otherNode.t;
+
+        // if one of them is uneven and one is not
+        boolean aIsEven = (a.getY()%2 == 0);
+        boolean bIsEven = (b.getY()%2 == 0);
+
+        if (aIsEven ^ bIsEven) {
+            return (a.getDistance(b) * 2) - 2;
+        }
+
+        return a.getDistance(b) * 2;
+    }
+
+
     public Player getPlayer() {
         return player;
     }

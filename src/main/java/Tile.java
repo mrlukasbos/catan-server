@@ -31,6 +31,22 @@ class Tile implements Comparable<Tile> {
         this.orientation = orientation;
     }
 
+    // to get the distance between two tiles we need to convert to the cube system and then do the calculation
+    // see: https://www.redblobgames.com/grids/hexagons/#distances
+    double getDistance(Tile otherTile) {
+
+
+        Cube a = new Cube(this);
+        Cube b = new Cube(otherTile);
+
+        return a.getDistance(b);
+
+    }
+
+    boolean isEven() {
+        return Math.abs(getY())%2 == 0;
+    }
+
     public Resource typeToResource(Type type) {
         switch (type) {
             case WOOL: return Resource.WHOOL;
