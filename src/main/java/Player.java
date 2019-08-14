@@ -52,11 +52,9 @@ class Player {
         return name;
     }
 
-    public String getColor() {
+    String getColor() {
         return color;
     }
-
-
 
     int getId() {
         return id;

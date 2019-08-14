@@ -15,8 +15,6 @@ class BuildPhase implements GamePhase {
         return Phase.END_TURN;
     }
 
-
-
     // Example inputs
     // [] (build nothing)
     // [{ "structure": "village", "location": "([1,2],[2,1],[2,2])" }]

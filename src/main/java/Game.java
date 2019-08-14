@@ -65,27 +65,6 @@ class Game extends Thread {
         }
     }
 
-
-
-    ArrayList<Player> getPlayers() { return players; }
-
-    Board getBoard() { return board; }
-
-    boolean isRunning() { return running; }
-
-    void print(String msg) {
-        System.out.println("[Game] \t \t" + msg);
-    }
-
-
-    void setCurrentPlayer(Player player) { currentPlayer = player; }
-
-    Player getCurrentPlayer() { return currentPlayer; }
-
-    int getLastDiceThrow() { return lastDiceThrow; }
-
-    void setLastDiceThrow(int diceThrow) { lastDiceThrow = diceThrow; }
-
     void quit() {
         this.board = null;
         this.players = null;
@@ -98,7 +77,6 @@ class Game extends Thread {
             e.printStackTrace();
         }
     }
-
 
     private GamePhase getGamePhase(Phase phase) {
         switch (phase) {
@@ -126,6 +104,25 @@ class Game extends Thread {
             default: return "Unknown";
         }
     }
+
+    ArrayList<Player> getPlayers() { return players; }
+
+    Board getBoard() { return board; }
+
+    boolean isRunning() { return running; }
+
+    void print(String msg) {
+        System.out.println("[Game] \t \t" + msg);
+    }
+
+    void setCurrentPlayer(Player player) { currentPlayer = player; }
+
+    Player getCurrentPlayer() { return currentPlayer; }
+
+    int getLastDiceThrow() { return lastDiceThrow; }
+
+    void setLastDiceThrow(int diceThrow) { lastDiceThrow = diceThrow; }
+
 }
 
 enum Phase {
