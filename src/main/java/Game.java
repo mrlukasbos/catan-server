@@ -129,7 +129,8 @@ class Game extends Thread {
                     "\"status\": \"" + getGameStatus() + "\", " +
                     "\"board\": " + getBoard().toString() + ", " +
                     "\"lastDiceThrow\": " + getLastDiceThrow() + ", " +
-                    "\"phase\": \"" + phaseToString(currentPhase.getPhaseType()) + "\"" +
+                    "\"phase\": \"" + phaseToString(currentPhase.getPhaseType()) + "\"," +
+                    "\"currentPlayer\": " + getCurrentPlayer().getId() +
                     "}" +
                     '}';
         } else {

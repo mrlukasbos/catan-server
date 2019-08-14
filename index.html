@@ -18,6 +18,8 @@
         <div v-if="players.length">
             <strong> Players </strong>
             <div v-for="player in players" style="display: flex">
+
+                <div v-if="player.id == currentPlayerId"> CURRENT PLAYER! </div>
                 <div style="width: 30px; height: 30px; border-radius: 50%;" :style="{ 'background-color': player.attributes.color }"></div>
                 <span style="margin: 4px 4px"> {{player.attributes.name}} <small>({{player.id}})</small></span>
 

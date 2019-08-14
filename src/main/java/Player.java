@@ -9,7 +9,6 @@ class Player {
     private ArrayList<Resource> resources = new ArrayList<Resource>();
     private String color;
     private Socket socket;
-    private String mostRecentMessage = "";
 
     Player(int id, String name) {
         this.id = id;
@@ -39,9 +38,15 @@ class Player {
         try {
             InputStream inputStream = getSocket().getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-         //   if (inputStream.available() != 0 && reader.ready()) {
+
+            // nonblocking implementation
+            // if (inputStream.available() != 0 && reader.ready()) {
+            //     return reader.readLine();
+            // }
+
+            // blocking implementation
             return reader.readLine();
-          //  }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
