@@ -24,7 +24,7 @@ class Game extends Thread {
 
     synchronized void start(ArrayList<Player> players) {
         this.phase = Phase.SETUP;
-        this.board = new Board(players);
+        this.board = new Board(this);
         this.players = new ArrayList<Player>(players); // this copies the arraylist
         this.running = true;
         print("Starting game");
@@ -49,28 +49,31 @@ class Game extends Thread {
             if (isRunning()) {
                     switch (phase) {
 
-            /*
-            Determine the player that can start
-             */
+                    /*
+                    Determine the player that can start
+                     */
                     case SETUP: {
                         currentPlayer = determineFirstPlayer();
+                        signalGameChange();
                         goToPhase(Phase.THROW_DICE);
                         break;
                     }
 
-            /*
-            Throw a dice. If it is 7 then move the bandit
-            Otherwise give the players their resources.
-             */
+                    /*
+                    Throw a dice. If it is 7 then move the bandit
+                    Otherwise give the players their resources.
+                     */
                     case THROW_DICE: {
-                        int diceThrow = currentPlayer.throwDice();
-                        print("Dice thrown: " + diceThrow);
-                        if (diceThrow == 7) {
+                        Dice d = new Dice(2);
+                        dice = d.throwDice();
+                        print("Dice thrown: " + dice);
+                        if (dice == 7) {
                             goToPhase(Phase.FORCE_DISCARD);
                         } else {
-                            distributeResourcesForDice(diceThrow);
+                            distributeResourcesForDice(dice);
                             goToPhase(Phase.BUILDING);
                         }
+                        signalGameChange();
                         break;
                     }
 
@@ -83,25 +86,22 @@ class Game extends Thread {
                         goToPhase(Phase.MOVE_BANDIT);
                         break;
                     }
+
                     case MOVE_BANDIT: {
                         goToPhase(Phase.BUILDING);
                         break;
                     }
+
                     case BUILDING: {
                         build();
                         goToPhase(Phase.END_TURN);
                         break;
                     }
-                    case END_TURN: {
-                        // signal the change
-                        getPlayers().forEach((p) -> p.send(getBoard().toString()));
-                        iface.broadcast(broadcastType.BOARD, getBoard().toString());
-                        iface.broadcastStatus();
-                        iface.broadcastPlayerInfo();
 
+                    case END_TURN: {
                         currentPlayer = getNextPlayer();
                         print("next player: " + currentPlayer.getName());
-
+                        signalGameChange();
                         goToPhase(Phase.THROW_DICE);
 
                     }
@@ -109,6 +109,14 @@ class Game extends Thread {
             }
         }
 
+    }
+
+    private void signalGameChange() {
+        // signal the change
+        getPlayers().forEach((p) -> p.send(getBoard().toString()));
+        iface.broadcast(broadcastType.BOARD, getBoard().toString());
+        iface.broadcastStatus();
+        iface.broadcastPlayerInfo();
     }
 
 
@@ -195,10 +203,11 @@ class Game extends Thread {
 
     // throw the dice, the highest throw can start
     private Player determineFirstPlayer() {
+        Dice dice = new Dice(1);
         int highestDiceThrow = 0;
         Player firstPlayer = players.get(0);
         for (Player player : players) {
-            int newDiceThrow = player.throwDice();
+            int newDiceThrow = dice.throwDice();
             if (newDiceThrow > highestDiceThrow) {
                 firstPlayer = player;
                 highestDiceThrow = newDiceThrow;
@@ -245,15 +254,19 @@ class Game extends Thread {
         }
     }
 
+    int getLastDiceThrow() {
+        return dice;
+    }
 }
 
 enum Phase {
     SETUP,
+    END_TURN,
     THROW_DICE,
     FORCE_DISCARD,
     MOVE_BANDIT,
     GATHER_RESOURCES,
     BUILDING,
     PLAYING_CARD,
-    END_TURN
+
 }

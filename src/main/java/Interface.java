@@ -69,7 +69,7 @@ public class Interface extends WebSocketServer {
     public void onMessage( WebSocket conn, String message ) {
         if (message.contains("START")) {
             print("Received START signal");
-            if (server.getConnections().size() >= MINIMUM_AMOUNT_OF_PLAYERS) {
+            if (server.getConnections().size() >= MINIMUM_AMOUNT_OF_PLAYERS && !game.isRunning()) {
                 game.start(server.getConnections());
             } else {
                 print("not enough players to start with");
@@ -110,24 +110,12 @@ public class Interface extends WebSocketServer {
 
     String broadcastTypeToString(broadcastType type) {
         switch (type) {
-            case INFO: return "INF";
-            case COMMAND: return "CMD";
-            case SETTING: return "SET";
-            case COMMUNICATION: return "COM";
             case BOARD: return "BOA";
             case PLAYERS: return "PLA";
             case STATUS: return "STA";
 
         }
         return "";
-    }
-
-    public void shutDown() {
-        try {
-            stop();
-        } catch (Exception f) {
-            f.printStackTrace();
-        }
     }
 
     private void print(String msg) {
@@ -157,10 +145,6 @@ public class Interface extends WebSocketServer {
 }
 
 enum broadcastType {
-    SETTING,
-    COMMAND,
-    INFO,
-    COMMUNICATION,
     BOARD,
     PLAYERS,
     STATUS

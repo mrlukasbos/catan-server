@@ -63,14 +63,14 @@ class Board {
     private List<Node> nodes;
     private List<DevelopmentCard> developmentCards;
     private Bandit bandit;
-    private List<Player> players;
+    private Game game;
 
     private Map<String, Tile> tileMap;
     private Map<String, Edge> edgeMap;
     private Map<String, Node> nodeMap;
 
-    Board(ArrayList<Player> players) {
-        this.players = players;
+    Board(Game game) {
+        this.game = game;
         init();
     }
 
@@ -270,7 +270,7 @@ class Board {
         developmentCardsString = developmentCardsString.concat("]");
 
         String playersString = "[";
-        for (Player player : players) {
+        for (Player player : game.getPlayers()) {
             playersString = playersString.concat(player.toString() + ",");
         }
         playersString = playersString.substring(0, playersString.length() - 1);
@@ -283,6 +283,7 @@ class Board {
                 "\"edges\": " + edgeString + ", " +
                 "\"nodes\": " + nodeString + ", " +
                 "\"players\": " + playersString + ", " +
+                "\"lastDiceThrow\": " + game.getLastDiceThrow() + ", " +
                 "\"development_cards\": " + developmentCardsString + ", " +
                 "\"bandits\": [" + bandit.toString() + "]" +
                 "}" +

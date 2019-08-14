@@ -241,7 +241,8 @@ var app = new Vue({
         socket: null,
         systemMsg: '',
         status: "WAITING_FOR_PLAYERS",
-        players: []
+        players: [],
+        lastDiceThrow: 0
     },
     methods: {
         connect: function (event) {
@@ -273,13 +274,9 @@ var app = new Vue({
                 switch (identifier) {
                     case "BOA": {
                         json = JSON.parse(message);
-                        this.json = JSON.stringify(json, null, 4); // Indented 4 spaces
-                        ;
+                        this.json = json;
+                        this.lastDiceThrow = json.attributes.lastDiceThrow;
                         draw();
-                        break;
-                    }
-                    case "COM": {
-                        this.systemMsg = message;
                         break;
                     }
                     case "PLA": {

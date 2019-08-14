@@ -36,6 +36,7 @@
         <div v-else-if="status==='WAITING_FOR_TAKEOFF'">
             <button v-on:click="startGame">Start game</button>
         </div>
+        <h1> {{ lastDiceThrow }}</h1>
 
         <div v-show="status==='GAME_RUNNING'">
             <div id="d3-holder"></div>
