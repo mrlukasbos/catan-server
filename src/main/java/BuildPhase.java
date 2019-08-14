@@ -57,7 +57,8 @@ class BuildPhase implements GamePhase {
         return struct != Structure.NONE;
     }
 
-    private boolean commandIsValid(JsonArray jsonArray) {
+    // check for the whole command if the command is valid.
+    private boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
 
@@ -65,17 +66,31 @@ class BuildPhase implements GamePhase {
             Structure structure = game.stringToStructure(structureString);
             String key = object.get("location").getAsString();
 
-            // check if the location (key) of the node is valid
+            // check if the location (key) of the node is valid (the node exists, we do not check if there is another node too close)
             if (!isLegal(key)) {
-                game.print("Received message with illegal location (key): " + key);
+                game.print("Received message with invalid key: " + key);
                 return false;
             }
 
             // check if the given structure is valid
             if (!isLegal(structure)) {
-                game.print("Received message with illegal structure: " + structureString);
+                game.print("Received message with invalid structure: " + structureString);
                 return false;
             }
+
+            // check if there is not already a structure of another player
+            Node node = game.getBoard().getNode(key);
+            if (node.hasPlayer() && node.getPlayer() != currentPlayer) {
+                game.print("Received message with illegal location: There is already a structure of another player " + key);
+                return false;
+            }
+
+            // if it is a city, check if it was a village from the same player before
+            if (structure == Structure.CITY && (node.getPlayer() != currentPlayer || node.getStructure() != Structure.SETTLEMENT)) {
+                game.print("Received message with illegal city placement: there is no village and/or it is not yours" + key);
+                return false;
+            }
+
         }
         return true;
     }
@@ -103,7 +118,7 @@ class BuildPhase implements GamePhase {
             String message = currentPlayer.listen();
             game.print("Received message from player " + currentPlayer.getName() + ": " + message);
             jsonArray = getJsonIfValid(message);
-            buildSucceeded = jsonArray != getJsonIfValid(message) && commandIsValid(jsonArray);
+            buildSucceeded = jsonArray != getJsonIfValid(message) && commandIsValid(currentPlayer, jsonArray);
         }
         return jsonArray;
     }
