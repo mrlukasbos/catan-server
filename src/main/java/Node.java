@@ -42,7 +42,6 @@ public class Node {
         return Math.abs(dist);
     }
 
-
     public Player getPlayer() {
         return player;
     }

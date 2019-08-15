@@ -170,6 +170,53 @@ class Board {
         }
     }
 
+    ArrayList<Node> getSurroundingNodes(Node n) {
+        ArrayList<Node> surroundingNodes = new ArrayList<Node>();
+        for(Node node : nodes) {
+            if (n.getDistanceToNode(node) == 1) {
+                surroundingNodes.add(node);
+            }
+        }
+        return surroundingNodes;
+    }
+
+    // get nodes surrounding an edge, there should usually be two of them
+    ArrayList<Node> getSurroundingNodes(Edge edge) {
+        ArrayList<Node> surroundingNodes = new ArrayList<Node>();
+        for(Node node : nodes) {
+            int tilesInCommon = 0;
+            for (Tile t : node.getTiles()) {
+                if (t == edge.getTiles()[0] || t == edge.getTiles()[1]) {
+                    tilesInCommon++;
+                }
+            }
+
+            if (tilesInCommon == 2) {
+                surroundingNodes.add(node);
+            }
+        }
+        return surroundingNodes;
+    }
+
+
+    // Get the edges surrounding a node
+    // Tiles are sorted from small to big, and keys are noted from small to big coordinate sums
+    ArrayList<Edge> getSurroundingEdges(Node n) {
+
+        Tile [] tiles = n.getSortedNeighboursTiles();
+
+        String edgeKey1 = "(" + tiles[0].getKey() + tiles[1].getKey() + ")";
+        String edgeKey2 = "(" + tiles[0].getKey() + tiles[2].getKey() + ")";
+        String edgeKey3 = "(" + tiles[1].getKey() + tiles[2].getKey() + ")";
+
+        ArrayList<Edge> surroundingEdges = new ArrayList<Edge>();
+        surroundingEdges.add(getEdge(edgeKey1));
+        surroundingEdges.add(getEdge(edgeKey2));
+        surroundingEdges.add(getEdge(edgeKey3));
+
+        return surroundingEdges;
+    }
+
     private void addEdge(Edge edge) {
         edges.add(edge);
         edgeMap.put(edge.getKey(), edge);
@@ -204,6 +251,16 @@ class Board {
 
             }
         }
+    }
+
+    ArrayList<Structure> getStructures() {
+        ArrayList<Structure> structures = new ArrayList<Structure>();
+        for (Node node : nodes) {
+            if (node.hasStructure() && node.getStructure() != Structure.STREET) {
+                structures.add(node.getStructure());
+            }
+        }
+        return structures;
     }
 
     private String developmentCardToString(DevelopmentCard developmentCard) {

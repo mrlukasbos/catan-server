@@ -15,18 +15,29 @@ import com.google.gson.*;
 
 class BuildPhase implements GamePhase {
     Game game;
+    boolean freeBuilding = false;
 
-    BuildPhase(Game game) {
+    BuildPhase(Game game, boolean freeBuilding) {
         this.game = game;
+        this.freeBuilding = freeBuilding;
     }
 
     public Phase getPhaseType() {
+        if (freeBuilding) {
+            return Phase.FREE_BUILDING;
+        }
         return Phase.BUILDING;
     }
 
     public Phase execute() {
         build();
-        return Phase.END_TURN;
+        game.goToNextPlayer();
+
+        // all players should go through the free building phase first
+        if (freeBuilding && game.getBoard().getStructures().size() < game.getPlayers().size()) {
+            return Phase.FREE_BUILDING;
+        }
+        return Phase.THROW_DICE;
     }
 
     private void build() {
@@ -53,10 +64,6 @@ class BuildPhase implements GamePhase {
         return game.getBoard().hasEdge(key) || game.getBoard().hasNode(key);
     }
 
-    private boolean isLegal(Structure struct) {
-        return struct != Structure.NONE;
-    }
-
     // check for the whole command if the command is valid.
     private boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
         for (JsonElement element : jsonArray) {
@@ -66,39 +73,119 @@ class BuildPhase implements GamePhase {
             Structure structure = game.stringToStructure(structureString);
             String key = object.get("location").getAsString();
 
-            // check if the location (key) of the node is valid (the node exists, we do not check if there is another node too close)
-            if (!isLegal(key)) {
+            Node node = game.getBoard().getNode(key);
+            Edge edge = game.getBoard().getEdge(key);
+
+            // building villages/cities
+            if (node != null) {
+                if (!structureIsVillageOrCity(structure)) return false;
+                if (!nodeIsAvailable(currentPlayer, key, node)) return false;
+                if (!cityWasVillageFirst(currentPlayer, structure, key, node)) return false;
+                if (!nodeStructureIsAtLeastTwoEdgesFromOtherStructure(key, node)) return false;
+
+                // rule does not apply when building free
+                if (!freeBuilding) {
+                    if (!nodeIsConnectedToStreet(currentPlayer, key, node, edge)) return false;
+                }
+            }
+
+            // building streets
+            else if (edge != null) {
+                if (!structureIsStreet(structure)) return false;
+                if (!edgeIsFree(key, edge)) return false;
+                if (!edgeIsOnTerrain(key, edge)) return false;
+
+                // rule does not apply when building free
+                if (!freeBuilding) {
+                    if (!edgeIsConnectedToStreet(currentPlayer, key, edge)) return false;
+                }
+            } else {
                 game.print("Received message with invalid key: " + key);
                 return false;
             }
-
-            // check if the given structure is valid
-            if (!isLegal(structure)) {
-                game.print("Received message with invalid structure: " + structureString);
-                return false;
-            }
-
-            // check if there is not already a structure of another player
-            Node node = game.getBoard().getNode(key);
-            if (node.hasPlayer() && node.getPlayer() != currentPlayer) {
-                game.print("Received message with illegal location: There is already a structure of another player " + key);
-                return false;
-            }
-
-            // if it is a city, check if it was a village from the same player before
-            if (structure == Structure.CITY && (node.getPlayer() != currentPlayer || node.getStructure() != Structure.SETTLEMENT)) {
-                game.print("Received message with illegal city placement: there is no village and/or it is not yours" + key);
-                return false;
-            }
-
+            game.print("at least up to this part the command is valid " + key);
         }
+        return true;
+    }
 
-        Node nodeA = game.getBoard().getNodes().get(0);
-        Node nodeB = game.getBoard().getNodes().get(game.getLastDiceThrow()*1);
+    private boolean edgeIsOnTerrain(String key, Edge edge) {
+        // a street cannot be placed between two tiles of water
+        if (!edge.isOnTerrain()) {
+            game.print("Received message with illegal street placement: a street cannot be put between two tiles of water " + key);
+            return true;
+        }
+        return false;
+    }
 
-        double distance = nodeA.getDistanceToNode(nodeB);
-        game.print("the distance from node: " + nodeA.getKey() + " to node: " + nodeB.getKey() + " is " + distance);
+    private boolean edgeIsFree(String key, Edge edge) {
+        if (edge.isRoad()) {
+            game.print("Received message with illegal placement: there is already a road on the given edge " + key);
+            return true;
+        }
+        return false;
+    }
 
+    private boolean edgeIsConnectedToStreet(Player currentPlayer, String key, Edge edge) {
+        boolean hasNeighbouringStreet = false;
+        for (Node surroundingNode : game.getBoard().getSurroundingNodes(edge)) {
+            for (Edge surroundingEdge : game.getBoard().getSurroundingEdges(surroundingNode)) {
+                if (surroundingEdge != null && surroundingEdge != edge && surroundingEdge.isRoad() && surroundingEdge.hasPlayer() && surroundingEdge.getPlayer() == currentPlayer) {
+                    hasNeighbouringStreet = true;
+                }
+            }
+        }
+        if (!hasNeighbouringStreet) {
+            game.print("Received message with illegal street placement: there is no other street to connect with " + key);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean structureIsVillageOrCity(Structure structure) {
+        return structure == Structure.SETTLEMENT || structure == Structure.CITY;
+    }
+
+    private boolean structureIsStreet(Structure structure) {
+        return structure == Structure.STREET;
+    }
+
+    private boolean nodeIsAvailable(Player currentPlayer, String key, Node node) {
+        if (node.hasPlayer() && node.getPlayer() != currentPlayer) {
+            game.print("Received message with illegal location: There is already a structure of another player " + key);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean cityWasVillageFirst(Player currentPlayer, Structure structure, String key, Node node) {
+        if (structure == Structure.CITY && (node.getPlayer() != currentPlayer || node.getStructure() != Structure.SETTLEMENT)) {
+            game.print("Received message with illegal city placement: there is no village and/or it is not yours " + key);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean nodeStructureIsAtLeastTwoEdgesFromOtherStructure(String key, Node node) {
+        for (Node surroundingNode : game.getBoard().getSurroundingNodes(node)) {
+            if (surroundingNode.hasStructure()) {
+                game.print("Received message with illegal placement: another structure is too close to you location " + key);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean nodeIsConnectedToStreet(Player currentPlayer, String key, Node node, Edge edge) {
+        boolean hasNeighbouringStreet = false;
+        for (Edge surroundingEdge : game.getBoard().getSurroundingEdges(node)) {
+            if (surroundingEdge != edge && surroundingEdge.isRoad() && surroundingEdge.getPlayer() == currentPlayer) {
+                hasNeighbouringStreet = true;
+            }
+        }
+        if (!hasNeighbouringStreet) {
+            game.print("Received message with illegal placement: there is no street to connect with " + key);
+            return false;
+        }
         return true;
     }
 
@@ -118,7 +205,14 @@ class BuildPhase implements GamePhase {
 
     // keep running this function until we get valid output from the user
     private JsonArray getValidCommandFromUser(Player currentPlayer) {
-        currentPlayer.send("Please build if you like.");
+
+        String txt = "Please build if you like";
+        if (freeBuilding) {
+            txt += ", it's free! \n";
+        } else {
+            txt += ".\n";
+        }
+        currentPlayer.send(txt);
         boolean buildSucceeded = false;
         JsonArray jsonArray = null;
         while (!buildSucceeded) {

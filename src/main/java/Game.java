@@ -17,17 +17,18 @@ class Game extends Thread {
     // All gamePhases
     private DiceThrowPhase diceThrowPhase = new DiceThrowPhase(this);
     private SetupPhase setupPhase = new SetupPhase(this);
-    private BuildPhase buildPhase = new BuildPhase(this);
-    private EndTurnPhase endTurnPhase = new EndTurnPhase(this);
 
-    GamePhase currentPhase = new SetupPhase(this);
+    private BuildPhase freeBuildPhase = new BuildPhase(this, true);
+    private BuildPhase normalBuildPhase = new BuildPhase(this, false);
+
+    private GamePhase currentPhase = new SetupPhase(this);
 
     Game(Interface iface, Server server) {
         this.iface = iface;
         this.server = server;
     }
 
-    synchronized public void startGame() {
+    synchronized void startGame() {
         this.board = new Board(this);
         this.running = true;
         print("Starting game");
@@ -86,9 +87,9 @@ class Game extends Thread {
             case THROW_DICE:
                 return diceThrowPhase;
             case BUILDING:
-                return buildPhase;
-            case END_TURN:
-                return endTurnPhase;
+                return normalBuildPhase;
+            case FREE_BUILDING:
+                return freeBuildPhase;
             default:
                 return setupPhase;
         }
@@ -102,6 +103,7 @@ class Game extends Thread {
             case FORCE_DISCARD: return "FORCE_DISCARD";
             case MOVE_BANDIT: return "MOVE_BANDIT";
             case BUILDING: return "BUILDING";
+            case FREE_BUILDING: return "FREE_BUILDING";
             default: return "Unknown";
         }
     }
@@ -177,10 +179,20 @@ class Game extends Thread {
 
     void setLastDiceThrow(int diceThrow) { lastDiceThrow = diceThrow; }
 
+    void goToNextPlayer() {
+      setCurrentPlayer(getNextPlayer());
+    }
+
+    // move the currentPlayer id to the next Player in the array.
+    private Player getNextPlayer() {
+        return getPlayers().get((getCurrentPlayer().getId() + 1) % getPlayers().size());
+    }
+
 }
 
 enum Phase {
     SETUP,
+    FREE_BUILDING,
     END_TURN,
     THROW_DICE,
     FORCE_DISCARD,

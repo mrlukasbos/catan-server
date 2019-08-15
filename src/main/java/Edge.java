@@ -23,12 +23,25 @@ public class Edge {
         this.player = player;
     }
 
+    boolean hasPlayer() {
+        return player != null;
+    }
+
     public boolean isRoad() {
         return road;
     }
 
     void setRoad(boolean road) {
         this.road = road;
+    }
+
+    Tile[] getTiles() {
+        Tile[] tiles = {a,b};
+        return tiles;
+    }
+
+    boolean isOnTerrain() {
+        return a.isTerrain() || b.isTerrain();
     }
 
     String getKey() {
