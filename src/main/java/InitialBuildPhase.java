@@ -8,6 +8,7 @@
 
  (A village and a street)
  [{"structure": "village", "location": "([1,2],[1,3],[2,3])" }, { "structure": "street", "location": "([1,2],[1,3])" }]
+ [{"structure": "village", "location": "([1,2],[2,1],[2,2])" }, { "structure": "street", "location": "([1,2],[2,2])" }]
 
 
  ILLEGAL

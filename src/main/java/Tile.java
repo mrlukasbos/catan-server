@@ -34,8 +34,6 @@ class Tile implements Comparable<Tile> {
     // to get the distance between two tiles we need to convert to the cube system and then do the calculation
     // see: https://www.redblobgames.com/grids/hexagons/#distances
     int getDistance(Tile otherTile) {
-
-
         Cube a = new Cube(this);
         Cube b = new Cube(otherTile);
 

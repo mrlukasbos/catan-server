@@ -102,6 +102,10 @@ class Board {
                 createNodesForTile(tile);
             }
         }
+
+        for (Node n : nodes) {
+            System.out.println("distance from " + nodes.get(0).getKey() + " to " + n.getKey() + " is " +  getDistance(nodes.get(0), n));
+        }
     }
 
 
@@ -173,7 +177,17 @@ class Board {
     ArrayList<Node> getSurroundingNodes(Node n) {
         ArrayList<Node> surroundingNodes = new ArrayList<Node>();
         for(Node node : nodes) {
-            if (n.getDistanceToNode(node) == 1) {
+            int tilesInCommon = 0;
+
+            for (Tile t : node.getTiles()) {
+                for (Tile theirTile : n.getTiles()) {
+                    if (t.getKey().equals(theirTile.getKey())) {
+                        tilesInCommon++;
+                    }
+                }
+            }
+
+            if (tilesInCommon == 2) {
                 surroundingNodes.add(node);
             }
         }
@@ -196,6 +210,57 @@ class Board {
             }
         }
         return surroundingNodes;
+    }
+
+    double getDistance(Node a, Node b) {
+
+
+        // count the high-y tiles (either 1 or 2)
+        // sort on y
+        class sortByY implements Comparator<Tile> {
+            public int compare(Tile a, Tile b) {
+                return a.getY() - b.getY();
+            }
+        }
+
+        // the same node has distance 0
+        if (a.getKey().equals(b.getKey())) return 0;
+
+        // determine if they are high y or low y
+        Tile[] bTiles = b.getSortedNeighboursTiles();
+        Arrays.sort(bTiles, new sortByY());
+        boolean bNodeIsHighY = bTiles[0].getY() == bTiles[1].getY();
+
+        // determine if we are high y or low y
+        Tile[] aTiles = a.getSortedNeighboursTiles();
+        Arrays.sort(aTiles, new sortByY());
+        boolean aNodeIsHighY = aTiles[0].getY() == aTiles[1].getY();
+
+
+        Tile keyTileA = aTiles[0];
+        Tile keyTileB = bTiles[0];
+
+
+        // if we are of the same kind:
+        int tileDistance;
+
+        if (aNodeIsHighY == bNodeIsHighY) {
+            tileDistance = keyTileA.getDistance(keyTileB) * 2;
+        } else {
+            // things get more complex, but we just let our neighbours fix it
+
+            int closestNeighbourDistance = 1000;
+            for (Node neighbourNode : getSurroundingNodes(a)) {
+
+                // determine his keytile
+                Tile[] nTiles = neighbourNode.getSortedNeighboursTiles();
+                Arrays.sort(nTiles, new sortByY());
+                closestNeighbourDistance = Math.min(closestNeighbourDistance, nTiles[0].getDistance(keyTileB));
+            }
+
+            tileDistance = closestNeighbourDistance * 2 + 1;
+        }
+        return tileDistance;
     }
 
 

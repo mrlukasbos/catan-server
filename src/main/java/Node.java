@@ -2,7 +2,9 @@
 A node is a junction between tiles. It can support settlements and cities in the game
  */
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class Node {
     private Tile t;
@@ -16,30 +18,6 @@ public class Node {
         this.r = r;
         this.l = l;
         this.structure = Structure.NONE;
-    }
-
-    double getDistanceToNode(Node otherNode) {
-        // pick a surrounding node. We don't care which one as long as it's the same relative to the node.
-        // this will be the node with the smalles coordinate value.
-        // this node is either at the left-top or at the exact top of the node
-
-        // if for both nodes the relative position of their key-tile is the same, then
-        // the distance is the distance between tiles * 2
-        // otherwise we have to subtract 1 from the total distance
-        // we make the distance absolute for the case where two nodes have the same key tile
-
-        Tile a = getSortedNeighboursTiles()[0];
-        Tile b = otherNode.getSortedNeighboursTiles()[0];
-
-        // is the key tile right above the node? We will know by seeing if the y values of the other nodes are then different.
-        boolean tileOnTopforThis = (a.getY() != getSortedNeighboursTiles()[1].getY() && a.getY() != getSortedNeighboursTiles()[2].getY());
-        boolean tileOnTopforOther = (b.getY() != otherNode.getSortedNeighboursTiles()[1].getY() && b.getY() != otherNode.getSortedNeighboursTiles()[2].getY());
-        int dist = (a.getDistance(b) * 2);
-        if (tileOnTopforThis ^ tileOnTopforOther) { // xor
-            dist -= 1;
-        }
-
-        return Math.abs(dist);
     }
 
     public Player getPlayer() {
