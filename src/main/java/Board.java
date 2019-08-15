@@ -103,9 +103,10 @@ class Board {
             }
         }
 
-        for (Node n : nodes) {
-            System.out.println("distance from " + nodes.get(0).getKey() + " to " + n.getKey() + " is " +  getDistance(nodes.get(0), n));
-        }
+//      Useful for debugging
+//        for (Node n : nodes) {
+//            System.out.println("distance from " + nodes.get(0).getKey() + " to " + n.getKey() + " is " +  getDistance(nodes.get(0), n));
+//        }
     }
 
 

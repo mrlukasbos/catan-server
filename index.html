@@ -6,45 +6,90 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 
 <body>
-    <div id="app">
-        <h1> Catan </h1>
-        {{connection_status}} <br>
-        {{status}} <br>
+    <div id="app" style="display: flex">
+        <div class="info" style="display: flex; flex-direction: column">
 
-        <input v-on:keyup.enter="connect" v-model="ip">
-        <input v-on:keyup.enter="connect" v-model="port">
-        <button v-on:click="connect">Connect</button> <br>
+            <div class="title" style="padding: 18px; display: flex">
+                <span style="margin-right: 12px; font-size: 1.8rem; font-weight: 600"> Catan </span>
 
-        <div v-if="players.length">
-            <strong> Players </strong>
-            <div v-for="player in players" style="display: flex">
+                <div v-if="connection_status == 'CONNECTED'" style="display: flex; align-items: center; flex: 2">   
+                    <div style="width: 12px; height: 12px; border-radius: 50%; background-color: rgb(118, 204, 19)"> </div>
+                </div>
+                <div v-else style="display: flex; align-items: center; flex: 2">
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background-color: red"> </div>
+                </div>
 
-                <div v-if="player.id == currentPlayerId"> CURRENT PLAYER! </div>
-                <div style="width: 30px; height: 30px; border-radius: 50%;" :style="{ 'background-color': player.attributes.color }"></div>
-                <span style="margin: 4px 4px"> {{player.attributes.name}} <small>({{player.id}})</small></span>
-
-                <div v-for="resource in player.attributes.resources" style="display: flex">
-                    <div style="width: 20px; height: 30px; border-radius: 10%; margin-right: 4px;" v-bind:class="resource"></div>
+                <div style="display: flex; align-items: center; color: gray">   
+                    {{status}}
                 </div>
             </div>
-        </div>
-        <div v-else>
-            <strong> No players connected </strong>
+    
+
+     
+
+
+            <div class="players" style="padding: 18px; ">
+
+            <div v-if="players.length">
+                <div v-for="player in players">
+                    <div style="background: white;  margin-bottom: 12px; border-radius: 2px;  padding:12px; ">
+
+                            <div style="display:flex; align-items: center; padding-bottom: 12px; border-bottom: 1px solid whitesmoke;">
+                        <span style="margin: 4px 4px; flex: 3; font-weight: 100 " :style="{ 'color': player.attributes.color }"> {{player.attributes.name}} <small>({{player.id}})</small></span>
+                        <div v-if="player.id == currentPlayerId" style="display: flex; align-items: center;">   
+                                <div style="width: 6px; height: 6px; border-radius: 50%; background-color: steelblue"> </div>
+                            </div>
+                        </div>
+                        <div style="display:flex; padding-top: 12px; ">
+                                <div v-for="resource in player.attributes.resources" style="display: flex">
+                                    <div style="width: 18px; height: 28px; border-radius: 5%; margin-right: 4px;" class="resource" v-bind:class="resource"></div>
+                                </div>
+                            </div>
+                    </div>
+                    
+
+                   
+                </div>
+            </div>
+            <div v-else>
+                <strong> No players connected </strong>
+            </div>
+
+      
+            </div> 
+
+            <div class="dice" style="padding: 18px; display: flex; justify-content: center; flex:3">
+                    <h1> {{ lastDiceThrow }}</h1>
+                </div>
+
+
+            <div class="connect" style="padding: 18px;">
+                    <input v-on:keyup.enter="connect" v-model="ip" style=" width: 100%; margin-bottom: 12px;">
+    
+                    <div style="display: flex; width: 100%; margin-bottom: 12px;"> 
+                            <input v-on:keyup.enter="connect" v-model="port" style="flex: 2; margin-right: 8px;">
+                            <button v-on:click="connect">Connect</button> <br>
+                    </div>
+    
+                    <div v-if="status==='GAME_RUNNING'" style="display: flex; width: 100%">
+                            <button v-on:click="endGame" style="display: flex; justify-content: center; width: 100%;">Stop game</button>
+                        </div>
+                        <div v-else-if="status==='WAITING_FOR_TAKEOFF'" style=" width: 100%">
+                            <button v-on:click="startGame" style="display: flex; justify-content: center; width: 100%; ">Start game</button>
+                        </div>
+    
+                </div> 
+            </div>
+        <div class="board">
+            <div v-show="status==='GAME_RUNNING'">
+                <div id="d3-holder"></div>
+            </div>
         </div>
 
-        <div v-if="status==='GAME_RUNNING'">
-            <button v-on:click="endGame">Stop game</button>
-        </div>
-        <div v-else-if="status==='WAITING_FOR_TAKEOFF'">
-            <button v-on:click="startGame">Start game</button>
-        </div>
-        <h1> {{ lastDiceThrow }}</h1>
 
-        <div v-show="status==='GAME_RUNNING'">
-            <div id="d3-holder"></div>
-        </div>
+    
 
-        {{json}}
+
     </div>
 </body>
 <script src="script.js"></script>

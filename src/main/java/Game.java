@@ -82,13 +82,16 @@ class Game extends Thread {
         switch (phase) {
             case SETUP:
                 return setupPhase;
+            case INITIAL_BUILDING:
+                return initialBuildPhase;
             case THROW_DICE:
                 return diceThrowPhase;
             case BUILDING:
                 return normalBuildPhase;
-            case INITIAL_BUILDING:
-                return initialBuildPhase;
+            case MOVE_BANDIT: // for the time being
+                return normalBuildPhase;
             default:
+                print("We reached an unknown phase which is probably not a good thing");
                 return setupPhase;
         }
     }
