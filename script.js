@@ -88,6 +88,8 @@ svg.append("g")
 svg.append("path")
     .datum(topojson.mesh(topology, topology.objects.hexagons))
     .attr("class", "mesh")
+    .attr("stroke", "#ffffff")
+    .attr("stroke-width", 1)
     .attr("d", path);
 
 for (var i = 0; i < players.length; i++) {
