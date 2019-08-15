@@ -20,18 +20,26 @@ public class Node {
 
     double getDistanceToNode(Node otherNode) {
         // pick a surrounding node. We don't care which one as long as it's the same relative to the node.
-        Tile a = this.t;
-        Tile b = otherNode.t;
+        // this will be the node with the smalles coordinate value.
+        // this node is either at the left-top or at the exact top of the node
 
-        // if one of them is uneven and one is not
-        boolean aIsEven = (a.getY()%2 == 0);
-        boolean bIsEven = (b.getY()%2 == 0);
+        // if for both nodes the relative position of their key-tile is the same, then
+        // the distance is the distance between tiles * 2
+        // otherwise we have to subtract 1 from the total distance
+        // we make the distance absolute for the case where two nodes have the same key tile
 
-        if (aIsEven ^ bIsEven) {
-            return (a.getDistance(b) * 2) - 2;
+        Tile a = getSortedNeighboursTiles()[0];
+        Tile b = otherNode.getSortedNeighboursTiles()[0];
+
+        // is the key tile right above the node? We will know by seeing if the y values of the other nodes are then different.
+        boolean tileOnTopforThis = (a.getY() != getSortedNeighboursTiles()[1].getY() && a.getY() != getSortedNeighboursTiles()[2].getY());
+        boolean tileOnTopforOther = (b.getY() != otherNode.getSortedNeighboursTiles()[1].getY() && b.getY() != otherNode.getSortedNeighboursTiles()[2].getY());
+        int dist = (a.getDistance(b) * 2);
+        if (tileOnTopforThis ^ tileOnTopforOther) { // xor
+            dist -= 1;
         }
 
-        return a.getDistance(b) * 2;
+        return Math.abs(dist);
     }
 
 
@@ -62,6 +70,12 @@ public class Node {
     Tile[] getTiles() {
         Tile[] tiles = {t, l, r};
         return tiles;
+    }
+
+    Tile[] getSortedNeighboursTiles() {
+        Tile[] neighbors = {t, l, r};
+        Arrays.sort(neighbors);
+        return neighbors;
     }
 
     String getKey() {
