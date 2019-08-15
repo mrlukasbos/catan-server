@@ -15,32 +15,24 @@ import com.google.gson.*;
 
 class BuildPhase implements GamePhase {
     Game game;
-    boolean freeBuilding = false;
+    String txt;
 
-    BuildPhase(Game game, boolean freeBuilding) {
+    BuildPhase(Game game) {
         this.game = game;
-        this.freeBuilding = freeBuilding;
+        txt = "Please build if you like. \n";
     }
 
     public Phase getPhaseType() {
-        if (freeBuilding) {
-            return Phase.FREE_BUILDING;
-        }
         return Phase.BUILDING;
     }
 
     public Phase execute() {
         build();
         game.goToNextPlayer();
-
-        // all players should go through the free building phase first
-        if (freeBuilding && game.getBoard().getStructures().size() < game.getPlayers().size()) {
-            return Phase.FREE_BUILDING;
-        }
         return Phase.THROW_DICE;
     }
 
-    private void build() {
+    void build() {
         Player currentPlayer = game.getCurrentPlayer();
         JsonArray jsonArray = getValidCommandFromUser(currentPlayer);
 
@@ -65,7 +57,7 @@ class BuildPhase implements GamePhase {
     }
 
     // check for the whole command if the command is valid.
-    private boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
+    boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
 
@@ -76,53 +68,61 @@ class BuildPhase implements GamePhase {
             Node node = game.getBoard().getNode(key);
             Edge edge = game.getBoard().getEdge(key);
 
-            // building villages/cities
-            if (node != null) {
-                if (!structureIsVillageOrCity(structure)) return false;
-                if (!nodeIsAvailable(currentPlayer, key, node)) return false;
-                if (!cityWasVillageFirst(currentPlayer, structure, key, node)) return false;
-                if (!nodeStructureIsAtLeastTwoEdgesFromOtherStructure(key, node)) return false;
-
-                // rule does not apply when building free
-                if (!freeBuilding) {
-                    if (!nodeIsConnectedToStreet(currentPlayer, key, node, edge)) return false;
-                }
-            }
-
-            // building streets
-            else if (edge != null) {
-                if (!structureIsStreet(structure)) return false;
-                if (!edgeIsFree(key, edge)) return false;
-                if (!edgeIsOnTerrain(key, edge)) return false;
-
-                // rule does not apply when building free
-                if (!freeBuilding) {
-                    if (!edgeIsConnectedToStreet(currentPlayer, key, edge)) return false;
-                }
-            } else {
-                game.print("Received message with invalid key: " + key);
-                return false;
-            }
-            game.print("at least up to this part the command is valid " + key);
+            if (!nodeSubcommandIsValid(currentPlayer, structure, key, node)) return false;
+            else if (!edgeSubcommandIsValid(currentPlayer, structure, key, edge)) return false;
+            game.print("The subcommand with this key is valid: " + key);
         }
         return true;
     }
 
-    private boolean edgeIsOnTerrain(String key, Edge edge) {
+    protected boolean edgeSubcommandIsValid(Player currentPlayer, Structure structure, String key, Edge edge) {
+        return edgeExists(edge, key)
+                && structureIsStreet(structure, key)
+                && edgeIsFree(key, edge)
+                && edgeIsOnTerrain(key, edge)
+                && edgeIsConnectedToStreet(currentPlayer, key, edge);
+    }
+
+    protected boolean nodeSubcommandIsValid(Player currentPlayer, Structure structure, String key, Node node) {
+        return nodeExists(node, key)
+                && structureIsVillageOrCity(structure)
+                && nodeIsAvailable(currentPlayer, key, node)
+                && cityWasVillageFirst(currentPlayer, structure, key, node)
+                && nodeStructureIsAtLeastTwoEdgesFromOtherStructure(key, node)
+                && nodeIsConnectedToStreet(currentPlayer, key, node);
+    }
+
+    boolean edgeIsOnTerrain(String key, Edge edge) {
         // a street cannot be placed between two tiles of water
         if (!edge.isOnTerrain()) {
             game.print("Received message with illegal street placement: a street cannot be put between two tiles of water " + key);
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
-    private boolean edgeIsFree(String key, Edge edge) {
+    boolean edgeIsFree(String key, Edge edge) {
         if (edge.isRoad()) {
             game.print("Received message with illegal placement: there is already a road on the given edge " + key);
-            return true;
+            return false;
         }
-        return false;
+        return true;
+    }
+
+    boolean edgeExists(Edge edge, String key) {
+        if (edge == null) {
+            game.print("The given edge does not exist " + key);
+            return false;
+        }
+        return true;
+    }
+
+    boolean nodeExists(Node node, String key) {
+        if (node == null) {
+            game.print("The given node does not exist " + key);
+            return false;
+        }
+        return true;
     }
 
     private boolean edgeIsConnectedToStreet(Player currentPlayer, String key, Edge edge) {
@@ -141,15 +141,19 @@ class BuildPhase implements GamePhase {
         return true;
     }
 
-    private boolean structureIsVillageOrCity(Structure structure) {
+    boolean structureIsVillageOrCity(Structure structure) {
         return structure == Structure.SETTLEMENT || structure == Structure.CITY;
     }
 
-    private boolean structureIsStreet(Structure structure) {
-        return structure == Structure.STREET;
+    boolean structureIsStreet(Structure structure, String key) {
+        if (structure != Structure.STREET ){
+            game.print("The structure is not a street, but it should be. " + key);
+            return false;
+        }
+        return true;
     }
 
-    private boolean nodeIsAvailable(Player currentPlayer, String key, Node node) {
+    boolean nodeIsAvailable(Player currentPlayer, String key, Node node) {
         if (node.hasPlayer() && node.getPlayer() != currentPlayer) {
             game.print("Received message with illegal location: There is already a structure of another player " + key);
             return false;
@@ -157,7 +161,7 @@ class BuildPhase implements GamePhase {
         return true;
     }
 
-    private boolean cityWasVillageFirst(Player currentPlayer, Structure structure, String key, Node node) {
+    boolean cityWasVillageFirst(Player currentPlayer, Structure structure, String key, Node node) {
         if (structure == Structure.CITY && (node.getPlayer() != currentPlayer || node.getStructure() != Structure.SETTLEMENT)) {
             game.print("Received message with illegal city placement: there is no village and/or it is not yours " + key);
             return false;
@@ -165,7 +169,7 @@ class BuildPhase implements GamePhase {
         return true;
     }
 
-    private boolean nodeStructureIsAtLeastTwoEdgesFromOtherStructure(String key, Node node) {
+    boolean nodeStructureIsAtLeastTwoEdgesFromOtherStructure(String key, Node node) {
         for (Node surroundingNode : game.getBoard().getSurroundingNodes(node)) {
             if (surroundingNode.hasStructure()) {
                 game.print("Received message with illegal placement: another structure is too close to you location " + key);
@@ -175,10 +179,10 @@ class BuildPhase implements GamePhase {
         return true;
     }
 
-    private boolean nodeIsConnectedToStreet(Player currentPlayer, String key, Node node, Edge edge) {
+    boolean nodeIsConnectedToStreet(Player currentPlayer, String key, Node node) {
         boolean hasNeighbouringStreet = false;
         for (Edge surroundingEdge : game.getBoard().getSurroundingEdges(node)) {
-            if (surroundingEdge != edge && surroundingEdge.isRoad() && surroundingEdge.getPlayer() == currentPlayer) {
+            if (surroundingEdge != null && surroundingEdge.isRoad() && surroundingEdge.hasPlayer() && surroundingEdge.getPlayer() == currentPlayer) {
                 hasNeighbouringStreet = true;
             }
         }
@@ -204,14 +208,7 @@ class BuildPhase implements GamePhase {
     }
 
     // keep running this function until we get valid output from the user
-    private JsonArray getValidCommandFromUser(Player currentPlayer) {
-
-        String txt = "Please build if you like";
-        if (freeBuilding) {
-            txt += ", it's free! \n";
-        } else {
-            txt += ".\n";
-        }
+    JsonArray getValidCommandFromUser(Player currentPlayer) {
         currentPlayer.send(txt);
         boolean buildSucceeded = false;
         JsonArray jsonArray = null;

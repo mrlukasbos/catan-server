@@ -11,7 +11,7 @@ public class SetupPhase implements GamePhase {
 
     public Phase execute() {
         game.setCurrentPlayer(determineFirstPlayer());
-        return Phase.FREE_BUILDING;
+        return Phase.INITIAL_BUILDING;
     }
 
     // throw the dice, the highest throw can start

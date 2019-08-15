@@ -205,9 +205,9 @@ class Board {
 
         Tile [] tiles = n.getSortedNeighboursTiles();
 
-        String edgeKey1 = "(" + tiles[0].getKey() + tiles[1].getKey() + ")";
-        String edgeKey2 = "(" + tiles[0].getKey() + tiles[2].getKey() + ")";
-        String edgeKey3 = "(" + tiles[1].getKey() + tiles[2].getKey() + ")";
+        String edgeKey1 = "(" + tiles[0].getKey() + "," + tiles[1].getKey() + ")";
+        String edgeKey2 = "(" + tiles[0].getKey() + "," + tiles[2].getKey() + ")";
+        String edgeKey3 = "(" + tiles[1].getKey() + "," + tiles[2].getKey() + ")";
 
         ArrayList<Edge> surroundingEdges = new ArrayList<Edge>();
         surroundingEdges.add(getEdge(edgeKey1));

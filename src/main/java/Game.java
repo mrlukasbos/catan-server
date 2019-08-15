@@ -17,10 +17,8 @@ class Game extends Thread {
     // All gamePhases
     private DiceThrowPhase diceThrowPhase = new DiceThrowPhase(this);
     private SetupPhase setupPhase = new SetupPhase(this);
-
-    private BuildPhase freeBuildPhase = new BuildPhase(this, true);
-    private BuildPhase normalBuildPhase = new BuildPhase(this, false);
-
+    private InitialBuildPhase initialBuildPhase = new InitialBuildPhase(this);
+    private BuildPhase normalBuildPhase = new BuildPhase(this);
     private GamePhase currentPhase = new SetupPhase(this);
 
     Game(Interface iface, Server server) {
@@ -88,8 +86,8 @@ class Game extends Thread {
                 return diceThrowPhase;
             case BUILDING:
                 return normalBuildPhase;
-            case FREE_BUILDING:
-                return freeBuildPhase;
+            case INITIAL_BUILDING:
+                return initialBuildPhase;
             default:
                 return setupPhase;
         }
@@ -103,7 +101,7 @@ class Game extends Thread {
             case FORCE_DISCARD: return "FORCE_DISCARD";
             case MOVE_BANDIT: return "MOVE_BANDIT";
             case BUILDING: return "BUILDING";
-            case FREE_BUILDING: return "FREE_BUILDING";
+            case INITIAL_BUILDING: return "INITIAL_BUILDING";
             default: return "Unknown";
         }
     }
@@ -192,7 +190,7 @@ class Game extends Thread {
 
 enum Phase {
     SETUP,
-    FREE_BUILDING,
+    INITIAL_BUILDING,
     END_TURN,
     THROW_DICE,
     FORCE_DISCARD,
