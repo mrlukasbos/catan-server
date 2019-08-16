@@ -184,9 +184,16 @@ class Game extends Thread {
       setCurrentPlayer(getNextPlayer());
     }
 
+    void goToPreviousPlayer() {
+        setCurrentPlayer(getPreviousPlayer());
+    }
+
     // move the currentPlayer id to the next Player in the array.
     private Player getNextPlayer() {
         return getPlayers().get((getCurrentPlayer().getId() + 1) % getPlayers().size());
+    }
+    private Player getPreviousPlayer() {
+        return getPlayers().get((getCurrentPlayer().getId() - 1) % getPlayers().size());
     }
 
 }

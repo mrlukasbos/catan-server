@@ -6,6 +6,11 @@
  [{ "structure": "street", "location": "([3,1],[3,2])" }, { "structure": "village", "location": "([2,2],[3,1],[3,2])" }]
  [{ "structure": "street", "location": "([3,4],[4,3])" }, { "structure": "village", "location": "([3,3],[3,4],[4,3])" }]
 
+ [{ "structure": "street", "location": "([2,2],[3,1])" }, { "structure": "village", "location": "([2,1],[2,2],[3,1])" }] // could interfere
+
+ [{ "structure": "street", "location": "([1,4],[2,4])" }, { "structure": "village", "location": "([1,4],[2,4],[2,5])" }]
+[{ "structure": "street", "location": "([2,3],[2,4])" }, { "structure": "village", "location": "([2,3],[2,4],[3,3])" }]
+
  (A village and a street)
  [{"structure": "village", "location": "([1,2],[1,3],[2,3])" }, { "structure": "street", "location": "([1,2],[1,3])" }]
  [{"structure": "village", "location": "([1,2],[2,1],[2,2])" }, { "structure": "street", "location": "([1,2],[2,2])" }]
@@ -20,6 +25,8 @@
  [{ "structure": "village", "location": "([1,2],[2,1],[2,2])" }]
  [{ "structure": "city", "location": "([1,2],[2,1],[2,2])" }]
  [{ "structure": "street", "location": "([2,2],[3,1])" }]
+[{ "structure": "street", "location": "([1,4],[2,3])" }]
+
 
  (a city and a street)
  [{ "structure": "city", "location": "([1,2],[2,1],[2,2])" }, { "structure": "street", "location": "([2,2],[3,1])" }]
@@ -51,9 +58,17 @@ public class InitialBuildPhase extends BuildPhase {
     @Override
     public Phase execute() {
         build();
-        game.goToNextPlayer();
 
+        // in the initial build phase the first two 'rounds' are quite uncommon.
+        // The player with the highest dice throw starts, and then it follows the normal order.
+        // After that round all players can build again but in the reversed order
         if (game.getBoard().getAllStructures().size() < game.getPlayers().size()) {
+            game.goToNextPlayer();
+            return Phase.INITIAL_BUILDING;
+        } else if (game.getBoard().getAllStructures().size() == game.getPlayers().size()) {
+            return Phase.INITIAL_BUILDING;
+        } else if (game.getBoard().getAllStructures().size() < game.getPlayers().size()*2) {
+            game.goToPreviousPlayer();
             return Phase.INITIAL_BUILDING;
         }
         return Phase.THROW_DICE;
