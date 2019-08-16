@@ -12,7 +12,6 @@
 // illegal input: [{ "structure": "village", "location": "([2,2],[3,0],[3,2])" }]
 
 import com.google.gson.*;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 
@@ -55,11 +54,8 @@ class BuildPhase implements GamePhase {
         }
     }
 
-    // check for the whole command if the command is valid.
-    boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
-        ArrayList<BuildCommand> streetCommands = new ArrayList<>();
-        ArrayList<BuildCommand> villageCommands = new ArrayList<>();
-        ArrayList<BuildCommand> cityCommands = new ArrayList<>();
+    ArrayList<BuildCommand> getCommandsFromInput(Player currentPlayer, JsonArray jsonArray, Structure structuresToReturn) {
+        ArrayList<BuildCommand> commands = new ArrayList<>();
 
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
@@ -69,22 +65,31 @@ class BuildPhase implements GamePhase {
             String key = object.get("location").getAsString();
 
             // validate if data is formatted properly and corresponding objects exist
-            if (structure == Structure.STREET) {
-                if (!edgeExists(game.getBoard().getEdge(key), key)) return false;
-                streetCommands.add(new BuildCommand(currentPlayer, structure, key));
-            } else {
-                if (!nodeExists(game.getBoard().getNode(key), key)) return false;
-
-                if (structure == Structure.SETTLEMENT) {
-                    villageCommands.add(new BuildCommand(currentPlayer, structure, key));
-                } else if (structure == Structure.CITY) {
-                    cityCommands.add(new BuildCommand(currentPlayer, structure, key));
-                }
-                game.print("The subcommand has an invalid key: " + key);
-                return false;
+            if (structure == structuresToReturn) {
+                 if (structuresToReturn == Structure.STREET) {
+                     if (!edgeExists(game.getBoard().getEdge(key), key)) return null;
+                     commands.add(new BuildCommand(currentPlayer, structure, key));
+                 } else {
+                     if (!nodeExists(game.getBoard().getNode(key), key)) return null;
+                     commands.add(new BuildCommand(currentPlayer, structure, key));
+                 }
             }
         }
 
+        return commands;
+    }
+
+
+    // check for the whole command if the command is valid.
+    boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
+        ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
+        ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.SETTLEMENT);
+        ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
+
+        if (streetCommands == null || villageCommands == null || cityCommands == null) {
+            game.print("There was something illegal about the command");
+            return false;
+        }
 
         // make an array with all the streets for further validation
         ArrayList<Edge> streets = game.getBoard().getStreetsFromPlayer(currentPlayer);
@@ -92,35 +97,46 @@ class BuildPhase implements GamePhase {
             streets.add(game.getBoard().getEdge((cmd.key)));
         }
 
+        // make an array with all the villages for further validation
+        ArrayList<Node> villages = game.getBoard().getStructuresFromPlayer(Structure.SETTLEMENT, currentPlayer);
+        for (BuildCommand cmd : villageCommands) {
+            villages.add(game.getBoard().getNode(cmd.key));
+        }
+
+
         return streetsAreValid(streetCommands)
                 && villagesAreValid(villageCommands, streets)
-                && citiesAreValid(cityCommands);
+                && citiesAreValid(cityCommands, villages);
     }
 
-    private boolean citiesAreValid(ArrayList<BuildCommand> cityCommands) {
+    boolean citiesAreValid(ArrayList<BuildCommand> cityCommands, ArrayList<Node> villages) {
         for (BuildCommand cmd : cityCommands) {
             Node node = game.getBoard().getNode(cmd.key);
-            if (!cityWasVillageFirst(cmd.player, node)) return true;
+            if (!cityWasVillageFirst(node, villages)) return false;
         }
-        return false;
+        return true;
     }
 
-    private boolean streetsAreValid(ArrayList<BuildCommand> streetCommands) {
+    boolean streetsAreValid(ArrayList<BuildCommand> streetCommands) {
+        ArrayList<Edge> streetsToBuild = new ArrayList<>();
+
         // validate if the streets are legal
         for (BuildCommand cmd : streetCommands) {
             Edge edge = game.getBoard().getEdge(cmd.key);
-            if (!edgeIsFree(cmd.key, edge) || !edgeIsOnTerrain(cmd.key, edge)) return false;
+            if (edgeIsFree(streetsToBuild, edge) && !edgeIsOnTerrain(edge)) {
+                streetsToBuild.add(edge);
+            }
         }
 
         return streetsAreConnected(streetCommands);
     }
 
-    private boolean villagesAreValid(ArrayList<BuildCommand> villageCommands, ArrayList<Edge> streets) {
+    boolean villagesAreValid(ArrayList<BuildCommand> villageCommands, ArrayList<Edge> streets) {
         ArrayList<Node> villagesToBuild = new ArrayList<>();
         for (BuildCommand cmd : villageCommands) {
             Node node = game.getBoard().getNode(cmd.key);
 
-            if (nodeIsAvailable(cmd.player, node)
+            if (nodeIsEmpty(villagesToBuild, node)
                     && nodeIsConnected(node, streets)
                     && nodeStructureIsAtLeastTwoEdgesFromOtherStructure(villagesToBuild, node)) {
                 villagesToBuild.add(node);
@@ -132,18 +148,18 @@ class BuildPhase implements GamePhase {
     }
 
 
-    boolean edgeIsOnTerrain(String key, Edge edge) {
+    boolean edgeIsOnTerrain(Edge edge) {
         // a street cannot be placed between two tiles of water
         if (!edge.isOnTerrain()) {
-            game.print("Received message with illegal street placement: a street cannot be put between two tiles of water " + key);
+            game.print("Received message with illegal street placement: a street cannot be put between two tiles of water " + edge.getKey());
             return false;
         }
         return true;
     }
 
-    boolean edgeIsFree(String key, Edge edge) {
-        if (edge.isRoad()) {
-            game.print("Received message with illegal placement: there is already a road on the given edge " + key);
+    boolean edgeIsFree(ArrayList<Edge> otherEdgesInSameCmd, Edge edge) {
+        if (edge.isRoad() || otherEdgesInSameCmd.contains(edge)) {
+            game.print("Received message with illegal placement: there is already a road on the given edge " + edge.getKey());
             return false;
         }
         return true;
@@ -181,20 +197,20 @@ class BuildPhase implements GamePhase {
         return true;
     }
 
-    boolean nodeIsAvailable(Player currentPlayer, Node node) {
-        if (node.hasPlayer() && node.getPlayer() != currentPlayer) {
-            game.print("Received message with illegal location: There is already a structure of another player " + node.getKey());
+    boolean nodeIsEmpty(ArrayList<Node> villagesFromSameCommand, Node node) {
+        if (node.hasPlayer() || node.hasStructure() || villagesFromSameCommand.contains(node)) {
+            game.print("Received message with illegal location: There is already a structure" + node.getKey());
             return false;
         }
         return true;
     }
 
-    boolean cityWasVillageFirst(Player currentPlayer, Node node) {
-        if (node.getPlayer() != currentPlayer || node.getStructure() != Structure.SETTLEMENT) {
-            game.print("Received message with illegal city placement: there is no village and/or it is not yours " + node.getKey());
-            return false;
+    boolean cityWasVillageFirst(Node node, ArrayList<Node> villages) {
+        if (villages.contains(node)) {
+            return true;
         }
-        return true;
+        game.print("Received message with illegal city placement: there is no village and/or it is not yours " + node.getKey());
+        return false;
     }
 
     boolean nodeStructureIsAtLeastTwoEdgesFromOtherStructure(ArrayList<Node> nodes, Node node) {
@@ -254,7 +270,7 @@ class BuildPhase implements GamePhase {
             String message = currentPlayer.listen();
             game.print("Received message from player " + currentPlayer.getName() + ": " + message);
             jsonArray = getJsonIfValid(message);
-            buildSucceeded = jsonArray != getJsonIfValid(message) && commandIsValid(currentPlayer, jsonArray);
+            buildSucceeded = jsonArray != null && commandIsValid(currentPlayer, jsonArray);
         }
         return jsonArray;
     }

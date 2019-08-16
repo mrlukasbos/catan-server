@@ -34,6 +34,8 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+
 public class InitialBuildPhase extends BuildPhase {
 
     InitialBuildPhase(Game game) {
@@ -60,66 +62,33 @@ public class InitialBuildPhase extends BuildPhase {
 
     @Override
     boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
+        ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
+        ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.SETTLEMENT);
+        ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
 
-        if (jsonArray.size() != 2) {
-            game.print("command invalid, there are no 2 elements in the array");
+        if (streetCommands == null || villageCommands == null || cityCommands == null) {
+            game.print("There was something illegal about the command");
             return false;
         }
 
-        JsonObject object1 = jsonArray.get(0).getAsJsonObject();
-        String structureString1 = object1.get("structure").getAsString();
-        Structure structure1 = game.stringToStructure(structureString1);
-        String key1 = object1.get("location").getAsString();
-
-        JsonObject object2 = jsonArray.get(1).getAsJsonObject();
-        String structureString2 = object2.get("structure").getAsString();
-        Structure structure2 = game.stringToStructure(structureString2);
-        String key2 = object2.get("location").getAsString();
-
-        // first place the street, then we try to connect the village to it
-        if (structure1 == Structure.STREET) {
-            game.print("the first item is a street");
-
-            return commandHasValidStreetAndVillage(currentPlayer, key1, structure1, key2, structure2);
-        } else if (structure2 == Structure.STREET) {
-            game.print("the second item is a street");
-
-            return commandHasValidStreetAndVillage(currentPlayer, key2, structure2, key1, structure1);
-        }
-        game.print("Received message does not contain a street");
-        return false;
-    }
-
-    /*
-    The first settlement has to be a village and road connected to each other
-     */
-    private boolean commandHasValidStreetAndVillage(Player currentPlayer, String streetKey, Structure structure1, String villageKey, Structure structure2) {
-        // validate the street
-        Edge edge = game.getBoard().getEdge(streetKey);
-        if (!edgeSubcommandIsValid(currentPlayer, structure1, streetKey, edge)) return false;
-        game.print("The street is valid " + streetKey);
-
-        // validate structure 2
-        Node node = game.getBoard().getNode(villageKey);
-        if (!nodeSubcommandIsValid(currentPlayer, structure2, villageKey, node)) return false;
-
-        // The village must be connected to the street!
-        if (!nodeIsConnectedToStreet(villageKey, node, edge)) return false;
-        game.print("The village is valid " + streetKey);
-        return true;
-    }
-
-    boolean nodeIsConnectedToStreet(String key, Node node, Edge street) {
-        boolean hasNeighbouringStreet = false;
-        for (Edge surroundingEdge : game.getBoard().getSurroundingEdges(node)) {
-            if (surroundingEdge != null && surroundingEdge.getKey().equals(street.getKey())) {
-                hasNeighbouringStreet = true;
-            }
-        }
-        if (!hasNeighbouringStreet) {
-            game.print("Received message with illegal placement: there is no street to connect with " + key);
+        if (streetCommands.size() != 1 || villageCommands.size() != 1 || !cityCommands.isEmpty()) {
+            game.print("command invalid, the command does not exist out of a street and village");
             return false;
         }
+
+        // make an array with all the streets for further validation
+        ArrayList<Edge> streets = game.getBoard().getStreetsFromPlayer(currentPlayer);
+        for (BuildCommand cmd : streetCommands) {
+            streets.add(game.getBoard().getEdge((cmd.key)));
+        }
+
+        return streetsAreValid(streetCommands)
+                && villagesAreValid(villageCommands, streets);
+    }
+
+    // in the initial building phase the streets don't need to be connected
+    @Override
+    boolean streetsAreConnected(ArrayList<BuildCommand> streetCommands) {
         return true;
     }
 }
