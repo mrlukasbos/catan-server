@@ -131,6 +131,7 @@ class Board {
         return availableHarbors.remove(new Random().nextInt(availableHarbors.size()));
     }
 
+
     public String tileCoordinatesToKey(int x, int y) {
         return "[" + x + "," + y + "]";
     }
@@ -319,15 +320,43 @@ class Board {
         }
     }
 
-    ArrayList<Structure> getStructures() {
-        ArrayList<Structure> structures = new ArrayList<Structure>();
+    ArrayList<Structure> getAllStructures() {
+        ArrayList<Structure> structures = new ArrayList<>();
         for (Node node : nodes) {
-            if (node.hasStructure() && node.getStructure() != Structure.STREET) {
+            if (node.hasStructure() && node.hasPlayer()) {
                 structures.add(node.getStructure());
             }
         }
         return structures;
     }
+
+
+    ArrayList<Node> getStructuresFromPlayer(Structure structureType, Player player) {
+        ArrayList<Node> structures = new ArrayList<>();
+
+        if (structureType == Structure.CITY || structureType == Structure.SETTLEMENT) {
+            for (Node node : nodes) {
+                if (node.hasStructure() && node.getStructure() == structureType && node.hasPlayer() && node.getPlayer() == player) {
+                    structures.add(node);
+                }
+            }
+        }
+        return structures;
+    }
+
+    ArrayList<Edge> getStreetsFromPlayer(Player player) {
+        ArrayList<Edge> streets = new ArrayList<>();
+
+        for (Edge edge : edges) {
+            if (edge.isRoad() && edge.hasPlayer() && edge.getPlayer() == player) {
+                streets.add(edge);
+            }
+        }
+
+        return streets;
+    }
+
+
 
     private String developmentCardToString(DevelopmentCard developmentCard) {
         switch (developmentCard) {

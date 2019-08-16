@@ -51,28 +51,12 @@ public class InitialBuildPhase extends BuildPhase {
         build();
         game.goToNextPlayer();
 
-        if (game.getBoard().getStructures().size() < game.getPlayers().size()) {
+        if (game.getBoard().getAllStructures().size() < game.getPlayers().size()) {
             return Phase.INITIAL_BUILDING;
         }
         return Phase.THROW_DICE;
     }
 
-    @Override
-    protected boolean nodeSubcommandIsValid(Player currentPlayer, Structure structure, String key, Node node) {
-        return nodeExists(node, key)
-                && structureIsVillageOrCity(structure)
-                && nodeIsAvailable(currentPlayer, key, node)
-                && cityWasVillageFirst(currentPlayer, structure, key, node)
-                && nodeStructureIsAtLeastTwoEdgesFromOtherStructure(key, node);
-    }
-
-    @Override
-    protected boolean edgeSubcommandIsValid(Player currentPlayer, Structure structure, String key, Edge edge) {
-        return edgeExists(edge, key)
-                && structureIsStreet(structure, key)
-                && edgeIsFree(key, edge)
-                && edgeIsOnTerrain(key, edge);
-    }
 
     @Override
     boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
