@@ -1,12 +1,12 @@
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 class Player {
     private String name;
     private int id;
-    private ArrayList<Resource> resources = new ArrayList<Resource>();
+    private HashMap<Resource, Integer> resources = new HashMap<>();
     private String color;
     private Socket socket;
 
@@ -14,6 +14,12 @@ class Player {
         this.id = id;
         this.name = name;
         this.color = String.format("#%06x", new Random().nextInt(0xffffff + 1));
+
+        resources.put(Resource.GRAIN, 0);
+        resources.put(Resource.ORE, 0);
+        resources.put(Resource.STONE, 0);
+        resources.put(Resource.WHOOL, 0);
+        resources.put(Resource.WOOD, 0);
     }
 
     synchronized void setSocket(Socket s) {
@@ -53,6 +59,10 @@ class Player {
         return null;
     }
 
+    public HashMap<Resource, Integer> getResources() {
+        return resources;
+    }
+
     String getName() {
         return name;
     }
@@ -67,13 +77,7 @@ class Player {
 
     // count the occurence of a specific resource for the player
     int countResources(Resource resourceToCount) {
-        int count = 0;
-        for (Resource resourceOnHand : resources) {
-            if (resourceOnHand == resourceToCount) {
-                count++;
-            }
-        }
-        return count;
+        return resources.getOrDefault(resourceToCount, 0);
     }
 
     // count the occurence of all resources together
@@ -84,37 +88,29 @@ class Player {
     // add resources to the resources of the player
     void addResources(Resource resource, int amount) {
         if (resource != Resource.NONE) {
-            for (int i = 0; i < amount; i++) {
-                resources.add(resource);
-            }
+            resources.replace(resource, resources.get(resource) + amount);
         }
     }
 
     // remove resources from the player
     void removeResources(Resource resource, int amount) {
         // iterate over all resources to remove the amount needed.
-        int amountOfRemovals = 0;
-        for (int i = 0; i < resources.size(); i++) {
-            if (resources.get(i) == resource && amountOfRemovals < amount) {
-                resources.remove(i);
-                amountOfRemovals++;
-            }
-        }
+        int amountOfResources = countResources(resource);
+        resources.replace(resource, Math.max(0, amountOfResources));
     }
 
     @java.lang.Override
     public java.lang.String toString() {
 
         String resourcesString = "[";
-
-        if (resources.size() > 0) {
-            for (Resource resource : resources) {
-                resourcesString = resourcesString.concat("\"" + resourceToString(resource) + "\",");
+        if (resources.size() == 0) {
+            resourcesString = "[]";
+        } else {
+            for (HashMap.Entry<Resource, Integer> entry : resources.entrySet()) {
+                resourcesString = resourcesString.concat("{\"type\":\"" + resourceToString(entry.getKey()) + "\", \"value\":" + entry.getValue()) + "},";
             }
             resourcesString = resourcesString.substring(0, resourcesString.length() - 1);
             resourcesString = resourcesString.concat("]");
-        } else {
-            resourcesString = "[]";
         }
 
         return "{" +
@@ -140,6 +136,19 @@ class Player {
             case GRAIN: return "grain";
             case ORE: return "ore";
             default: return null;
+        }
+    }
+
+    String structureToString(Structure structure) {
+        switch (structure) {
+            case STREET:
+                return "street";
+            case SETTLEMENT:
+                return "village";
+            case CITY:
+                return "city";
+            default:
+                return "";
         }
     }
 

@@ -39,7 +39,9 @@
                         </div>
                         <div style="display:flex; padding-top: 12px; ">
                                 <div v-for="resource in player.attributes.resources" style="display: flex">
-                                    <div style="width: 18px; height: 28px; border-radius: 5%; margin-right: 4px;" class="resource" v-bind:class="resource"></div>
+                                    <div v-if="resource.value!=0">
+                                         <div style="font-weight: 100; width: 18px; height: 28px; border-radius: 5%; margin-right: 4px; display: flex; align-items: center; justify-content: center;"  class="resource" v-bind:class="resource.type"> {{resource.value}} </div>
+                                    </div>
                                 </div>
                             </div>
                     </div>
