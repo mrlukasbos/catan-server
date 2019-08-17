@@ -8,15 +8,17 @@ class Event {
     private ArrayList<Structure> structures = new ArrayList<>();
     private HashMap<Resource, Integer> resources = new HashMap<>();
     private String message = "";
+    private int moveCount;
 
-
-    Event(EventType type) {
+    Event(Game game, EventType type) {
         this.type = type;
+        this.moveCount = game.getMoveCount();
     }
 
-    Event(EventType type, Player player) {
+    Event(Game game, EventType type, Player player) {
         this.player = player;
         this.type = type;
+        this.moveCount = game.getMoveCount();
     }
 
     Event withResources(HashMap<Resource, Integer> resources) {
@@ -57,6 +59,7 @@ class Event {
                 "\"model\": \"event\", " +
                 "\"type\": \"" + eventTypeToString(type) + "\", " +
                 "\"attributes\": {" +
+                "\"move\": " + moveCount + ", " +
                 "\"message\": \"" + message + "\", " +
                 "\"player\": " + playerString + ", " +
                 "\"resources\": " + Player.getResourcesAsJSONString(resources) + ", " +

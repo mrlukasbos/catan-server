@@ -8,12 +8,10 @@ class Tile implements Comparable<Tile> {
     private Type type;
     private int number; // the number of the dice to be hit
     private Orientation orientation;
-    private Board board;
 
     private ArrayList<Node> nodes = new ArrayList<>();
 
-    Tile(Board board, int x, int y, Type type) {
-        this.board = board;
+    Tile(int x, int y, Type type) {
         this.x = x;
         this.y = y;
         this.type = type;
@@ -21,8 +19,7 @@ class Tile implements Comparable<Tile> {
         this.orientation = Orientation.NONE;
     }
 
-    Tile(Board board, int x, int y, Type type, int number) {
-        this.board = board;
+    Tile(int x, int y, Type type, int number) {
         this.x = x;
         this.y = y;
         this.type = type;
@@ -30,8 +27,7 @@ class Tile implements Comparable<Tile> {
         this.orientation = Orientation.NONE;
     }
 
-    Tile(Board board, int x, int y, Type type, Orientation orientation) {
-        this.board = board;
+    Tile(int x, int y, Type type, Orientation orientation) {
         this.x = x;
         this.y = y;
         this.type = type;

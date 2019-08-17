@@ -58,7 +58,7 @@
             </div>
 
             <div class="events" style="padding: 18px; display: flex; flex-direction: column-reverse; justify-content: center; flex:3">
-                <div v-for="(event, index) in events" style="margin-bottom: 8px">
+                <div v-for="(event, index) in events" style="margin-bottom: 8px" v-bind:style="[event.attributes.move >= json.attributes.move - 2 ? {'font-weight': 600} : {}]">
 
                     <span v-if="event.attributes.player" :style="{ 'color': event.attributes.player.attributes.color }">
                      {{event.attributes.player.attributes.name}}
@@ -68,16 +68,28 @@
                         {{event.attributes.message}}
                     </span>
                     <span v-else-if="event.type=='BUIlD'">
-                        builds:
-                        <span v-for="structure in event.attributes.structures"> {{structure}} </span>
+                           <span v-if="event.attributes.resources.length">
+                            builds
+                            <span v-for="structure in event.attributes.structures"> {{structure}} </span>
+                        </span>
+                        <span v-else>
+                            builds nothing
+                        </span>
+
+
+
                     </span>
                     <span v-else-if="event.type == 'GET_RESOURCES'">
-                        gets:
-                        <span v-for="resource in event.attributes.resources">
+                        <span v-if="event.attributes.resources.length">
+                            receives
+                            <span v-for="resource in event.attributes.resources">
                             {{resource.value}} {{resource.type}}
 
                         </span>
-
+                        </span>
+                        <span v-else>
+                            receives nothing
+                        </span>
                     </span>
                 </div>
             </div>

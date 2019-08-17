@@ -13,6 +13,7 @@ class Game extends Thread {
     private boolean running = false;
     private Interface iface;
     private Server server;
+    private int move = 0;
 
     // All gamePhases
     private DiceThrowPhase diceThrowPhase = new DiceThrowPhase(this);
@@ -32,7 +33,7 @@ class Game extends Thread {
         this.board = new Board(this);
         this.running = true;
         print("Starting game");
-        addEvent(new Event(EventType.GENERAL).withGeneralMessage("Starting the game"));
+        addEvent(new Event(this, EventType.GENERAL).withGeneralMessage("Starting the game"));
 
         start();
     }
@@ -51,6 +52,7 @@ class Game extends Thread {
     }
 
     private void signalGameChange() {
+        move++;
         // signal the change
         getPlayers().forEach((p) -> p.send(getBoard().toString()));
         iface.broadcast(toString());
@@ -145,6 +147,7 @@ class Game extends Thread {
             return "{" +
                     "\"model\": \"game\", " +
                     "\"attributes\": {" +
+                    "\"move\": " + move + ", " +
                     "\"players\": " + playersString + ", " +
                     "\"status\": \"" + getGameStatus() + "\", " +
                     "\"board\": " + getBoard().toString() + ", " +
@@ -205,15 +208,8 @@ class Game extends Thread {
 
     Player getCurrentPlayer() { return currentPlayer; }
 
-    Player getPlayerById(int id) {
-        for (Player player : players) {
-            if (player.getId() == id) return player;
-        }
-        return null;
-    }
-
-    boolean hasPlayerWithId(int id) {
-        return getPlayerById(id) != null;
+    public int getMoveCount() {
+        return move;
     }
 
     int getLastDiceThrow() { return lastDiceThrow; }

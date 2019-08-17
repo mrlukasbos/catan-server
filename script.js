@@ -247,6 +247,7 @@ var app = new Vue({
         lastDiceThrow: 0,
         currentPlayerId: null,
         events: [],
+        move: 0
     },
     methods: {
         connect: function (event) {
@@ -279,6 +280,7 @@ var app = new Vue({
                 this.status = json.attributes.status;
                 this.currentPlayerId = json.attributes.currentPlayer;
                 this.events = json.attributes.events;
+                this.move = json.attributes.move;
 
                 if (json.attributes.board) {
                 draw();

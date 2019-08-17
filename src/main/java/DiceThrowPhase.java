@@ -16,7 +16,7 @@ public class DiceThrowPhase implements GamePhase {
         Dice d = new Dice(2);
         int dice = d.throwDice();
         game.setLastDiceThrow(dice);
-        game.addEvent(new Event(EventType.GENERAL, game.getCurrentPlayer()).withGeneralMessage(" has thrown " + dice));
+        game.addEvent(new Event(game, EventType.GENERAL, game.getCurrentPlayer()).withGeneralMessage(" has thrown " + dice));
 
         if (dice == 7) {
             return Phase.MOVE_BANDIT;
@@ -52,7 +52,7 @@ public class DiceThrowPhase implements GamePhase {
 
         // put hashmaps to the game events
         for (Player player : game.getPlayers()) {
-            game.addEvent(new Event(EventType.GET_RESOURCES, player).withResources(resourcesForPlayerId.get(player.getId())));
+            game.addEvent(new Event(game, EventType.GET_RESOURCES, player).withResources(resourcesForPlayerId.get(player.getId())));
         }
     }
 }

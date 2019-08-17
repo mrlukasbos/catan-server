@@ -11,7 +11,7 @@ public class SetupPhase implements GamePhase {
 
     public Phase execute() {
         game.setCurrentPlayer(determineFirstPlayer());
-        game.addEvent(new Event(EventType.GENERAL, game.getCurrentPlayer()).withGeneralMessage(" may start the game"));
+        game.addEvent(new Event(game, EventType.GENERAL, game.getCurrentPlayer()).withGeneralMessage(" may start the game"));
 
         return Phase.INITIAL_BUILDING;
     }
@@ -24,7 +24,7 @@ public class SetupPhase implements GamePhase {
 
         for (Player player : game.getPlayers()) {
             int newDiceThrow = dice.throwDice();
-            game.addEvent(new Event(EventType.GENERAL, player).withGeneralMessage(" throws " + newDiceThrow));
+            game.addEvent(new Event(game, EventType.GENERAL, player).withGeneralMessage(" throws " + newDiceThrow));
             if (newDiceThrow > highestDiceThrow) {
                 firstPlayer = player;
                 highestDiceThrow = newDiceThrow;
