@@ -49,8 +49,10 @@ class Tile implements Comparable<Tile> {
 
     }
 
+    // this also contains nodes that are not the same as in the board.getNodes().
+    // because there the duplicates are filtered out.
     void addNode(Node n) {
-        if (!nodes.contains(n) && board.getNodes().contains(n)) {
+        if (!nodes.contains(n)) {
             nodes.add(n);
         }
     }
