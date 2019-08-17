@@ -102,16 +102,7 @@ class Player {
     @java.lang.Override
     public java.lang.String toString() {
 
-        String resourcesString = "[";
-        if (resources.size() == 0) {
-            resourcesString = "[]";
-        } else {
-            for (HashMap.Entry<Resource, Integer> entry : resources.entrySet()) {
-                resourcesString = resourcesString.concat("{\"type\":\"" + resourceToString(entry.getKey()) + "\", \"value\":" + entry.getValue()) + "},";
-            }
-            resourcesString = resourcesString.substring(0, resourcesString.length() - 1);
-            resourcesString = resourcesString.concat("]");
-        }
+        String resourcesString = getResourcesAsJSONString(resources);
 
         return "{" +
                 "\"model\": \"player\", " +
@@ -124,11 +115,25 @@ class Player {
                 "}";
     }
 
+    static String getResourcesAsJSONString(HashMap<Resource, Integer> resources) {
+        String resourcesString = "[";
+        if (resources.size() == 0) {
+            resourcesString = "[]";
+        } else {
+            for (HashMap.Entry<Resource, Integer> entry : resources.entrySet()) {
+                resourcesString = resourcesString.concat("{\"type\":\"" + resourceToString(entry.getKey()) + "\", \"value\":" + entry.getValue()) + "},";
+            }
+            resourcesString = resourcesString.substring(0, resourcesString.length() - 1);
+            resourcesString = resourcesString.concat("]");
+        }
+        return resourcesString;
+    }
+
     private void print(String msg) {
         System.out.println("[Player] " + msg);
     }
 
-    String resourceToString(Resource res) {
+    static String resourceToString(Resource res) {
         switch (res) {
             case WHOOL: return "whool";
             case WOOD: return "wood";
@@ -139,7 +144,7 @@ class Player {
         }
     }
 
-    String structureToString(Structure structure) {
+    static String structureToString(Structure structure) {
         switch (structure) {
             case STREET:
                 return "street";

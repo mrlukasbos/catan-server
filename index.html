@@ -59,13 +59,26 @@
 
             <div class="events" style="padding: 18px; display: flex; flex-direction: column-reverse; justify-content: center; flex:3">
                 <div v-for="(event, index) in events" style="margin-bottom: 8px">
-                    <div v-if="index == events.length -1">
-                        <span style="font-weight: 600"> {{event}} </span>
-                    </div>
-                    <div v-else>
-                        {{event}}
-                    </div>
 
+                    <span v-if="event.attributes.player" :style="{ 'color': event.attributes.player.attributes.color }">
+                     {{event.attributes.player.attributes.name}}
+                    </span>
+
+                    <span v-if="event.type=='GENERAL'">
+                        {{event.attributes.message}}
+                    </span>
+                    <span v-else-if="event.type=='BUIlD'">
+                        builds:
+                        <span v-for="structure in event.attributes.structures"> {{structure}} </span>
+                    </span>
+                    <span v-else-if="event.type == 'GET_RESOURCES'">
+                        gets:
+                        <span v-for="resource in event.attributes.resources">
+                            {{resource.value}} {{resource.type}}
+
+                        </span>
+
+                    </span>
                 </div>
             </div>
 

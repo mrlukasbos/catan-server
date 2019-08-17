@@ -17,6 +17,11 @@ public class Node {
         this.t = t;
         this.r = r;
         this.l = l;
+
+        // we can also let the tile know which nodes are connected to it
+        t.addNode(this);
+        r.addNode(this);
+        l.addNode(this);
         this.structure = Structure.NONE;
     }
 

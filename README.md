@@ -85,6 +85,9 @@ A single village, city or street
  [{ "structure": "city", "location": "([1,2],[2,1],[2,2])" }]
  [{ "structure": "street", "location": "([2,2],[3,1])" }]
  [{ "structure": "street", "location": "([1,4],[2,3])" }]
+ 
+  [{ "structure": "street", "location": "([2,4],[2,5])" }]
+
 ```
 
 

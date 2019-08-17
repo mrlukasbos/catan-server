@@ -77,20 +77,20 @@ class Board {
                 int distanceFromCenter = calculateDistanceFromCenter(x, y);
 
                 if (distanceFromCenter == 0) {
-                    Tile tile = new Tile(x, y, Type.DESERT);
+                    Tile tile = new Tile(this, x, y, Type.DESERT);
                     bandit = new Bandit(tile);
 
                     addTile(tile);
                 } else if (distanceFromCenter <= 2) {
-                    Tile tile = new Tile(x, y, getRandomTerrainType(availableTerrains), TILE_NUMBERS[tileNumberIndex]);
+                    Tile tile = new Tile(this, x, y, getRandomTerrainType(availableTerrains), TILE_NUMBERS[tileNumberIndex]);
                     tileNumberIndex++;
 
                     addTile(tile);
                 } else if (distanceFromCenter == 3) {
                     if (HARBOR_ORIENTATIONS.containsKey(tileCoordinatesToKey(x, y))) {
-                        addTile(new Tile(x, y, getRandomHarborType(availableHarbors), HARBOR_ORIENTATIONS.get(tileCoordinatesToKey(x, y))));
+                        addTile(new Tile(this, x, y, getRandomHarborType(availableHarbors), HARBOR_ORIENTATIONS.get(tileCoordinatesToKey(x, y))));
                     } else {
-                        addTile(new Tile(x, y, Type.SEA));
+                        addTile(new Tile(this, x, y, Type.SEA));
                     }
                 }
             }
@@ -422,6 +422,22 @@ class Board {
 
     public List<Tile> getTiles() {
         return tiles;
+    }
+
+    public List<Tile> getTilesForDiceNumber(int number) {
+        List<Tile> tilesWithNumber = new ArrayList<>();
+        for (Tile t: tiles ) {
+            if(t.getNumber() == number) {
+                tilesWithNumber.add(t);
+            }
+        }
+        return tilesWithNumber;
+    }
+
+
+    // get all nodes around a tile
+    public List<Node> getNodes(Tile tile) {
+        return tile.getNodes();
     }
 
     public void setTiles(List<Tile> tiles) {

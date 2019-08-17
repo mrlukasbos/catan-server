@@ -21,7 +21,7 @@ class Game extends Thread {
     private BuildPhase normalBuildPhase = new BuildPhase(this);
     private GamePhase currentPhase = new SetupPhase(this);
 
-    private ArrayList<String> events = new ArrayList<>();
+    private ArrayList<Event> events = new ArrayList<>();
 
     Game(Interface iface, Server server) {
         this.iface = iface;
@@ -32,6 +32,8 @@ class Game extends Thread {
         this.board = new Board(this);
         this.running = true;
         print("Starting game");
+        addEvent(new Event(EventType.GENERAL).withGeneralMessage("Starting the game"));
+
         start();
     }
 
@@ -128,8 +130,8 @@ class Game extends Thread {
         String eventString = "[";
 
         if (events.size() > 0) {
-            for (String event : events) {
-                eventString = eventString.concat("\"" + event + "\",");
+            for (Event event : events) {
+                eventString = eventString.concat(event.toString() + ",");
             }
             eventString = eventString.substring(0, eventString.length() - 1);
             eventString = eventString.concat("]");
@@ -183,7 +185,7 @@ class Game extends Thread {
         player.send(response.toString());
     }
 
-    void addEvent(String event) { events.add(event); }
+    void addEvent(Event event) { events.add(event); }
 
     void addPlayer (Player p) {
         players.add(p);
@@ -202,6 +204,17 @@ class Game extends Thread {
     void setCurrentPlayer(Player player) { currentPlayer = player; }
 
     Player getCurrentPlayer() { return currentPlayer; }
+
+    Player getPlayerById(int id) {
+        for (Player player : players) {
+            if (player.getId() == id) return player;
+        }
+        return null;
+    }
+
+    boolean hasPlayerWithId(int id) {
+        return getPlayerById(id) != null;
+    }
 
     int getLastDiceThrow() { return lastDiceThrow; }
 

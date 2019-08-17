@@ -1,13 +1,19 @@
 // a tile can either be land or water
 
+import java.util.ArrayList;
+
 class Tile implements Comparable<Tile> {
     private int x;
     private int y;
     private Type type;
     private int number; // the number of the dice to be hit
     private Orientation orientation;
+    private Board board;
 
-    Tile(int x, int y, Type type) {
+    private ArrayList<Node> nodes = new ArrayList<>();
+
+    Tile(Board board, int x, int y, Type type) {
+        this.board = board;
         this.x = x;
         this.y = y;
         this.type = type;
@@ -15,7 +21,8 @@ class Tile implements Comparable<Tile> {
         this.orientation = Orientation.NONE;
     }
 
-    Tile(int x, int y, Type type, int number) {
+    Tile(Board board, int x, int y, Type type, int number) {
+        this.board = board;
         this.x = x;
         this.y = y;
         this.type = type;
@@ -23,7 +30,8 @@ class Tile implements Comparable<Tile> {
         this.orientation = Orientation.NONE;
     }
 
-    Tile(int x, int y, Type type, Orientation orientation) {
+    Tile(Board board, int x, int y, Type type, Orientation orientation) {
+        this.board = board;
         this.x = x;
         this.y = y;
         this.type = type;
@@ -40,6 +48,17 @@ class Tile implements Comparable<Tile> {
         return a.getDistance(b);
 
     }
+
+    void addNode(Node n) {
+        if (!nodes.contains(n) && board.getNodes().contains(n)) {
+            nodes.add(n);
+        }
+    }
+
+    public ArrayList<Node> getNodes() {
+        return nodes;
+    }
+
 
     boolean isEven() {
         return Math.abs(getY())%2 == 0;
