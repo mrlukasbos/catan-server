@@ -132,7 +132,7 @@ class Player {
         System.out.println("[Player] " + msg);
     }
 
-    private String resourceToString(Resource res) {
+    String resourceToString(Resource res) {
         switch (res) {
             case WHOOL: return "whool";
             case WOOD: return "wood";

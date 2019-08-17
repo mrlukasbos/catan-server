@@ -33,5 +33,4 @@ public class Constants {
     static final Response STRUCTUREALREADYEXISTSERROR = new Response(604, "StructureAlreadyExists", "There is already a structure on the given node");
     static final Response NOTENOUGHRESOURCESERROR = new Response(605, "InsufficientResources", "You have not enough resources to build this");
     static final Response NOTAVILLAGEANDSTREETERROR = new Response(606, "NotAVillageAndStreet", "In the initial buildphase a command must exist out of a village and a street");
-
 }

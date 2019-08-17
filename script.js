@@ -245,7 +245,8 @@ var app = new Vue({
         status: "WAITING_FOR_PLAYERS",
         players: [],
         lastDiceThrow: 0,
-        currentPlayerId: null
+        currentPlayerId: null,
+        events: [],
     },
     methods: {
         connect: function (event) {
@@ -277,6 +278,7 @@ var app = new Vue({
                 this.players = json.attributes.players;
                 this.status = json.attributes.status;
                 this.currentPlayerId = json.attributes.currentPlayer;
+                this.events = json.attributes.events;
 
                 if (json.attributes.board) {
                 draw();

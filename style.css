@@ -118,3 +118,9 @@ button:hover {
 .numbers {
     font-size: 25px;
 }
+
+.events {
+    font-weight: 100;
+    overflow-y: scroll;
+    font-size: .8rem;
+}

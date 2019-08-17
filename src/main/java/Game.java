@@ -21,6 +21,8 @@ class Game extends Thread {
     private BuildPhase normalBuildPhase = new BuildPhase(this);
     private GamePhase currentPhase = new SetupPhase(this);
 
+    private ArrayList<String> events = new ArrayList<>();
+
     Game(Interface iface, Server server) {
         this.iface = iface;
         this.server = server;
@@ -123,6 +125,19 @@ class Game extends Thread {
             playersString = "[]";
         }
 
+        String eventString = "[";
+
+        if (events.size() > 0) {
+            for (String event : events) {
+                eventString = eventString.concat("\"" + event + "\",");
+            }
+            eventString = eventString.substring(0, eventString.length() - 1);
+            eventString = eventString.concat("]");
+        } else {
+            eventString = "[]";
+        }
+
+
         if (isRunning()) {
 
             return "{" +
@@ -131,6 +146,7 @@ class Game extends Thread {
                     "\"players\": " + playersString + ", " +
                     "\"status\": \"" + getGameStatus() + "\", " +
                     "\"board\": " + getBoard().toString() + ", " +
+                    "\"events\": " + eventString + ", " +
                     "\"lastDiceThrow\": " + getLastDiceThrow() + ", " +
                     "\"phase\": \"" + phaseToString(currentPhase.getPhaseType()) + "\"," +
                     "\"currentPlayer\": " + getCurrentPlayer().getId() +
@@ -166,6 +182,8 @@ class Game extends Thread {
         print(player.getName() + "(" + player.getId() + "): "+ response.toString());
         player.send(response.toString());
     }
+
+    void addEvent(String event) { events.add(event); }
 
     void addPlayer (Player p) {
         players.add(p);

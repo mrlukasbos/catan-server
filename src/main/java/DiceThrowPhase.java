@@ -13,6 +13,8 @@ public class DiceThrowPhase implements GamePhase {
         Dice d = new Dice(2);
         int dice = d.throwDice();
         game.setLastDiceThrow(dice);
+        game.addEvent(game.getCurrentPlayer().getName() + " threw the dice and got " + dice);
+
         if (dice == 7) {
             return Phase.MOVE_BANDIT;
         } else {
@@ -28,6 +30,7 @@ public class DiceThrowPhase implements GamePhase {
                     if (tile.isTerrain() && tile.getNumber() == diceThrow) {
                         int amount = node.getStructure() == Structure.CITY ? 2 : 1;
                         node.getPlayer().addResources(tile.typeToResource(tile.getType()), amount);
+                        game.addEvent(node.getPlayer().getName() + " gets "  + amount + " " + node.getPlayer().resourceToString(tile.typeToResource(tile.getType())));
                     }
                 }
             }

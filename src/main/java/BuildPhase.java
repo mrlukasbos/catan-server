@@ -44,14 +44,31 @@ class BuildPhase implements GamePhase {
 
     // build the structures if the command is valid
     private void buildStructures(Player currentPlayer, JsonArray jsonArray) {
-        for (JsonElement element : jsonArray) {
+        if (jsonArray.size() == 0) {
+            game.addEvent(currentPlayer.getName() + " built nothing");
+        }
+
+        String text = currentPlayer.getName() + " built a ";
+
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonElement element = jsonArray.get(i);
             JsonObject object = element.getAsJsonObject();
 
             String structureString = object.get("structure").getAsString();
             Structure structure = game.stringToStructure(structureString);
             String key = object.get("location").getAsString();
             game.getBoard().placeStructure(currentPlayer, structure, key);
+
+            text += structureString + " at " + key;
+
+            if (i < jsonArray.size() - 2) {
+            text += ", ";
+            } else if (i == jsonArray.size() -2) {
+                text += " and a ";
+            }
         }
+
+        game.addEvent(text);
     }
 
     ArrayList<BuildCommand> getCommandsFromInput(Player currentPlayer, JsonArray jsonArray, Structure structuresToReturn) {
