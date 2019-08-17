@@ -158,6 +158,15 @@ class Game extends Thread {
         }
     }
 
+    void sendResponse(Response response) {
+        sendResponse(getCurrentPlayer(), response);
+    }
+
+    void sendResponse(Player player, Response response) {
+        print(player.getName() + "(" + player.getId() + "): "+ response.toString());
+        player.send(response.toString());
+    }
+
     void addPlayer (Player p) {
         players.add(p);
     }

@@ -64,6 +64,11 @@ class BuildPhase implements GamePhase {
             Structure structure = game.stringToStructure(structureString);
             String key = object.get("location").getAsString();
 
+            if (structure == Structure.NONE) {
+                game.sendResponse(Constants.INVALIDSTRUCTUREERROR);
+                return null;
+            }
+
             // validate if data is formatted properly and corresponding objects exist
             if (structure == structuresToReturn) {
                  if (structuresToReturn == Structure.STREET) {
@@ -151,7 +156,7 @@ class BuildPhase implements GamePhase {
     boolean edgeIsOnTerrain(Edge edge) {
         // a street cannot be placed between two tiles of water
         if (!edge.isOnTerrain()) {
-            game.print("Received message with illegal street placement: a street cannot be put between two tiles of water " + edge.getKey());
+            game.sendResponse(game.getCurrentPlayer(), Constants.STRUCTURENOTONLANDERROR.withAdditionalInfo(edge.getKey()));
             return false;
         }
         return true;
@@ -159,7 +164,7 @@ class BuildPhase implements GamePhase {
 
     boolean edgeIsFree(ArrayList<Edge> otherEdgesInSameCmd, Edge edge) {
         if (edge.isRoad() || otherEdgesInSameCmd.contains(edge)) {
-            game.print("Received message with illegal placement: there is already a road on the given edge " + edge.getKey());
+            game.sendResponse(game.getCurrentPlayer(), Constants.STRUCTUREALREADYEXISTSERROR.withAdditionalInfo(edge.getKey()));
             return false;
         }
         return true;
@@ -167,7 +172,7 @@ class BuildPhase implements GamePhase {
 
     boolean edgeExists(Edge edge, String key) {
         if (edge == null) {
-            game.print("The given edge does not exist " + key);
+            game.sendResponse(Constants.EDGEDOESNOTEXISTERROR.withAdditionalInfo(key));
             return false;
         }
         return true;
@@ -175,7 +180,7 @@ class BuildPhase implements GamePhase {
 
     boolean nodeExists(Node node, String key) {
         if (node == null) {
-            game.print("The given node does not exist " + key);
+            game.sendResponse(Constants.NODEDOESNOTEXISTERROR.withAdditionalInfo(key));
             return false;
         }
         return true;
@@ -191,7 +196,7 @@ class BuildPhase implements GamePhase {
             }
         }
         if (!hasNeighbouringStreet) {
-            game.print("Received message with illegal street placement: there is no other street to connect with " + edge.getKey());
+            game.sendResponse(Constants.STRUCTURENOTCONNECTEDERROR.withAdditionalInfo(edge.getKey()));
             return false;
         }
         return true;
@@ -199,7 +204,7 @@ class BuildPhase implements GamePhase {
 
     boolean nodeIsEmpty(ArrayList<Node> villagesFromSameCommand, Node node) {
         if (node.hasPlayer() || node.hasStructure() || villagesFromSameCommand.contains(node)) {
-            game.print("Received message with illegal location: There is already a structure" + node.getKey());
+            game.sendResponse(Constants.STRUCTUREALREADYEXISTSERROR.withAdditionalInfo(node.getKey()));
             return false;
         }
         return true;
@@ -209,19 +214,19 @@ class BuildPhase implements GamePhase {
         if (villages.contains(node)) {
             return true;
         }
-        game.print("Received message with illegal city placement: there is no village and/or it is not yours " + node.getKey());
+        game.sendResponse(Constants.CITYNOTBUILTONVILLAGEERROR.withAdditionalInfo(node.getKey()));
         return false;
     }
 
     boolean nodeStructureIsAtLeastTwoEdgesFromOtherStructure(ArrayList<Node> nodes, Node node) {
         for (Node surroundingNode : game.getBoard().getSurroundingNodes(node)) {
             if (surroundingNode.hasStructure()) {
-                game.print("Received message with illegal placement: another structure is too close to you location " + node.getKey());
+                game.sendResponse(Constants.STRUCTURETOOCLOSETOOTHERSTRUCTUREERROR.withAdditionalInfo(node.getKey()));
                 return false;
             } else {
                 for (Node additionalVillage : nodes) {
                     if (additionalVillage == node) {
-                        game.print("Received message with illegal placement: two structures in the same command are too close to each other" + node.getKey());
+                        game.sendResponse(Constants.STRUCTURETOOCLOSETOOTHERSTRUCTUREERROR.withAdditionalInfo("The conflicting structures are in the same command" + node.getKey()));
                         return false;
                     }
                 }
@@ -241,14 +246,14 @@ class BuildPhase implements GamePhase {
             }
         }
         if (!hasNeighbouringStreet) {
-            game.print("Received message with illegal placement: there is no street to connect with " + node.getKey());
+            game.sendResponse(Constants.STRUCTURENOTCONNECTEDERROR.withAdditionalInfo(node.getKey()));
             return false;
         }
         return true;
     }
 
     // returns a json array if the json is valid, otherwise null
-    private JsonArray getJsonIfValid(String message) {
+    private JsonArray getJsonIfValid(Player player, String message) {
         if (message == null) return null;
 
         try {
@@ -256,7 +261,7 @@ class BuildPhase implements GamePhase {
             JsonElement elem = parser.parse(message);
             return elem.getAsJsonArray();
         } catch (Exception e) {
-            game.print("Message could not be interpreted as JSON: \n" + message);
+            game.sendResponse(player, Constants.MALFORMEDJSONERROR.withAdditionalInfo(message));
             return null;
         }
     }
@@ -269,7 +274,7 @@ class BuildPhase implements GamePhase {
         while (!buildSucceeded) {
             String message = currentPlayer.listen();
             game.print("Received message from player " + currentPlayer.getName() + ": " + message);
-            jsonArray = getJsonIfValid(message);
+            jsonArray = getJsonIfValid(currentPlayer, message);
             buildSucceeded = jsonArray != null && commandIsValid(currentPlayer, jsonArray);
         }
         return jsonArray;
@@ -309,7 +314,7 @@ class BuildPhase implements GamePhase {
                 }
             }
             if (!moreStreetsGotConnected) {
-                game.print("the streets don't make a proper connection");
+                game.sendResponse(Constants.STRUCTURENOTCONNECTEDERROR);
                 return false;
             }
         }

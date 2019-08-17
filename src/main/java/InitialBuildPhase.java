@@ -42,12 +42,11 @@ public class InitialBuildPhase extends BuildPhase {
         ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
 
         if (streetCommands == null || villageCommands == null || cityCommands == null) {
-            game.print("There was something illegal about the command");
             return false;
         }
 
         if (streetCommands.size() != 1 || villageCommands.size() != 1 || !cityCommands.isEmpty()) {
-            game.print("command invalid, the command does not exist out of a street and village");
+            game.sendResponse(Constants.NOTAVILLAGEANDSTREETERROR);
             return false;
         }
 
