@@ -27,12 +27,15 @@ public class Server extends Thread {
         }
     }
 
+    // Start the server thread for a given game
     void start(Interface iface, Game game) {
         this.game = game;
         this.iface = iface;
         start();
     }
 
+    // This function gets called automatically by calling start();
+    // The server thread will constantly run this: ensuring connections with the players
     public void run() {
         while (true) {
             try {
@@ -47,6 +50,7 @@ public class Server extends Thread {
         }
     }
 
+    // Closes the socket connection with the players
     void shutDown() {
         for (Player p : game.getPlayers()) {
             try {
@@ -58,6 +62,8 @@ public class Server extends Thread {
         }
     }
 
+    // Ensures connections with the players
+    // A player has to connect and return a string immediately (the string will be the name of the player in-game)
     private void ensureConnections() throws IOException {
         // the sockets we get from the server need to be assigned to players
         Socket newConnection = serverSocket.accept();

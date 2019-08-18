@@ -1,5 +1,5 @@
 /*
-Communication with the visualization. There the game is shown and a game can be started there as well
+ * Communication with the visualization. There the game is shown and a game can be started there as well
  */
 
 
@@ -37,29 +37,40 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 public class Interface extends WebSocketServer {
-    // the amount of players that need to be connected before a game can be started
     private Game game;
     private Server server;
 
+    // Create an interface for a specific port
     Interface(int port) {
         super(new InetSocketAddress(port));
     }
 
+    // Start the interface thread
     void start(Server server, Game game) {
         this.game = game;
         this.server = server;
         start();
     }
 
+    // When the visualization starts broadcasting show a message where we can connect to it
+    @Override
+    public void onStart() {
+        try {
+            print("Visualization started on:" + InetAddress.getLocalHost() + ":" + getPort());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        setConnectionLostTimeout(10);
+    }
+
+    // When a new connection is opened we have to transmit the game data to it
     @Override
     public void onOpen( WebSocket conn, ClientHandshake handshake ) {
         broadcast(game.toString());
     }
 
-    @Override
-    public void onClose( WebSocket conn, int code, String reason, boolean remote ) {
-    }
-
+    // Receive messages from the interface
+    // Currently we can receive start and stop signals from it to start/stop the game.
     @Override
     public void onMessage( WebSocket conn, String message ) {
         if (message.contains("START")) {
@@ -75,12 +86,15 @@ public class Interface extends WebSocketServer {
         }
     }
 
+    // Receive messages from the interface
+    // This callback is currently not used
     @Override
     public void onMessage( WebSocket conn, ByteBuffer message ) {
         broadcast( message.array() );
         print(conn + ": " + message );
     }
 
+    // When there is a problem with the connection print it
     @Override
     public void onError( WebSocket conn, Exception ex ) {
         ex.printStackTrace();
@@ -89,38 +103,11 @@ public class Interface extends WebSocketServer {
         }
     }
 
+    // On close we don't have to do anything
     @Override
-    public void onStart() {
-        try {
-            print("Visualization started on:" + InetAddress.getLocalHost() + ":" + getPort());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        setConnectionLostTimeout(10);
-    }
-
-    void broadcast(broadcastType type, String str) {
-        broadcast(broadcastTypeToString(type) + str);
-    }
-
-    String broadcastTypeToString(broadcastType type) {
-        switch (type) {
-            case BOARD: return "BOA";
-            case PLAYERS: return "PLA";
-            case STATUS: return "STA";
-
-        }
-        return "";
-    }
+    public void onClose( WebSocket conn, int code, String reason, boolean remote ) { }
 
     private void print(String msg) {
         System.out.println("[Iface] \t" + msg);
     }
-
-}
-
-enum broadcastType {
-    BOARD,
-    PLAYERS,
-    STATUS
 }

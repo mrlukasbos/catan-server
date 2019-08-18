@@ -26,6 +26,7 @@ public class DiceThrowPhase implements GamePhase {
         }
     }
 
+    // Give all the resources to the players for a given dicethrow
     private void distributeResourcesForDice(int diceThrow) {
 
         // create a hashmap for each player (for the logging)
@@ -35,7 +36,8 @@ public class DiceThrowPhase implements GamePhase {
         }
 
         for (Tile tile : game.getBoard().getTilesForDiceNumber(diceThrow)) {
-            game.print("tiles " + game.getBoard().getTilesForDiceNumber(diceThrow).size());
+            // TODO This needs some looking into, currently each tile returns 18 nodes. These are obviously duplicates created during board.init()
+            // game.print("tiles " + game.getBoard().getTilesForDiceNumber(diceThrow).size());
 
             for (Node node : game.getBoard().getNodes(tile)) {
                 game.print("nodes for tile " + game.getBoard().getNodes(tile).size());
@@ -43,8 +45,6 @@ public class DiceThrowPhase implements GamePhase {
                     int amount = node.getStructure() == Structure.CITY ? 2 : 1;
                     Resource resource = tile.typeToResource(tile.getType());
                     node.getPlayer().addResources(resource, amount);
-
-
                     resourcesForPlayerId.get(node.getPlayer().getId()).put(resource, amount);
                 }
             }

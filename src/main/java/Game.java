@@ -5,15 +5,14 @@ All game mechanics
 import java.util.ArrayList;
 
 class Game extends Thread {
-
     private int lastDiceThrow = 0;
     private Board board;
     private ArrayList<Player> players = new ArrayList<Player>();
     private Player currentPlayer;
     private boolean running = false;
     private Interface iface;
-    private Server server;
     private int move = 0;
+    private ArrayList<Event> events = new ArrayList<>();
 
     // All gamePhases
     private DiceThrowPhase diceThrowPhase = new DiceThrowPhase(this);
@@ -22,55 +21,43 @@ class Game extends Thread {
     private BuildPhase normalBuildPhase = new BuildPhase(this);
     private GamePhase currentPhase = new SetupPhase(this);
 
-    private ArrayList<Event> events = new ArrayList<>();
-
-    Game(Interface iface, Server server) {
+    Game(Interface iface) {
         this.iface = iface;
-        this.server = server;
     }
 
+    // start the game in a seperate thread
     synchronized void startGame() {
         this.board = new Board(this);
         this.running = true;
         print("Starting game");
         addEvent(new Event(this, EventType.GENERAL).withGeneralMessage("Starting the game"));
-
         start();
     }
 
+    // This function gets called after start() and runs the whole game
+    // Execute the current Phase and traverse to the next state
+    // After every state change we signal a change, which transmits the new data to all connections
     public void run() {
         while (true) {
             if (isRunning()) {
                 Phase nextPhase = currentPhase.execute();
-
                 print("Going to phase: " + phaseToString(nextPhase));
                 currentPhase = getGamePhase(nextPhase);
-
                 signalGameChange();
             }
         }
     }
 
+    // Update all players with the most recent data
+    // Should be called after every state, so after every dicethrow, succeeded buildcommand, etc.
     private void signalGameChange() {
         move++;
-        // signal the change
         getPlayers().forEach((p) -> p.send(getBoard().toString()));
         iface.broadcast(toString());
     }
 
-    Structure stringToStructure(String str) {
-        switch (str) {
-            case "village":
-                return Structure.SETTLEMENT;
-            case "city":
-                return Structure.CITY;
-            case "street":
-                return Structure.STREET;
-            default:
-                return Structure.NONE;
-        }
-    }
 
+    // Stop the game and reset all values such that we can eventually restart it
     void quit() {
         this.board = null;
         this.players = null;
@@ -84,6 +71,7 @@ class Game extends Thread {
         }
     }
 
+    // Convert PhaseType to GamePhase
     private GamePhase getGamePhase(Phase phase) {
         switch (phase) {
             case SETUP:
@@ -102,8 +90,20 @@ class Game extends Thread {
         }
     }
 
+    static Structure stringToStructure(String str) {
+        switch (str) {
+            case "village":
+                return Structure.SETTLEMENT;
+            case "city":
+                return Structure.CITY;
+            case "street":
+                return Structure.STREET;
+            default:
+                return Structure.NONE;
+        }
+    }
 
-    private String phaseToString(Phase phase) {
+    static String phaseToString(Phase phase) {
         switch (phase) {
             case SETUP: return "SETUP";
             case THROW_DICE: return "THROW_DICE";
@@ -117,7 +117,33 @@ class Game extends Thread {
 
     @Override
     public String toString() {
+        if (isRunning()) {
+            return "{" +
+                    "\"model\": \"game\", " +
+                    "\"attributes\": {" +
+                    "\"move\": " + move + ", " +
+                    "\"players\": " + getPlayerString() + ", " +
+                    "\"status\": \"" + getGameStatus() + "\", " +
+                    "\"board\": " + getBoard().toString() + ", " +
+                    "\"events\": " + getEventString() + ", " +
+                    "\"lastDiceThrow\": " + getLastDiceThrow() + ", " +
+                    "\"phase\": \"" + phaseToString(currentPhase.getPhaseType()) + "\"," +
+                    "\"currentPlayer\": " + getCurrentPlayer().getId() +
+                    "}" +
+                    '}';
+        } else {
+            return "{" +
+                    "\"model\": \"game\", " +
+                    "\"attributes\": {" +
+                    "\"players\": " + getPlayerString() + ", " +
+                    "\"status\": \"" + getGameStatus() + "\"" +
+                    "}" +
+                    '}';
+        }
+    }
 
+    // returns the players formatted in JSON
+    private String getPlayerString() {
         String playersString = "[";
         if (getPlayers().size() > 0) {
             for (Player player : getPlayers()) {
@@ -128,9 +154,12 @@ class Game extends Thread {
         } else {
             playersString = "[]";
         }
+        return playersString;
+    }
 
+    // returns the events formatted in JSON
+    private String getEventString() {
         String eventString = "[";
-
         if (events.size() > 0) {
             for (Event event : events) {
                 eventString = eventString.concat(event.toString() + ",");
@@ -140,36 +169,11 @@ class Game extends Thread {
         } else {
             eventString = "[]";
         }
-
-
-        if (isRunning()) {
-
-            return "{" +
-                    "\"model\": \"game\", " +
-                    "\"attributes\": {" +
-                    "\"move\": " + move + ", " +
-                    "\"players\": " + playersString + ", " +
-                    "\"status\": \"" + getGameStatus() + "\", " +
-                    "\"board\": " + getBoard().toString() + ", " +
-                    "\"events\": " + eventString + ", " +
-                    "\"lastDiceThrow\": " + getLastDiceThrow() + ", " +
-                    "\"phase\": \"" + phaseToString(currentPhase.getPhaseType()) + "\"," +
-                    "\"currentPlayer\": " + getCurrentPlayer().getId() +
-                    "}" +
-                    '}';
-        } else {
-            return "{" +
-                    "\"model\": \"game\", " +
-                    "\"attributes\": {" +
-                    "\"players\": " + playersString + ", " +
-                    "\"status\": \"" + getGameStatus() + "\"" +
-                    "}" +
-                    '}';
-        }
+        return eventString;
     }
 
 
-    String getGameStatus() {
+    private String getGameStatus() {
         if (getPlayers().size() < Constants.MINIMUM_AMOUNT_OF_PLAYERS) {
             return "WAITING_FOR_PLAYERS";
         } else if (!isRunning()) {
@@ -179,14 +183,38 @@ class Game extends Thread {
         }
     }
 
+    // Respond to user input for current player, can be an error or an acknowledgement
     void sendResponse(Response response) {
         sendResponse(getCurrentPlayer(), response);
     }
 
+    // Respond to user input for given player, can be an error or an acknowledgement
     void sendResponse(Player player, Response response) {
         print(player.getName() + "(" + player.getId() + "): "+ response.toString());
         player.send(response.toString());
     }
+
+    // move the currentPlayer id to the next Player in the array.
+    private Player getNextPlayer() {
+        return getPlayers().get((getCurrentPlayer().getId() + 1) % getPlayers().size());
+    }
+
+    void goToNextPlayer() {
+        setCurrentPlayer(getNextPlayer());
+    }
+
+    // move the currentPlayer id to the previous Player in the array.
+    private Player getPreviousPlayer() {
+        return getPlayers().get((getCurrentPlayer().getId() - 1) % getPlayers().size());
+    }
+
+    void goToPreviousPlayer() {
+        setCurrentPlayer(getPreviousPlayer());
+    }
+
+
+
+    // Getters and Setters
 
     void addEvent(Event event) { events.add(event); }
 
@@ -208,7 +236,7 @@ class Game extends Thread {
 
     Player getCurrentPlayer() { return currentPlayer; }
 
-    public int getMoveCount() {
+    int getMoveCount() {
         return move;
     }
 
@@ -216,28 +244,14 @@ class Game extends Thread {
 
     void setLastDiceThrow(int diceThrow) { lastDiceThrow = diceThrow; }
 
-    void goToNextPlayer() {
-      setCurrentPlayer(getNextPlayer());
-    }
 
-    void goToPreviousPlayer() {
-        setCurrentPlayer(getPreviousPlayer());
-    }
 
-    // move the currentPlayer id to the next Player in the array.
-    private Player getNextPlayer() {
-        return getPlayers().get((getCurrentPlayer().getId() + 1) % getPlayers().size());
-    }
-    private Player getPreviousPlayer() {
-        return getPlayers().get((getCurrentPlayer().getId() - 1) % getPlayers().size());
-    }
 
 }
 
 enum Phase {
     SETUP,
     INITIAL_BUILDING,
-    END_TURN,
     THROW_DICE,
     FORCE_DISCARD,
     MOVE_BANDIT,
