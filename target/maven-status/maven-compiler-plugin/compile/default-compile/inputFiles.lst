@@ -1,3 +1,4 @@
+/Users/mrlukasbos/development/catan/src/main/java/BuildCommand.java
 /Users/mrlukasbos/development/catan/src/main/java/GamePhase.java
 /Users/mrlukasbos/development/catan/src/main/java/Main.java
 /Users/mrlukasbos/development/catan/src/main/java/Cube.java
@@ -12,7 +13,11 @@
 /Users/mrlukasbos/development/catan/src/main/java/Bandit.java
 /Users/mrlukasbos/development/catan/src/main/java/Tile.java
 /Users/mrlukasbos/development/catan/src/main/java/Player.java
+/Users/mrlukasbos/development/catan/src/main/java/Event.java
 /Users/mrlukasbos/development/catan/src/main/java/Server.java
 /Users/mrlukasbos/development/catan/src/main/java/Dice.java
+/Users/mrlukasbos/development/catan/src/main/java/Response.java
 /Users/mrlukasbos/development/catan/src/main/java/Board.java
 /Users/mrlukasbos/development/catan/src/main/java/InitialBuildPhase.java
+/Users/mrlukasbos/development/catan/src/main/java/jsonValidator.java
+/Users/mrlukasbos/development/catan/src/main/java/TradePhase.java

@@ -15,7 +15,6 @@ Bandit.class
 Constants.class
 Node$1.class
 Player.class
-Interface$1.class
 Dice.class
 Board$2.class
 GamePhase.class
@@ -30,6 +29,5 @@ Phase.class
 SetupPhase.class
 Game.class
 Tile.class
-broadcastType.class
 Edge.class
 Board$5.class
