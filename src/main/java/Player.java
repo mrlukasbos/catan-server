@@ -145,6 +145,17 @@ class Player {
         }
     }
 
+    static Resource stringToResource(String str) {
+        switch (str) {
+            case "whool": return Resource.WHOOL;
+            case "wood": return Resource.WOOD;
+            case "stone": return Resource.STONE;
+            case "grain": return Resource.GRAIN;
+            case "ore": return Resource.ORE;
+            default: return Resource.NONE;
+        }
+    }
+
     static String structureToString(Structure structure) {
         switch (structure) {
             case STREET:

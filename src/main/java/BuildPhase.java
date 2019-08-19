@@ -1,6 +1,5 @@
 import com.google.gson.*;
 import java.util.ArrayList;
-import java.util.Map;
 
 class BuildPhase implements GamePhase {
     Game game;
@@ -248,20 +247,6 @@ class BuildPhase implements GamePhase {
         return true;
     }
 
-    // returns a json array if the json is valid, otherwise null
-    private JsonArray getJsonIfValid(Player player, String message) {
-        if (message == null) return null;
-
-        try {
-            JsonParser parser = new JsonParser();
-            JsonElement elem = parser.parse(message);
-            return elem.getAsJsonArray();
-        } catch (Exception e) {
-            game.sendResponse(player, Constants.MALFORMEDJSONERROR.withAdditionalInfo(message));
-            return null;
-        }
-    }
-
     // keep running this function until we get valid output from the user
     private JsonArray getValidCommandFromUser(Player currentPlayer) {
         currentPlayer.send(txt);
@@ -271,7 +256,8 @@ class BuildPhase implements GamePhase {
         while (!buildSucceeded) {
             String message = currentPlayer.listen();
             game.print("Received message from player " + currentPlayer.getName() + ": " + message);
-            jsonArray = getJsonIfValid(currentPlayer, message);
+            jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);
+            if (jsonArray == null) game.sendResponse(currentPlayer, Constants.MALFORMEDJSONERROR.withAdditionalInfo(message));
             buildSucceeded = jsonArray != null && commandIsValid(currentPlayer, jsonArray);
 
             if (!buildSucceeded) {

@@ -89,6 +89,19 @@
                             receives nothing
                         </span>
                     </span>
+
+                <span v-else-if="event.type == 'TRADING'">
+                        <span v-if="event.attributes.resources.length">
+                            trades
+                            <span v-for="resource in event.attributes.resources">
+                            {{resource.value}} {{resource.type}}
+
+                        </span>
+                        </span>
+                        <span v-else>
+                            receives nothing
+                        </span>
+                    </span>
             </div>
         </div>
 

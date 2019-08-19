@@ -22,7 +22,7 @@ public class DiceThrowPhase implements GamePhase {
             return Phase.MOVE_BANDIT;
         } else {
             distributeResourcesForDice(dice);
-            return Phase.BUILDING;
+            return Phase.TRADING;
         }
     }
 

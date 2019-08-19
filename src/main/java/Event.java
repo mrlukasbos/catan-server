@@ -44,7 +44,7 @@ class Event {
             structureString = "[]";
         } else {
             for (Structure structure : structures) {
-                structureString = structureString.concat("\"" + player.structureToString(structure) + "\",");
+                structureString = structureString.concat("\"" + Player.structureToString(structure) + "\",");
             }
             structureString = structureString.substring(0, structureString.length() - 1);
             structureString = structureString.concat("]");
@@ -85,6 +85,20 @@ class Event {
                 }
                 return strBuilder.toString();
             }
+            case TRADE: {
+                StringBuilder strBuilder = new StringBuilder(player.getName() + " trades a ");
+
+                int index = 0;
+                for (HashMap.Entry<Resource, Integer> entry : resources.entrySet()) {
+                    strBuilder.append(entry.getValue()).append(" ").append(Player.resourceToString(entry.getKey()));
+
+                    if (index == 0) {
+                        strBuilder.append(" for ");
+                    }
+                    index++;
+                }
+                return strBuilder.toString();
+            }
             case GET_RESOURCES: {
                 StringBuilder strBuilder = new StringBuilder(player.getName() + " receives ");
 
@@ -100,6 +114,7 @@ class Event {
                 }
                 return strBuilder.toString();
             }
+
         }
 
         return "";
@@ -109,6 +124,7 @@ class Event {
         switch (type) {
             case GET_RESOURCES: return "GET_RESOURCES";
             case GENERAL: return "GENERAL";
+            case TRADE: return "TRADING";
             case BUILD: return "BUIlD";
             default: return "";
         }
@@ -118,5 +134,6 @@ class Event {
 enum EventType {
     GENERAL,
     BUILD,
+    TRADE,
     GET_RESOURCES
 }

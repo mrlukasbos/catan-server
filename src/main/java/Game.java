@@ -19,6 +19,7 @@ class Game extends Thread {
     private SetupPhase setupPhase = new SetupPhase(this);
     private InitialBuildPhase initialBuildPhase = new InitialBuildPhase(this);
     private BuildPhase normalBuildPhase = new BuildPhase(this);
+    private TradePhase tradePhase = new TradePhase(this);
     private GamePhase currentPhase = new SetupPhase(this);
 
     Game(Interface iface) {
@@ -82,6 +83,8 @@ class Game extends Thread {
                 return diceThrowPhase;
             case BUILDING:
                 return normalBuildPhase;
+            case TRADING:
+                return tradePhase;
             case MOVE_BANDIT: // for the time being
                 return normalBuildPhase;
             default:
@@ -110,6 +113,7 @@ class Game extends Thread {
             case FORCE_DISCARD: return "FORCE_DISCARD";
             case MOVE_BANDIT: return "MOVE_BANDIT";
             case BUILDING: return "BUILDING";
+            case TRADING: return "TRADING";
             case INITIAL_BUILDING: return "INITIAL_BUILDING";
             default: return "Unknown";
         }
@@ -205,7 +209,9 @@ class Game extends Thread {
 
     // move the currentPlayer id to the previous Player in the array.
     private Player getPreviousPlayer() {
-        return getPlayers().get((getCurrentPlayer().getId() - 1) % getPlayers().size());
+
+        // we need to use floormod because % does not work for negative numbers
+        return getPlayers().get(Math.floorMod(getCurrentPlayer().getId() - 1, getPlayers().size()));
     }
 
     void goToPreviousPlayer() {
@@ -255,5 +261,6 @@ enum Phase {
     THROW_DICE,
     FORCE_DISCARD,
     MOVE_BANDIT,
+    TRADING,
     BUILDING
 }

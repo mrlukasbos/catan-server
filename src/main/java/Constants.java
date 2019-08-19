@@ -3,6 +3,7 @@ import java.util.Map;
 
 class Constants {
     static final int MINIMUM_AMOUNT_OF_PLAYERS = 1;
+    static final int MINIMUM_CARDS_FOR_TRADE = 4;
 
     // some helpers for the hexagon coordinate system
     static final int[][] AXIAL_DIRECTIONS_ODD = {
@@ -66,6 +67,9 @@ class Constants {
     static final Response NODEDOESNOTEXISTERROR = new Response(501, "NodeDoesNotExist", "The received node does not exist.");
     static final Response EDGEDOESNOTEXISTERROR = new Response(502, "EdgeDoesNotExist", "The received edge does not exist.");
     static final Response INVALIDSTRUCTUREERROR = new Response(503, "InvalidStructure", "The received structure is invalid.");
+
+    static final Response INVALID_TRADE_ERROR = new Response(504, "InvalidTrade", "An invalid resource was given to the trade command");
+
 
     // Rule issues
     static final Response STRUCTURENOTCONNECTEDERROR = new Response(600, "StructureNotConnected", "The received structure is not connected.");

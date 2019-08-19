@@ -56,6 +56,19 @@ During the build phase there is a specific set of rules on what can be built and
 
 ### Legal build commands
 
+Trading:
+```
+ [{ "from": "ore", "to": "wood" }]
+ [{ "from": "grain", "to": "stone" }]
+ [{ "from": "whool", "to": "grain" }]
+ [{ "from": "ore", "to": "ore" }] // could be useful when wanting to avoid bandit
+
+ [{ "from": "stone", "to": "wood" }, { "from": "grain", "to": "stone" }]
+ [{ "from": "stone", "to": "wood" }, { "from": "stone", "to": "ore" }]
+
+```
+
+
 A street and a village:
 ```
  [{ "structure": "street", "location": "([3,4],[4,3])" }, { "structure": "village", "location": "([3,3],[3,4],[4,3])" }]
