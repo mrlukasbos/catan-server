@@ -36,11 +36,9 @@ public class DiceThrowPhase implements GamePhase {
         }
 
         for (Tile tile : game.getBoard().getTilesForDiceNumber(diceThrow)) {
-            // TODO This needs some looking into, currently each tile returns 18 nodes. These are obviously duplicates created during board.init()
-            // game.print("tiles " + game.getBoard().getTilesForDiceNumber(diceThrow).size());
-
             for (Node node : game.getBoard().getNodes(tile)) {
-                game.print("nodes for tile " + game.getBoard().getNodes(tile).size());
+                // TODO This needs some looking into, currently each tile returns 18 nodes. These are obviously duplicates created during board.init()
+                // game.print("nodes for tile " + game.getBoard().getNodes(tile).size());
                 if (node.hasPlayer() && node.hasStructure()) {
                     int amount = node.getStructure() == Structure.CITY ? 2 : 1;
                     Resource resource = tile.typeToResource(tile.getType());

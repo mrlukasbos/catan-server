@@ -11,7 +11,7 @@ class Game extends Thread {
     private Player currentPlayer;
     private boolean running = false;
     private Interface iface;
-    private int move = 0;
+    private int moveCount = 0;
     private ArrayList<Event> events = new ArrayList<>();
 
     // All gamePhases
@@ -52,7 +52,6 @@ class Game extends Thread {
     // Update all players with the most recent data
     // Should be called after every state, so after every dicethrow, succeeded buildcommand, etc.
     private void signalGameChange() {
-        move++;
         getPlayers().forEach((p) -> p.send(getBoard().toString()));
         iface.broadcast(toString());
     }
@@ -125,7 +124,7 @@ class Game extends Thread {
             return "{" +
                     "\"model\": \"game\", " +
                     "\"attributes\": {" +
-                    "\"move\": " + move + ", " +
+                    "\"moveCount\": " + moveCount + ", " +
                     "\"players\": " + getPlayerString() + ", " +
                     "\"status\": \"" + getGameStatus() + "\", " +
                     "\"board\": " + getBoard().toString() + ", " +
@@ -204,6 +203,7 @@ class Game extends Thread {
     }
 
     void goToNextPlayer() {
+        moveCount++;
         setCurrentPlayer(getNextPlayer());
     }
 
@@ -215,6 +215,7 @@ class Game extends Thread {
     }
 
     void goToPreviousPlayer() {
+        moveCount++;
         setCurrentPlayer(getPreviousPlayer());
     }
 
@@ -243,7 +244,7 @@ class Game extends Thread {
     Player getCurrentPlayer() { return currentPlayer; }
 
     int getMoveCount() {
-        return move;
+        return moveCount;
     }
 
     int getLastDiceThrow() { return lastDiceThrow; }

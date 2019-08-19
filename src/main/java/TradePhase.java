@@ -20,8 +20,10 @@ public class TradePhase implements GamePhase {
 
     @Override
     public Phase execute() {
-        JsonArray jsonArray = getValidCommandFromUser(game.getCurrentPlayer());
-        trade(game.getCurrentPlayer(), jsonArray);
+        if (game.getCurrentPlayer().canTradeWithBank()) {
+            JsonArray jsonArray = getValidCommandFromUser(game.getCurrentPlayer());
+            trade(game.getCurrentPlayer(), jsonArray);
+        }
         return Phase.BUILDING;
     }
 

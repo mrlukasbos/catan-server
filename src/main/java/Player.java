@@ -169,6 +169,27 @@ class Player {
         }
     }
 
+    boolean canTradeWithBank() {
+        for (Map.Entry<Resource, Integer> resource : resources.entrySet()) {
+            if (resource.getValue() >= Constants.MINIMUM_CARDS_FOR_TRADE) return true;
+        }
+        return false;
+    }
+
+    boolean canBuild(Structure structure) {
+        for (Map.Entry<Resource, Integer> entry : Constants.STRUCTURE_COSTS.get(structure).entrySet()) {
+            if (countResources(entry.getKey()) < entry.getValue()) return false;
+        }
+        return true;
+    }
+
+    boolean canBuildSomething() {
+        for (Structure structure : Constants.ALL_STRUCTURES) {
+            if (!canBuild(structure)) return false;
+        }
+        return true;
+    }
+
     void pay(Structure structure) {
         for (Map.Entry<Resource, Integer> entry : Constants.STRUCTURE_COSTS.get(structure).entrySet()) {
             removeResources(entry.getKey(), entry.getValue());

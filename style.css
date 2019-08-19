@@ -69,26 +69,31 @@ button:hover {
 .wool, .whool {
     fill: lawngreen;
     background-color: lawngreen;
+    color: black;
 }
 
 .wood {
     fill: forestgreen;
     background-color: forestgreen;
+    color: white;
 }
 
 .stone {
     fill: rosybrown;
     background-color: rosybrown;
+    color: white;
 }
 
 .grain {
     fill: yellow;
     background-color: yellow;
+    color: black;
 }
 
 .ore {
     fill: lightgray;
     background-color: lightgray;
+    color: black;
 }
 
 .hexagon .sea {
@@ -123,4 +128,12 @@ button:hover {
     font-weight: 100;
     overflow-y: scroll;
     font-size: .8rem;
+}
+
+.resource-txt {
+    padding: 4px;
+    border-radius: 2px;
+    font-weight: 600;
+    margin-right: 4px;
+    font-size: .7rem;
 }

@@ -59,7 +59,7 @@ class Event {
                 "\"model\": \"event\", " +
                 "\"type\": \"" + eventTypeToString(type) + "\", " +
                 "\"attributes\": {" +
-                "\"move\": " + moveCount + ", " +
+                "\"moveCount\": " + moveCount + ", " +
                 "\"message\": \"" + message + "\", " +
                 "\"player\": " + playerString + ", " +
                 "\"resources\": " + Player.getResourcesAsJSONString(resources) + ", " +

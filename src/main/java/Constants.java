@@ -31,6 +31,12 @@ class Constants {
             Resource.WHOOL
     };
 
+    static final Structure[] ALL_STRUCTURES = {
+            Structure.STREET,
+            Structure.SETTLEMENT,
+            Structure.CITY
+    };
+
     static final Map<Resource, Integer> STREET_COSTS = Map.of(
             Resource.STONE,1,
             Resource.WOOD, 1);

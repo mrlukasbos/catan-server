@@ -15,7 +15,9 @@ class BuildPhase implements GamePhase {
     }
 
     public Phase execute() {
-        build();
+        if (game.getCurrentPlayer().canBuildSomething()) {
+            build();
+        }
         game.goToNextPlayer();
         return Phase.THROW_DICE;
     }
