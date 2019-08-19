@@ -91,7 +91,7 @@ public class TradePhase implements GamePhase {
             }
 
             resourcesToRemove.replace(resourceFrom, resourcesToRemove.getOrDefault(resourceFrom, 0) + Constants.MINIMUM_CARDS_FOR_TRADE);
-            resourcesToAdd.replace(resourceTo, resourcesToRemove.getOrDefault(resourceFrom, 0) + 1);
+            resourcesToAdd.replace(resourceTo, resourcesToAdd.getOrDefault(resourceTo, 0) + 1);
         }
         return true;
     }
