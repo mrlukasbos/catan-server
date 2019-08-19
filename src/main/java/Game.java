@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 class Game extends Thread {
     private int lastDiceThrow = 0;
-    private Board board;
+    private Board board = new Board(this);
     private ArrayList<Player> players = new ArrayList<Player>();
     private Player currentPlayer;
     private boolean running = false;

@@ -92,7 +92,7 @@ class BuildPhase implements GamePhase {
         ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
 
         if (streetCommands == null || villageCommands == null || cityCommands == null) {
-            game.print("There was something illegal about the command");
+            game.sendResponse(Constants.MALFORMEDJSONERROR);
             return false;
         }
 
@@ -129,8 +129,10 @@ class BuildPhase implements GamePhase {
         // validate if the streets are legal
         for (BuildCommand cmd : streetCommands) {
             Edge edge = game.getBoard().getEdge(cmd.key);
-            if (edgeIsFree(streetsToBuild, edge) && !edgeIsOnTerrain(edge)) {
+            if (edgeIsFree(streetsToBuild, edge) && edgeIsOnTerrain(edge)) {
                 streetsToBuild.add(edge);
+            } else {
+                return false;
             }
         }
 
@@ -276,17 +278,21 @@ class BuildPhase implements GamePhase {
     boolean streetsAreConnected(ArrayList<BuildCommand> streetCommands) {
         // make a division between connected streets and unconnected streets
         ArrayList<BuildCommand> unconnectedStreets = new ArrayList<>();
+        ArrayList<BuildCommand> connectedStreets = new ArrayList<>();
+
         for (BuildCommand cmd : streetCommands) {
             Edge edge = game.getBoard().getEdge(cmd.key);
             if (!edgeIsConnectedToStreet(cmd.player, edge)) {
                 unconnectedStreets.add(cmd);
+            } else {
+                connectedStreets.add(cmd);
             }
         }
 
 
         // for all unconnected streets we must find a connected street
         // when we find one, we add it as 'connected' and remove it from the unconnected list
-        while (unconnectedStreets.size() > 0) {
+        while (connectedStreets.size() < streetCommands.size()) {
 
             boolean moreStreetsGotConnected = false;
             for (BuildCommand unconnectedStreetCmd : unconnectedStreets) {
@@ -294,14 +300,20 @@ class BuildPhase implements GamePhase {
 
                 for (Node surroundingNode : game.getBoard().getSurroundingNodes(edge)) {
                     for (Edge neighbourEdge : game.getBoard().getSurroundingEdges(surroundingNode)) {
-                        if (neighbourEdge != null && neighbourEdge != edge && neighbourEdge.hasPlayer() && neighbourEdge.getPlayer() == unconnectedStreetCmd.player && neighbourEdge.isRoad()) {
-                            unconnectedStreets.remove(unconnectedStreetCmd);
+                        boolean connectedWithOtherConnectedEdge = false;
+                        for (BuildCommand connectedCmd : connectedStreets) {
+                            if (connectedCmd.key.equals(neighbourEdge.getKey())) connectedWithOtherConnectedEdge = true;
+                        }
+
+                        if (connectedWithOtherConnectedEdge) {
+                            connectedStreets.add(unconnectedStreetCmd);
                             moreStreetsGotConnected = true;
                         }
                     }
 
                 }
             }
+
             if (!moreStreetsGotConnected) {
                 game.sendResponse(Constants.STRUCTURENOTCONNECTEDERROR);
                 return false;
