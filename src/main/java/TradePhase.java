@@ -69,7 +69,7 @@ public class TradePhase implements GamePhase {
     }
 
 
-    private boolean tradeIsValid(Player player, JsonArray jsonArray) {
+    boolean tradeIsValid(Player player, JsonArray jsonArray) {
 
         // keep track of all the resources we need
         Map<Resource, Integer> resourcesNeeded = new HashMap<>();
@@ -77,8 +77,15 @@ public class TradePhase implements GamePhase {
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
 
-            Resource resourceFrom = Player.stringToResource(object.get("from").getAsString());
-            Resource resourceTo = Player.stringToResource(object.get("to").getAsString());
+            JsonElement fromElement = object.get("from");
+            JsonElement toElement = object.get("to");
+            if (fromElement == null || toElement == null) {
+                game.sendResponse(Constants.INVALID_TRADE_ERROR);
+                return false;
+            }
+
+            Resource resourceFrom = Player.stringToResource(fromElement.getAsString());
+            Resource resourceTo = Player.stringToResource(toElement.getAsString());
 
             if (resourceFrom == Resource.NONE || resourceTo == Resource.NONE) {
                 game.sendResponse(Constants.INVALID_TRADE_ERROR);

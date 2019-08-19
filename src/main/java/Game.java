@@ -13,6 +13,7 @@ class Game extends Thread {
     private Interface iface;
     private int moveCount = 0;
     private ArrayList<Event> events = new ArrayList<>();
+    private Response lastResponse = null;
 
     // All gamePhases
     private DiceThrowPhase diceThrowPhase = new DiceThrowPhase(this);
@@ -190,10 +191,19 @@ class Game extends Thread {
         sendResponse(getCurrentPlayer(), response);
     }
 
+    public Response getLastResponse() {
+        return lastResponse;
+    }
+
+    public void setLastResponse(Response lastResponse) {
+        this.lastResponse = lastResponse;
+    }
+
     // Respond to user input for given player, can be an error or an acknowledgement
     void sendResponse(Player player, Response response) {
         print(player.getName() + "(" + player.getId() + "): "+ response.toString());
         player.send(response.toString());
+        lastResponse = response;
     }
 
     // move the currentPlayer id to the next Player in the array.

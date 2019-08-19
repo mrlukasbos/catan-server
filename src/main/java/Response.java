@@ -21,6 +21,9 @@ public class Response {
         return new Response(this.code, this.title, this.description, additionalInformation);
     }
 
+    public int getCode() {
+        return code;
+    }
 
     @Override
     public String toString() {

@@ -32,11 +32,15 @@ class Player {
     }
 
     synchronized void send(String str) {
-        try {
-            DataOutputStream out = new DataOutputStream(getSocket().getOutputStream());
-            out.writeUTF(str);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (getSocket() != null) {
+
+            try {
+                DataOutputStream out = new DataOutputStream(getSocket().getOutputStream());
+                out.writeUTF(str);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
