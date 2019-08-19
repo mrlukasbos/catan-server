@@ -69,22 +69,10 @@ public class TradePhase implements GamePhase {
     }
 
 
-    /*
-
-    This can still break
-
-    i.e. when player has 3 ore and 4 grain
-    and then trades 4 grain for 1 ore
-    and then trades 4 ore for a stone
-
-    -> that will work when first trading the grain
-    -> but it breaks if first trading the ore
-     */
     private boolean tradeIsValid(Player player, JsonArray jsonArray) {
 
-
-        Map<Resource, Integer> resourcesToRemove = new HashMap<>();
-        Map<Resource, Integer> resourcesToAdd = new HashMap<>();
+        // keep track of all the resources we need
+        Map<Resource, Integer> resourcesNeeded = new HashMap<>();
 
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
@@ -97,15 +85,20 @@ public class TradePhase implements GamePhase {
                 return false;
             }
 
-            int availableResources = (player.countResources(resourceFrom) - resourcesToRemove.getOrDefault(resourceFrom, 0)) + resourcesToAdd.getOrDefault(resourceFrom, 0);
+            // add 4 to the corresponsing resource and subtract the resource we get (so we need one less)
+            resourcesNeeded.put(resourceFrom, resourcesNeeded.getOrDefault(resourceFrom, 0) + Constants.MINIMUM_CARDS_FOR_TRADE);
+            resourcesNeeded.put(resourceTo, resourcesNeeded.getOrDefault(resourceTo, 0) - 1);
+        }
 
-            if (availableResources < Constants.MINIMUM_CARDS_FOR_TRADE) {
-                game.sendResponse(Constants.NOTENOUGHRESOURCESERROR.withAdditionalInfo("required " + Constants.MINIMUM_CARDS_FOR_TRADE + " " + Player.resourceToString(resourceFrom) + " while you have " + availableResources));
+        for (Map.Entry<Resource, Integer> entry : resourcesNeeded.entrySet()) {
+            int playerResourceCount = player.countResources(entry.getKey());
+            if (playerResourceCount < entry.getValue()) {
+                game.sendResponse(Constants.NOTENOUGHRESOURCESERROR.withAdditionalInfo(
+                                "required " + entry.getValue() +
+                                " " + Player.resourceToString(entry.getKey()) +
+                                " while you have " + playerResourceCount));
                 return false;
             }
-
-            resourcesToRemove.put(resourceFrom, resourcesToRemove.getOrDefault(resourceFrom, 0) + Constants.MINIMUM_CARDS_FOR_TRADE);
-            resourcesToAdd.put(resourceTo, resourcesToAdd.getOrDefault(resourceTo, 0) + 1);
         }
         return true;
     }
