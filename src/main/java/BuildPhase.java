@@ -17,6 +17,8 @@ class BuildPhase implements GamePhase {
     public Phase execute() {
         if (game.getCurrentPlayer().canBuildSomething()) {
             build();
+        } else {
+            game.addEvent(new Event(game, EventType.GENERAL, game.getCurrentPlayer()).withGeneralMessage(" can't build"));
         }
         game.goToNextPlayer();
 

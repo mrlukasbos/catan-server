@@ -66,6 +66,9 @@ Trading:
 
  [{ "from": "stone", "to": "wood" }, { "from": "grain", "to": "stone" }]
  [{ "from": "stone", "to": "wood" }, { "from": "stone", "to": "ore" }]
+ 
+  [{ "from": "grain", "to": "wood" }, { "from": "grain", "to": "ore" }]
+
 
 ```
 
@@ -101,7 +104,8 @@ A single village, city or street
 
  [{ "structure": "street", "location": "([2,2],[3,1])" }]
  [{ "structure": "street", "location": "([1,4],[2,3])" }]
- 
+  [{ "structure": "street", "location": "([4,3],[4,4])" }]
+
   [{ "structure": "street", "location": "([2,4],[2,5])" }]
 
 ```

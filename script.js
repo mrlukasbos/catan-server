@@ -279,7 +279,7 @@ var app = new Vue({
                 this.players = json.attributes.players;
                 this.status = json.attributes.status;
                 this.currentPlayerId = json.attributes.currentPlayer;
-                this.events = json.attributes.events;
+                this.events = json.attributes.events.reverse();
                 this.moveCount = json.attributes.moveCount;
 
                 if (json.attributes.board) {
@@ -312,5 +312,6 @@ var app = new Vue({
             this.port = localStorage.port;
         }
         this.connect();
+
     }
 });

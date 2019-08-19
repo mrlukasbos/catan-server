@@ -24,6 +24,8 @@ public class TradePhase implements GamePhase {
             JsonArray jsonArray = getValidCommandFromUser(game.getCurrentPlayer());
             trade(game.getCurrentPlayer(), jsonArray);
             game.signalGameChange();
+        } else {
+            game.addEvent(new Event(game, EventType.GENERAL, game.getCurrentPlayer()).withGeneralMessage(" can't trade"));
         }
         return Phase.BUILDING;
     }
@@ -83,7 +85,7 @@ public class TradePhase implements GamePhase {
                 return false;
             }
 
-            if (player.countResources(resourceFrom) < Constants.MINIMUM_CARDS_FOR_TRADE) {
+            if ((player.countResources(resourceFrom) - resourcesToRemove.getOrDefault(resourceFrom, 0)) + resourcesToAdd.getOrDefault(resourceFrom, 0) < Constants.MINIMUM_CARDS_FOR_TRADE) {
                 game.sendResponse(Constants.NOTENOUGHRESOURCESERROR.withAdditionalInfo("required " + Constants.MINIMUM_CARDS_FOR_TRADE + " " + Player.resourceToString(resourceFrom) + " while you have " + player.countResources(resourceFrom)));
                 return false;
             }

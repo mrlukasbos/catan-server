@@ -53,16 +53,16 @@
             </div>
         </div>
 
-        <div class="events"
-             style="padding: 18px; display: flex; flex-direction: column-reverse; justify-content: center; flex:3">
-            <div v-for="(event, index) in events" style="margin-bottom: 8px"
-                 v-bind:style="[event.attributes.moveCount >= json.attributes.moveCount - 1 ? {'font-weight': 600} : {}]">
+        <div id="events" class="events"
+             style="padding: 18px; display: flex; flex-direction: column-reverse; flex:3">
+            <div v-for="(event, index) in events" style="padding-bottom: 8px"
+                 v-bind:style="[event.attributes.moveCount >= json.attributes.moveCount ? {'font-weight': 600} : {}]">
 
                     <span v-if="event.attributes.player" :style="{ 'color': event.attributes.player.attributes.color }">
                      {{event.attributes.player.attributes.name}}
                     </span>
 
-                <span v-if="event.type=='GENERAL'">
+                <span v-if="event.type=='GENERAL'" style="font-style: italic;" >
                         {{event.attributes.message}}
                     </span>
                 <span v-else-if="event.type=='BUIlD'">
@@ -77,8 +77,8 @@
 
 
                     </span>
-                <span v-else-if="event.type == 'GET_RESOURCES'">
-                        <span v-if="event.attributes.resources.length">
+                <span v-else-if="event.type == 'GET_RESOURCES'" style="font-style: italic;" >
+                        <span v-if="event.attributes.resources.length" >
                             receives
                             <span v-for="resource in event.attributes.resources">
                                 <span class="resource-txt" v-bind:class="resource.type"> {{resource.value}} {{resource.type}} </span>

@@ -43,6 +43,7 @@ button:hover {
     height: 100vh;
     color: black;
     width: 20%;
+    min-width: 300px;
 }
 
 .board {
