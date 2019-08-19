@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 class Player {
@@ -96,7 +97,7 @@ class Player {
     void removeResources(Resource resource, int amount) {
         // iterate over all resources to remove the amount needed.
         int amountOfResources = countResources(resource);
-        resources.replace(resource, Math.max(0, amountOfResources));
+        resources.replace(resource, Math.max(0, amountOfResources - amount));
     }
 
     @java.lang.Override
@@ -157,6 +158,11 @@ class Player {
         }
     }
 
+    void pay(Structure structure) {
+        for (Map.Entry<Resource, Integer> entry : Constants.STRUCTURE_COSTS.get(structure).entrySet()) {
+            removeResources(entry.getKey(), entry.getValue());
+        }
+    }
 }
 
 enum Resource {

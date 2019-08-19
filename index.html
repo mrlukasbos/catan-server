@@ -6,71 +6,69 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 
 <body>
-    <div id="app" style="display: flex">
-        <div class="info" style="display: flex; flex-direction: column">
+<div id="app" style="display: flex">
+    <div class="info" style="display: flex; flex-direction: column">
 
-            <div class="title" style="padding: 18px; display: flex">
-                <span style="margin-right: 12px; font-size: 1.8rem; font-weight: 600"> Catan </span>
+        <div class="title" style="padding: 18px; display: flex">
+            <span style="margin-right: 12px; font-size: 1.8rem; font-weight: 600"> Catan </span>
 
-                <div v-if="connection_status == 'CONNECTED'" style="display: flex; align-items: center; flex: 2">   
-                    <div style="width: 12px; height: 12px; border-radius: 50%; background-color: rgb(118, 204, 19)"> </div>
-                </div>
-                <div v-else style="display: flex; align-items: center; flex: 2">
-                        <div style="width: 12px; height: 12px; border-radius: 50%; background-color: red"> </div>
-                </div>
-
-                <div style="display: flex; align-items: center; color: gray">   
-                    {{status}}
-                </div>
+            <div v-if="connection_status == 'CONNECTED'" style="display: flex; align-items: center; flex: 2">
+                <div style="width: 12px; height: 12px; border-radius: 50%; background-color: rgb(118, 204, 19)"></div>
             </div>
-    
+            <div v-else style="display: flex; align-items: center; flex: 2">
+                <div style="width: 12px; height: 12px; border-radius: 50%; background-color: red"></div>
+            </div>
 
-            <div class="players" style="padding: 18px; ">
+            <div style="display: flex; align-items: center; color: gray">
+                {{status}}
+            </div>
+        </div>
 
+
+        <div class="players" style="padding: 18px; ">
             <div v-if="players.length">
                 <div v-for="player in players">
                     <div style="background: white;  margin-bottom: 12px; border-radius: 2px;  padding:12px; ">
-
-                            <div style="display:flex; align-items: center; padding-bottom: 12px; border-bottom: 1px solid whitesmoke;">
-                        <span style="margin: 4px 4px; flex: 3; font-weight: 100 " :style="{ 'color': player.attributes.color }"> {{player.attributes.name}} <small>({{player.id}})</small></span>
-                        <div v-if="player.id == currentPlayerId" style="display: flex; align-items: center;">   
-                                <div style="width: 6px; height: 6px; border-radius: 50%; background-color: steelblue"> </div>
+                        <div style="display:flex; align-items: center; padding-bottom: 12px; border-bottom: 1px solid whitesmoke;">
+                            <span style="margin: 4px 4px; flex: 3; font-weight: 100 "
+                                  :style="{ 'color': player.attributes.color }"> {{player.attributes.name}} <small>({{player.id}})</small></span>
+                            <div v-if="player.id == currentPlayerId" style="display: flex; align-items: center;">
+                                <div style="width: 6px; height: 6px; border-radius: 50%; background-color: steelblue"></div>
                             </div>
                         </div>
                         <div style="display:flex; padding-top: 12px; ">
-                                <div v-for="resource in player.attributes.resources" style="display: flex">
-                                    <div v-if="resource.value!=0">
-                                         <div style="font-weight: 100; width: 18px; height: 28px; border-radius: 5%; margin-right: 4px; display: flex; align-items: center; justify-content: center;"  class="resource" v-bind:class="resource.type"> {{resource.value}} </div>
+                            <div v-for="resource in player.attributes.resources" style="display: flex">
+                                <div v-if="resource.value!=0">
+                                    <div style="font-weight: 100; width: 18px; height: 28px; border-radius: 5%; margin-right: 4px; display: flex; align-items: center; justify-content: center;"
+                                         class="resource" v-bind:class="resource.type"> {{resource.value}}
                                     </div>
                                 </div>
                             </div>
+                        </div>
                     </div>
-                    
-
-                   
                 </div>
             </div>
             <div v-else>
                 <strong> No players connected </strong>
             </div>
+        </div>
 
-      
-            </div>
-
-            <div class="events" style="padding: 18px; display: flex; flex-direction: column-reverse; justify-content: center; flex:3">
-                <div v-for="(event, index) in events" style="margin-bottom: 8px" v-bind:style="[event.attributes.move >= json.attributes.move - 2 ? {'font-weight': 600} : {}]">
+        <div class="events"
+             style="padding: 18px; display: flex; flex-direction: column-reverse; justify-content: center; flex:3">
+            <div v-for="(event, index) in events" style="margin-bottom: 8px"
+                 v-bind:style="[event.attributes.move >= json.attributes.move - 2 ? {'font-weight': 600} : {}]">
 
                     <span v-if="event.attributes.player" :style="{ 'color': event.attributes.player.attributes.color }">
                      {{event.attributes.player.attributes.name}}
                     </span>
 
-                    <span v-if="event.type=='GENERAL'">
+                <span v-if="event.type=='GENERAL'">
                         {{event.attributes.message}}
                     </span>
-                    <span v-else-if="event.type=='BUIlD'">
-                           <span v-if="event.attributes.structures.length">
-                            builds
-                            <span v-for="structure in event.attributes.structures"> {{structure}} </span>
+                <span v-else-if="event.type=='BUIlD'">
+                       <span v-if="event.attributes.structures.length">
+                        builds
+                        <span v-for="structure in event.attributes.structures"> {{structure}} </span>
                         </span>
                         <span v-else>
                             builds nothing
@@ -79,7 +77,7 @@
 
 
                     </span>
-                    <span v-else-if="event.type == 'GET_RESOURCES'">
+                <span v-else-if="event.type == 'GET_RESOURCES'">
                         <span v-if="event.attributes.resources.length">
                             receives
                             <span v-for="resource in event.attributes.resources">
@@ -91,39 +89,39 @@
                             receives nothing
                         </span>
                     </span>
-                </div>
-            </div>
-
-
-
-            <div class="connect" style="padding: 18px;">
-                    <input v-on:keyup.enter="connect" v-model="ip" style=" width: 100%; margin-bottom: 12px;">
-    
-                    <div style="display: flex; width: 100%; margin-bottom: 12px;"> 
-                            <input v-on:keyup.enter="connect" v-model="port" style="flex: 2; margin-right: 8px;">
-                            <button v-on:click="connect">Connect</button> <br>
-                    </div>
-    
-                    <div v-if="status==='GAME_RUNNING'" style="display: flex; width: 100%">
-                            <button v-on:click="endGame" style="display: flex; justify-content: center; width: 100%;">Stop game</button>
-                        </div>
-                        <div v-else-if="status==='WAITING_FOR_TAKEOFF'" style=" width: 100%">
-                            <button v-on:click="startGame" style="display: flex; justify-content: center; width: 100%; ">Start game</button>
-                        </div>
-    
-                </div> 
-            </div>
-        <div class="board">
-            <div v-show="status==='GAME_RUNNING'">
-                <div id="d3-holder"></div>
             </div>
         </div>
 
 
-    
+        <div class="connect" style="padding: 18px;">
+            <input v-on:keyup.enter="connect" v-model="ip" style=" width: 100%; margin-bottom: 12px;">
 
+            <div style="display: flex; width: 100%; margin-bottom: 12px;">
+                <input v-on:keyup.enter="connect" v-model="port" style="flex: 2; margin-right: 8px;">
+                <button v-on:click="connect">Connect</button>
+                <br>
+            </div>
 
+            <div v-if="status==='GAME_RUNNING'" style="display: flex; width: 100%">
+                <button v-on:click="endGame" style="display: flex; justify-content: center; width: 100%;">Stop game
+                </button>
+            </div>
+            <div v-else-if="status==='WAITING_FOR_TAKEOFF'" style=" width: 100%">
+                <button v-on:click="startGame" style="display: flex; justify-content: center; width: 100%; ">Start
+                    game
+                </button>
+            </div>
+
+        </div>
     </div>
+    <div class="board">
+        <div v-show="status==='GAME_RUNNING'">
+            <div id="d3-holder"></div>
+        </div>
+    </div>
+
+
+</div>
 </body>
 <script src="script.js"></script>
 

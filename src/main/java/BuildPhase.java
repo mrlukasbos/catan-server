@@ -1,5 +1,6 @@
 import com.google.gson.*;
 import java.util.ArrayList;
+import java.util.Map;
 
 class BuildPhase implements GamePhase {
     Game game;
@@ -38,6 +39,8 @@ class BuildPhase implements GamePhase {
             String structureString = object.get("structure").getAsString();
             Structure structure = Game.stringToStructure(structureString);
             String key = object.get("location").getAsString();
+
+            payStructure(currentPlayer, structure);
             game.getBoard().placeStructure(currentPlayer, structure, key);
 
             structuresToBuild.add(structure);
@@ -101,7 +104,8 @@ class BuildPhase implements GamePhase {
         }
 
 
-        return streetsAreValid(streetCommands)
+        return hasEnoughResources(currentPlayer, streetCommands.size(), villageCommands.size(), cityCommands.size())
+                && streetsAreValid(streetCommands)
                 && villagesAreValid(villageCommands, streets)
                 && citiesAreValid(cityCommands, villages);
     }
@@ -271,7 +275,7 @@ class BuildPhase implements GamePhase {
             buildSucceeded = jsonArray != null && commandIsValid(currentPlayer, jsonArray);
 
             if (!buildSucceeded) {
-                currentPlayer.send("try again");
+                currentPlayer.send("try again! \n");
             }
         }
         return jsonArray;
@@ -312,6 +316,24 @@ class BuildPhase implements GamePhase {
             }
         }
         return true;
+    }
+
+    private boolean hasEnoughResources(Player player, int amountOfStreets, int amountOfVillages, int amountOfCities) {
+        for (Resource resource : Constants.ALL_RESOURCES) {
+            int amountNeeded = Constants.STREET_COSTS.getOrDefault(resource, 0) * amountOfStreets;
+            amountNeeded += Constants.VILLAGE_COSTS.getOrDefault(resource, 0) * amountOfVillages;
+            amountNeeded += Constants.CITY_COSTS.getOrDefault(resource, 0) * amountOfCities;
+
+            if (amountNeeded > player.countResources(resource)) {
+                game.sendResponse(Constants.NOTENOUGHRESOURCESERROR.withAdditionalInfo(" Not enough " + Player.resourceToString(resource)));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    void payStructure(Player p, Structure structure) {
+        p.pay(structure);
     }
 }
 

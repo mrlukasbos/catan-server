@@ -65,4 +65,8 @@ public class InitialBuildPhase extends BuildPhase {
     boolean streetsAreConnected(ArrayList<BuildCommand> streetCommands) {
         return true;
     }
+
+    // In the initial build phase everything is free
+    @Override
+    void payStructure(Player p, Structure structure) { }
 }

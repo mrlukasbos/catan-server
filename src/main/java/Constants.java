@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.Map;
+
 class Constants {
     static final int MINIMUM_AMOUNT_OF_PLAYERS = 1;
 
@@ -19,8 +22,41 @@ class Constants {
             {-1, 0}
     };
 
+    static final Resource[] ALL_RESOURCES = {
+            Resource.ORE,
+            Resource.GRAIN,
+            Resource.STONE,
+            Resource.WOOD,
+            Resource.WHOOL
+    };
 
-    // RESPONSES
+    static final Map<Resource, Integer> STREET_COSTS = Map.of(
+            Resource.STONE,1,
+            Resource.WOOD, 1);
+
+    static final Map<Resource, Integer> VILLAGE_COSTS = Map.of(
+            Resource.WHOOL,1,
+            Resource.GRAIN, 1,
+            Resource.STONE, 1,
+            Resource.WOOD, 1);
+
+    static final Map<Resource, Integer> CITY_COSTS = Map.of(
+            Resource.ORE,3,
+            Resource.GRAIN, 2);
+
+    static final Map<Resource, Integer> DEVELOPMENT_CARD_COSTS = Map.of(
+            Resource.WHOOL,1,
+            Resource.GRAIN, 1,
+            Resource.ORE, 1);
+
+    static final Map<Structure, Map<Resource, Integer>> STRUCTURE_COSTS = Map.of(
+            Structure.STREET, STREET_COSTS,
+            Structure.SETTLEMENT, VILLAGE_COSTS,
+            Structure.CITY, CITY_COSTS
+        );
+
+
+            // RESPONSES
 
     // Acknowledgement
     static final Response OK = new Response(100, "Ok", "The received message is processed succesfully.");
