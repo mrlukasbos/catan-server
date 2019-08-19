@@ -19,6 +19,8 @@ class BuildPhase implements GamePhase {
             build();
         }
         game.goToNextPlayer();
+
+        game.signalGameChange();
         return Phase.THROW_DICE;
     }
 

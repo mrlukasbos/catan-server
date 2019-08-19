@@ -44,14 +44,13 @@ class Game extends Thread {
                 Phase nextPhase = currentPhase.execute();
                 print("Going to phase: " + phaseToString(nextPhase));
                 currentPhase = getGamePhase(nextPhase);
-                signalGameChange();
             }
         }
     }
 
     // Update all players with the most recent data
     // Should be called after every state, so after every dicethrow, succeeded buildcommand, etc.
-    private void signalGameChange() {
+    void signalGameChange() {
         getPlayers().forEach((p) -> p.send(getBoard().toString()));
         iface.broadcast(toString());
     }

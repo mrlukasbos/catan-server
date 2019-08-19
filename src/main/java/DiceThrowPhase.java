@@ -19,9 +19,12 @@ public class DiceThrowPhase implements GamePhase {
         game.addEvent(new Event(game, EventType.GENERAL, game.getCurrentPlayer()).withGeneralMessage(" has thrown " + dice));
 
         if (dice == 7) {
+            game.signalGameChange();
             return Phase.MOVE_BANDIT;
         } else {
             distributeResourcesForDice(dice);
+
+            game.signalGameChange();
             return Phase.TRADING;
         }
     }

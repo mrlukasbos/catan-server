@@ -13,6 +13,7 @@ public class SetupPhase implements GamePhase {
         game.setCurrentPlayer(determineFirstPlayer());
         game.addEvent(new Event(game, EventType.GENERAL, game.getCurrentPlayer()).withGeneralMessage(" may start the game"));
 
+        game.signalGameChange();
         return Phase.INITIAL_BUILDING;
     }
 

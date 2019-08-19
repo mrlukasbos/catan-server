@@ -185,9 +185,9 @@ class Player {
 
     boolean canBuildSomething() {
         for (Structure structure : Constants.ALL_STRUCTURES) {
-            if (!canBuild(structure)) return false;
+            if (canBuild(structure)) return true;
         }
-        return true;
+        return false;
     }
 
     void pay(Structure structure) {

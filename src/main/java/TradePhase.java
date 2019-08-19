@@ -23,6 +23,7 @@ public class TradePhase implements GamePhase {
         if (game.getCurrentPlayer().canTradeWithBank()) {
             JsonArray jsonArray = getValidCommandFromUser(game.getCurrentPlayer());
             trade(game.getCurrentPlayer(), jsonArray);
+            game.signalGameChange();
         }
         return Phase.BUILDING;
     }
