@@ -69,7 +69,19 @@ public class TradePhase implements GamePhase {
     }
 
 
+    /*
+
+    This can still break
+
+    i.e. when player has 3 ore and 4 grain
+    and then trades 4 grain for 1 ore
+    and then trades 4 ore for a stone
+
+    -> that will work when first trading the grain
+    -> but it breaks if first trading the ore
+     */
     private boolean tradeIsValid(Player player, JsonArray jsonArray) {
+
 
         Map<Resource, Integer> resourcesToRemove = new HashMap<>();
         Map<Resource, Integer> resourcesToAdd = new HashMap<>();
@@ -85,13 +97,15 @@ public class TradePhase implements GamePhase {
                 return false;
             }
 
-            if ((player.countResources(resourceFrom) - resourcesToRemove.getOrDefault(resourceFrom, 0)) + resourcesToAdd.getOrDefault(resourceFrom, 0) < Constants.MINIMUM_CARDS_FOR_TRADE) {
-                game.sendResponse(Constants.NOTENOUGHRESOURCESERROR.withAdditionalInfo("required " + Constants.MINIMUM_CARDS_FOR_TRADE + " " + Player.resourceToString(resourceFrom) + " while you have " + player.countResources(resourceFrom)));
+            int availableResources = (player.countResources(resourceFrom) - resourcesToRemove.getOrDefault(resourceFrom, 0)) + resourcesToAdd.getOrDefault(resourceFrom, 0);
+
+            if (availableResources < Constants.MINIMUM_CARDS_FOR_TRADE) {
+                game.sendResponse(Constants.NOTENOUGHRESOURCESERROR.withAdditionalInfo("required " + Constants.MINIMUM_CARDS_FOR_TRADE + " " + Player.resourceToString(resourceFrom) + " while you have " + availableResources));
                 return false;
             }
 
-            resourcesToRemove.replace(resourceFrom, resourcesToRemove.getOrDefault(resourceFrom, 0) + Constants.MINIMUM_CARDS_FOR_TRADE);
-            resourcesToAdd.replace(resourceTo, resourcesToAdd.getOrDefault(resourceTo, 0) + 1);
+            resourcesToRemove.put(resourceFrom, resourcesToRemove.getOrDefault(resourceFrom, 0) + Constants.MINIMUM_CARDS_FOR_TRADE);
+            resourcesToAdd.put(resourceTo, resourcesToAdd.getOrDefault(resourceTo, 0) + 1);
         }
         return true;
     }
