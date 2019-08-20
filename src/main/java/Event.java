@@ -38,17 +38,7 @@ class Event {
 
     @Override
     public String toString() {
-        String structureString = "[";
-
-        if (structures.size() == 0) {
-            structureString = "[]";
-        } else {
-            for (Structure structure : structures) {
-                structureString = structureString.concat("\"" + Player.structureToString(structure) + "\",");
-            }
-            structureString = structureString.substring(0, structureString.length() - 1);
-            structureString = structureString.concat("]");
-        }
+        String structureString = getStructureString();
 
         String playerString = "null";
         if (player != null) {
@@ -68,56 +58,19 @@ class Event {
                 '}';
     }
 
-    public String toReadableString() {
-        switch (type) {
-            case GENERAL: {
-                return "";
-            }
-            case BUILD: {
-                StringBuilder strBuilder = new StringBuilder(player.getName() + " built a ");
-                for (int i = 0; i < structures.size(); i++) {
-                    strBuilder.append(Player.structureToString(structures.get(i)));
-                    if (i < structures.size() - 2) {
-                        strBuilder.append(", ");
-                    } else if (i == structures.size() -2) {
-                        strBuilder.append(" and a ");
-                    }
-                }
-                return strBuilder.toString();
-            }
-            case TRADE: {
-                StringBuilder strBuilder = new StringBuilder(player.getName() + " trades a ");
+    private String getStructureString() {
+        String structureString = "[";
 
-                int index = 0;
-                for (HashMap.Entry<Resource, Integer> entry : resources.entrySet()) {
-                    strBuilder.append(entry.getValue()).append(" ").append(Player.resourceToString(entry.getKey()));
-
-                    if (index == 0) {
-                        strBuilder.append(" for ");
-                    }
-                    index++;
-                }
-                return strBuilder.toString();
+        if (structures.size() == 0) {
+            structureString = "[]";
+        } else {
+            for (Structure structure : structures) {
+                structureString = structureString.concat("\"" + Player.structureToString(structure) + "\",");
             }
-            case GET_RESOURCES: {
-                StringBuilder strBuilder = new StringBuilder(player.getName() + " receives ");
-
-                int index = 0;
-                for (HashMap.Entry<Resource, Integer> entry : resources.entrySet()) {
-                    strBuilder.append(entry.getValue()).append(" ").append(Player.resourceToString(entry.getKey())).append(", ");
-                    if (index < resources.size() - 2) {
-                        strBuilder.append(", ");
-                    } else if (index  == resources.size() -2) {
-                        strBuilder.append(" and a ");
-                    }
-                    index++;
-                }
-                return strBuilder.toString();
-            }
-
+            structureString = structureString.substring(0, structureString.length() - 1);
+            structureString = structureString.concat("]");
         }
-
-        return "";
+        return structureString;
     }
 
     private String eventTypeToString(EventType type) {
