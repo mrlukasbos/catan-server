@@ -9,12 +9,8 @@ cache:
 jdk:
   - openjdk10
 
-before_install:
-  - pip install --user codecov
-
 script:
  - mvn clean package
- - mvn test
 
 after_success:
-  - codecov
+  - bash <(curl -s https://codecov.io/bash)
