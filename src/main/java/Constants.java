@@ -1,4 +1,3 @@
-import java.util.HashMap;
 import java.util.Map;
 
 class Constants {
@@ -29,7 +28,7 @@ class Constants {
             Resource.GRAIN,
             Resource.STONE,
             Resource.WOOD,
-            Resource.WHOOL
+            Resource.WOOL
     };
 
     static final Structure[] ALL_STRUCTURES = {
@@ -52,7 +51,7 @@ class Constants {
             Resource.WOOD, 1);
 
     static final Map<Resource, Integer> VILLAGE_COSTS = Map.of(
-            Resource.WHOOL,1,
+            Resource.WOOL,1,
             Resource.GRAIN, 1,
             Resource.STONE, 1,
             Resource.WOOD, 1);
@@ -62,7 +61,7 @@ class Constants {
             Resource.GRAIN, 2);
 
     static final Map<Resource, Integer> DEVELOPMENT_CARD_COSTS = Map.of(
-            Resource.WHOOL,1,
+            Resource.WOOL,1,
             Resource.GRAIN, 1,
             Resource.ORE, 1);
 

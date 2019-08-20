@@ -81,7 +81,8 @@ svg.append("g")
         return path.centroid(topojson.feature(topology, d))[1] + 15;
     })
     .text(function (d) {
-        return d.tile.attributes.type;
+        var str = d.tile.attributes.type.toLowerCase();
+        return str;
     })
     .attr("text-anchor", "middle");
 

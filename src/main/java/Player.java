@@ -22,7 +22,7 @@ class Player {
         resources.put(Resource.GRAIN, 0);
         resources.put(Resource.ORE, 0);
         resources.put(Resource.STONE, 0);
-        resources.put(Resource.WHOOL, 0);
+        resources.put(Resource.WOOL, 0);
         resources.put(Resource.WOOD, 0);
     }
 
@@ -206,7 +206,7 @@ class Player {
 
 enum Resource {
     NONE,
-    WHOOL,
+    WOOL,
     WOOD,
     STONE,
     GRAIN,

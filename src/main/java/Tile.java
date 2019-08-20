@@ -62,80 +62,15 @@ class Tile implements Comparable<Tile> {
         return Math.abs(getY())%2 == 0;
     }
 
-    public Resource typeToResource(Type type) {
-        switch (type) {
-            case WOOL: return Resource.WHOOL;
-            case WOOD: return Resource.WOOD;
-            case STONE: return Resource.STONE;
-            case ORE: return Resource.ORE;
-            case GRAIN: return Resource.GRAIN;
-            default: return Resource.NONE;
-        }
-    }
-
-    public String typeToString(Type type) {
-        switch (type) {
-            case DESERT:
-                return "desert";
-            case WOOL:
-                return "wool";
-            case WOOD:
-                return "wood";
-            case STONE:
-                return "stone";
-            case GRAIN:
-                return "grain";
-            case ORE:
-                return "ore";
-            case SEA:
-                return "sea";
-            case HARBOUR_WOOL:
-                return "harbour_wool";
-            case HARBOUR_WOOD:
-                return "harbour_wood";
-            case HARBOUR_STONE:
-                return "harbour_stone";
-            case HARBOUR_GRAIN:
-                return "harbour_grain";
-            case HARBOUR_ORE:
-                return "harbour_ore";
-            case HARBOUR_ALL:
-                return "harbour_all";
-            default:
-                return "unknown";
-        }
-    }
-
-    public String orientationToString(Orientation orientation) {
-        switch (orientation) {
-            case TOP_LEFT:
-                return "top_left";
-            case TOP_RIGHT:
-                return "top_right";
-            case LEFT:
-                return "left";
-            case RIGHT:
-                return "right";
-            case BOTTOM_LEFT:
-                return "bottom_left";
-            case BOTTOM_RIGHT:
-                return "bottom_right";
-            case NONE:
-                return "none";
-            default:
-                return "unknown";
-        }
-    }
-
     @java.lang.Override
     public java.lang.String toString() {
         return "{" +
                 "\"model\": \"tile\", " +
                 "\"key\": \"" + getKey() + "\", " +
                 "\"attributes\": {" +
-                "\"type\": \"" + typeToString(type) + "\", " +
+                "\"type\": \"" + type.toString() + "\", " +
                 "\"number\": " + number + ", " +
-                "\"orientation\": \"" + orientationToString(orientation) + "\", " +
+                "\"orientation\": \"" + orientation.toString() + "\", " +
                 "\"x\": " + x + ", " +
                 "\"y\": " + y +
                 "}" +

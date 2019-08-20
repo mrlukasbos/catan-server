@@ -63,50 +63,50 @@ button:hover {
     transition: fill 250ms linear;
 }
 
-.hexagon .desert {
+.hexagon .DESERT {
     fill: sandybrown;
 }
 
-.wool, .whool, .WOOL, .WHOOL {
+.WOOL {
     fill: lawngreen;
     background-color: lawngreen;
     color: black;
 }
 
-.wood, .WOOD {
+.WOOD {
     fill: forestgreen;
     background-color: forestgreen;
     color: white;
 }
 
-.stone, .STONE {
+.STONE {
     fill: rosybrown;
     background-color: rosybrown;
     color: white;
 }
 
-.grain, .GRAIN {
+.GRAIN {
     fill: yellow;
     background-color: yellow;
     color: black;
 }
 
-.ore, .ORE {
+.ORE {
     fill: lightgray;
     background-color: lightgray;
     color: black;
 }
 
-.hexagon .sea {
+.hexagon .SEA {
     fill: lightskyblue;
 }
 
-.hexagon .harbour_wool,
-.hexagon .harbour_wood,
-.hexagon .harbour_stone,
-.hexagon .harbour_grain,
-.hexagon .harbour_ore,
-.hexagon .harbour_all {
+.hexagon .HARBOUR_WOOL,
+.hexagon .HARBOUR_WOOD,
+.hexagon .HARBOUR_STONE,
+.hexagon .HARBOUR_GRAIN,
+.hexagon .HARBOUR_ORE,
+.hexagon .HARBOUR_ALL {
     fill: lightskyblue;
 }
 

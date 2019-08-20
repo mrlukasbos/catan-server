@@ -44,7 +44,10 @@ public class DiceThrowPhase implements GamePhase {
                 // game.print("nodes for tile " + game.getBoard().getNodes(tile).size());
                 if (node.hasPlayer() && node.hasStructure()) {
                     int amount = node.getStructure() == Structure.CITY ? 2 : 1;
-                    Resource resource = tile.typeToResource(tile.getType());
+
+                    // TODO make this into a tile.getResource()
+                    Resource resource = Enum.valueOf(Resource.class, tile.getType().toString());
+
                     node.getPlayer().addResources(resource, amount);
                     resourcesForPlayerId.get(node.getPlayer().getId()).put(resource, amount);
                 }
