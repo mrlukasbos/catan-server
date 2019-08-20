@@ -3,11 +3,16 @@ import java.util.List;
 
 public class Helpers {
 
+    // TODO needs a test
     static <T> String toJSONArray(List<T> list, boolean escape, String joint) {
+        if (list.size() == 0) {
+            return  "[]";
+        }
+
         String output = "[";
         for (T obj : list) {
             if (escape) {
-                output = "\"" + output.concat(obj.toString() + "\"" + joint);
+                output = output.concat("\"" + obj.toString() + "\"" + joint);
             } else {
                 output = output.concat(obj.toString() + joint);
             }
@@ -17,6 +22,7 @@ public class Helpers {
         return output;
     }
 
+    // TODO needs a test
     static <T> String getJSONArrayFromHashMap(HashMap<T, Integer> map, String keyName, String valueName) {
         String output = "[";
         if (map.size() == 0) {
