@@ -67,31 +67,31 @@ button:hover {
     fill: sandybrown;
 }
 
-.wool, .whool {
+.wool, .whool, .WOOL, .WHOOL {
     fill: lawngreen;
     background-color: lawngreen;
     color: black;
 }
 
-.wood {
+.wood, .WOOD {
     fill: forestgreen;
     background-color: forestgreen;
     color: white;
 }
 
-.stone {
+.stone, .STONE {
     fill: rosybrown;
     background-color: rosybrown;
     color: white;
 }
 
-.grain {
+.grain, .GRAIN {
     fill: yellow;
     background-color: yellow;
     color: black;
 }
 
-.ore {
+.ore, .ORE {
     fill: lightgray;
     background-color: lightgray;
     color: black;

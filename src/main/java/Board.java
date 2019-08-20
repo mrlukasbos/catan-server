@@ -295,7 +295,7 @@ class Board {
 
     void placeVillage(Player p, Node node) {
         node.setPlayer(p);
-        node.setStructure(Structure.SETTLEMENT);
+        node.setStructure(Structure.VILLAGE);
     }
 
     void placeCity(Player p, Node node) {
@@ -311,7 +311,7 @@ class Board {
     void placeStructure(Player p, Structure structure, String key) {
         switch (structure) {
             case STREET: placeStreet(p, getEdge(key)); break;
-            case SETTLEMENT: placeVillage(p, getNode(key)); break;
+            case VILLAGE: placeVillage(p, getNode(key)); break;
             case CITY: placeCity(p, getNode(key)); break;
             default: {
 
@@ -333,7 +333,7 @@ class Board {
     ArrayList<Node> getStructuresFromPlayer(Structure structureType, Player player) {
         ArrayList<Node> structures = new ArrayList<>();
 
-        if (structureType == Structure.CITY || structureType == Structure.SETTLEMENT) {
+        if (structureType == Structure.CITY || structureType == Structure.VILLAGE) {
             for (Node node : nodes) {
                 if (node.hasStructure() && node.getStructure() == structureType && node.hasPlayer() && node.getPlayer() == player) {
                     structures.add(node);
@@ -353,25 +353,6 @@ class Board {
         }
 
         return streets;
-    }
-
-
-
-    private String developmentCardToString(DevelopmentCard developmentCard) {
-        switch (developmentCard) {
-            case KNIGHT:
-                return "knight";
-            case MONOPOLY:
-                return "monopoly";
-            case ROAD_BUILDING:
-                return "road_building";
-            case VICTORY_POINT:
-                return "victory_point";
-            case YEAR_OF_PLENTY:
-                return "year_of_plenty";
-            default:
-                return "unknown";
-        }
     }
 
     @Override
@@ -399,7 +380,7 @@ class Board {
 
         String developmentCardsString = "[";
         for (DevelopmentCard developmentCard : developmentCards) {
-            developmentCardsString = developmentCardsString.concat("\"" + developmentCardToString(developmentCard) + "\",");
+            developmentCardsString = developmentCardsString.concat("\"" + developmentCard.toString() + "\",");
         }
         developmentCardsString = developmentCardsString.substring(0, developmentCardsString.length() - 1);
         developmentCardsString = developmentCardsString.concat("]");

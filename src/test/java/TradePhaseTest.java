@@ -99,4 +99,19 @@ public class TradePhaseTest {
         assertEquals(game.getLastResponse().getCode(), Constants.INVALID_TRADE_ERROR.getCode());
     }
 
+    @Test
+    public void testTradingOnBoard() {
+        game.setCurrentPlayer(player);
+        player.addResources(Resource.ORE, 4);
+
+        String message = "[{ \"from\": \"ore\", \"to\": \"wood\" }]";
+        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+
+        tradePhase.trade(player, jsonArray);
+
+        // the trade should have succeeded.
+        assertEquals(player.countResources(Resource.ORE), 0);
+        assertEquals(player.countResources(Resource.WOOD), 1);
+    }
+
 }

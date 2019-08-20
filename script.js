@@ -129,9 +129,9 @@ svg.append("g")
         return "translate(" + coordinate[0] + "," + coordinate[1] + ")";
     })
     .attr("d", function (d) {
-        if (d.attributes.structure == "settlement") {
+        if (d.attributes.structure == "VILLAGE") {
             return "M0 -10 L10 -2 L10 10 L-10 10 L-10 -2 L0 -10 Z"
-        } else if (d.attributes.structure == "city") {
+        } else if (d.attributes.structure == "CITY") {
             return "M-12 -2 L1 -2 L1 -10 L6 -12 L11 -10 L11 12 L-12 12 L-12 -2 Z"
         }
     }).attr('fill', function (d) {

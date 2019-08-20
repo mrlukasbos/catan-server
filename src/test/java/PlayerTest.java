@@ -54,7 +54,7 @@ public class PlayerTest {
         player.removeResources(Resource.WOOD, 3);
         assertTrue(player.canBuild(Structure.CITY));
         assertTrue(player.canBuildSomething());
-        assertFalse(player.canBuild(Structure.SETTLEMENT));
+        assertFalse(player.canBuild(Structure.VILLAGE));
         assertFalse(player.canBuild(Structure.DEVELOPMENT_CARD));
 
         player.removeResources(Resource.ORE, 1);
@@ -64,7 +64,7 @@ public class PlayerTest {
         player.addResources(Constants.VILLAGE_COSTS);
         assertTrue(player.canBuildSomething());
         assertFalse(player.canBuild(Structure.CITY));
-        assertTrue(player.canBuild(Structure.SETTLEMENT));
+        assertTrue(player.canBuild(Structure.VILLAGE));
         assertTrue(player.canBuild(Structure.STREET));
     }
 
@@ -87,7 +87,7 @@ public class PlayerTest {
         for (JsonElement element : jsonArray) {
             String typename = element.getAsJsonObject().get("type").getAsString();
             int amount = element.getAsJsonObject().get("value").getAsInt();
-            if (typename.equals("wood") || typename.equals("stone")) {
+            if (typename.equals("WOOD") || typename.equals("STONE")) {
                 assertEquals(amount, 1);
             } else {
                 assertEquals(amount, 0);

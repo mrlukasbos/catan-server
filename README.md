@@ -68,6 +68,7 @@ Trading:
   [{ "from": "grain", "to": "wood" }]
  [{ "from": "whool", "to": "grain" }]
   [{ "from": "whool", "to": "wood" }]
+  [{ "from": "grain", "to": "whool" }]
 
   [{ "from": "wood", "to": "stone" }]
   [{ "from": "wood", "to": "whool" }]

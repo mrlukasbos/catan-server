@@ -66,21 +66,6 @@ public class Node {
         return "(" + neighbors[0].getKey() + "," + neighbors[1].getKey() + "," + neighbors[2].getKey() + ")";
     }
 
-    String structureToString(Structure structure) {
-        switch (structure) {
-            case NONE:
-                return "none";
-            case CITY:
-                return "city";
-            case DEVELOPMENT_CARD:
-                return "development_card";
-            case SETTLEMENT:
-                return "settlement";
-            default:
-                return "unknown";
-        }
-    }
-
     @java.lang.Override
     public java.lang.String toString() {
         String playerString = "";
@@ -92,7 +77,7 @@ public class Node {
                 "\"model\": \"node\", " +
                 "\"key\": \"" + getKey() + "\", " +
                 "\"attributes\": {" +
-                "\"structure\": \"" + structureToString(structure) + "\"," +
+                "\"structure\": \"" + structure.toString() + "\"," +
                 playerString +
                 "\"t_key\": \"" + t.getKey() + "\"," +
                 "\"r_key\": \"" + r.getKey()+ "\"," +
@@ -104,7 +89,7 @@ public class Node {
 
 enum Structure {
     NONE,
-    SETTLEMENT,
+    VILLAGE,
     CITY,
     DEVELOPMENT_CARD,
     STREET

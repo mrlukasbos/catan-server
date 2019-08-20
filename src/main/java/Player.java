@@ -147,7 +147,7 @@ class Player {
                 "\"attributes\": {" +
                 "\"color\": \"" + getColor() + "\", " +
                 "\"name\": \"" + getName() + "\", " +
-                "\"resources\": " + resourcesString +
+                "\"resources\": " + resourcesString + ", " +
                 "\"development_cards\": " + developmentCardsString +
 
                 "}" +
@@ -160,7 +160,7 @@ class Player {
             resourcesString = "[]";
         } else {
             for (HashMap.Entry<Resource, Integer> entry : resources.entrySet()) {
-                resourcesString = resourcesString.concat("{\"type\":\"" + resourceToString(entry.getKey()) + "\", \"value\":" + entry.getValue()) + "},";
+                resourcesString = resourcesString.concat("{\"type\":\"" + entry.getKey().toString() + "\", \"value\":" + entry.getValue()) + "},";
             }
             resourcesString = resourcesString.substring(0, resourcesString.length() - 1);
             resourcesString = resourcesString.concat("]");
@@ -174,7 +174,7 @@ class Player {
             resourcesString = "[]";
         } else {
             for (HashMap.Entry<Resource, Integer> entry : resources.entrySet()) {
-                resourcesString = resourcesString.concat("{\"type\":\"" + resourceToString(entry.getKey()) + "\", \"value\":" + entry.getValue()) + "},";
+                resourcesString = resourcesString.concat("{\"type\":\"" + entry.getKey().toString() + "\", \"value\":" + entry.getValue()) + "},";
             }
             resourcesString = resourcesString.substring(0, resourcesString.length() - 1);
             resourcesString = resourcesString.concat("]");
@@ -184,41 +184,6 @@ class Player {
 
     private void print(String msg) {
         System.out.println("[Player] " + msg);
-    }
-
-    static String resourceToString(Resource res) {
-        switch (res) {
-            case WHOOL: return "whool";
-            case WOOD: return "wood";
-            case STONE: return "stone";
-            case GRAIN: return "grain";
-            case ORE: return "ore";
-            default: return null;
-        }
-    }
-
-    static Resource stringToResource(String str) {
-        switch (str) {
-            case "whool": return Resource.WHOOL;
-            case "wood": return Resource.WOOD;
-            case "stone": return Resource.STONE;
-            case "grain": return Resource.GRAIN;
-            case "ore": return Resource.ORE;
-            default: return Resource.NONE;
-        }
-    }
-
-    static String structureToString(Structure structure) {
-        switch (structure) {
-            case STREET:
-                return "street";
-            case SETTLEMENT:
-                return "village";
-            case CITY:
-                return "city";
-            default:
-                return "";
-        }
     }
 
     boolean canTradeWithBank() {
@@ -248,7 +213,7 @@ class Player {
 
     int getVisibleVictoryPoints() {
         return game.getBoard().getStructuresFromPlayer(Structure.CITY, this).size() +
-                game.getBoard().getStructuresFromPlayer(Structure.SETTLEMENT, this).size();
+                game.getBoard().getStructuresFromPlayer(Structure.VILLAGE, this).size();
     }
 
     int getAllVictoryPoints() {

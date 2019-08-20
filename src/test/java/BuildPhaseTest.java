@@ -50,6 +50,17 @@ class BuildPhaseTest {
     }
 
     @Test
+    void wrongJSONKeyTest() {
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([3,2],[3,3])"));
+
+        player.addResources(Constants.STREET_COSTS);
+
+        String message = "[{ \"structure\": \"stret\", \"location\": \"([2,2],[3,2])\" }]";
+        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        assertFalse(buildPhase.commandIsValid(player, jsonArray));
+    }
+
+    @Test
     void streetMustBeConnectedTest() {
         game.getBoard().placeStreet(player2, game.getBoard().getEdge("([2,2],[3,2])"));
 

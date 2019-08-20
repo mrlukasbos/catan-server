@@ -47,7 +47,7 @@ class Game extends Thread {
         while (true) {
             if (isRunning()) {
                 Phase nextPhase = currentPhase.execute();
-                print("Going to phase: " + phaseToString(nextPhase));
+                print("Going to phase: " + nextPhase.toString());
                 currentPhase = getGamePhase(nextPhase);
             }
         }
@@ -96,31 +96,6 @@ class Game extends Thread {
         }
     }
 
-    static Structure stringToStructure(String str) {
-        switch (str) {
-            case "village":
-                return Structure.SETTLEMENT;
-            case "city":
-                return Structure.CITY;
-            case "street":
-                return Structure.STREET;
-            default:
-                return Structure.NONE;
-        }
-    }
-
-    static String phaseToString(Phase phase) {
-        switch (phase) {
-            case SETUP: return "SETUP";
-            case THROW_DICE: return "THROW_DICE";
-            case FORCE_DISCARD: return "FORCE_DISCARD";
-            case MOVE_BANDIT: return "MOVE_BANDIT";
-            case BUILDING: return "BUILDING";
-            case TRADING: return "TRADING";
-            case INITIAL_BUILDING: return "INITIAL_BUILDING";
-            default: return "Unknown";
-        }
-    }
 
     @Override
     public String toString() {
@@ -134,7 +109,7 @@ class Game extends Thread {
                     "\"board\": " + getBoard().toString() + ", " +
                     "\"events\": " + getEventString() + ", " +
                     "\"lastDiceThrow\": " + getLastDiceThrow() + ", " +
-                    "\"phase\": \"" + phaseToString(currentPhase.getPhaseType()) + "\"," +
+                    "\"phase\": \"" + currentPhase.getPhaseType().toString() + "\"," +
                     "\"currentPlayer\": " + getCurrentPlayer().getId() +
                     "}" +
                     '}';

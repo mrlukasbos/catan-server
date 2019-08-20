@@ -47,7 +47,7 @@ class Event {
 
         return "{" +
                 "\"model\": \"event\", " +
-                "\"type\": \"" + eventTypeToString(type) + "\", " +
+                "\"type\": \"" + type.toString() + "\", " +
                 "\"attributes\": {" +
                 "\"moveCount\": " + moveCount + ", " +
                 "\"message\": \"" + message + "\", " +
@@ -65,22 +65,12 @@ class Event {
             structureString = "[]";
         } else {
             for (Structure structure : structures) {
-                structureString = structureString.concat("\"" + Player.structureToString(structure) + "\",");
+                structureString = structureString.concat("\"" + structure.toString() + "\",");
             }
             structureString = structureString.substring(0, structureString.length() - 1);
             structureString = structureString.concat("]");
         }
         return structureString;
-    }
-
-    private String eventTypeToString(EventType type) {
-        switch (type) {
-            case GET_RESOURCES: return "GET_RESOURCES";
-            case GENERAL: return "GENERAL";
-            case TRADE: return "TRADING";
-            case BUILD: return "BUIlD";
-            default: return "";
-        }
     }
 }
 

@@ -30,11 +30,16 @@ public class TradePhase implements GamePhase {
         return Phase.BUILDING;
     }
 
-    private void trade(Player player, JsonArray jsonArray) {
+    // the validation has to succeed before you call this function
+    void trade(Player player, JsonArray jsonArray) {
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
-            Resource resourceFrom = Player.stringToResource(object.get("from").getAsString());
-            Resource resourceTo = Player.stringToResource(object.get("to").getAsString());
+
+            Resource resourceFrom;
+            Resource resourceTo;
+
+            resourceFrom = Enum.valueOf(Resource.class, object.get("from").getAsString().toUpperCase());
+            resourceTo = Enum.valueOf(Resource.class, object.get("to").getAsString().toUpperCase());
 
             player.removeResources(resourceFrom, Constants.MINIMUM_CARDS_FOR_TRADE);
             player.addResources(resourceTo, 1);
@@ -84,10 +89,12 @@ public class TradePhase implements GamePhase {
                 return false;
             }
 
-            Resource resourceFrom = Player.stringToResource(fromElement.getAsString());
-            Resource resourceTo = Player.stringToResource(toElement.getAsString());
-
-            if (resourceFrom == Resource.NONE || resourceTo == Resource.NONE) {
+            Resource resourceFrom;
+            Resource resourceTo;
+            try {
+                resourceFrom = Enum.valueOf(Resource.class, fromElement.getAsString().toUpperCase());
+                resourceTo = Enum.valueOf(Resource.class, toElement.getAsString().toUpperCase());
+            } catch (IllegalArgumentException e) {
                 game.sendResponse(Constants.INVALID_TRADE_ERROR);
                 return false;
             }
@@ -102,7 +109,7 @@ public class TradePhase implements GamePhase {
             if (playerResourceCount < entry.getValue()) {
                 game.sendResponse(Constants.NOTENOUGHRESOURCESERROR.withAdditionalInfo(
                                 "required " + entry.getValue() +
-                                " " + Player.resourceToString(entry.getKey()) +
+                                " " + entry.getKey().toString() +
                                 " while you have " + playerResourceCount));
                 return false;
             }

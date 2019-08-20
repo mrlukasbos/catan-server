@@ -34,7 +34,7 @@ class Constants {
 
     static final Structure[] ALL_STRUCTURES = {
             Structure.STREET,
-            Structure.SETTLEMENT,
+            Structure.VILLAGE,
             Structure.CITY,
             Structure.DEVELOPMENT_CARD
     };
@@ -68,7 +68,7 @@ class Constants {
 
     static final Map<Structure, Map<Resource, Integer>> STRUCTURE_COSTS = Map.of(
             Structure.STREET, STREET_COSTS,
-            Structure.SETTLEMENT, VILLAGE_COSTS,
+            Structure.VILLAGE, VILLAGE_COSTS,
             Structure.CITY, CITY_COSTS,
             Structure.DEVELOPMENT_CARD, DEVELOPMENT_CARD_COSTS
         );
@@ -77,7 +77,7 @@ class Constants {
     // RESPONSES
 
     // Acknowledgement
-    static final Response OK = new Response(100, "Ok", "The received message is processed succesfully.");
+    static final Response OK = new Response(0, "Ok", "The received message is processed succesfully.");
 
     // Parsing issues
     static final Response MALFORMEDJSONERROR = new Response(500, "MalformedJSON", "The received JSON message is invalid.");

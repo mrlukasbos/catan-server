@@ -49,7 +49,7 @@ class BuildPhase implements GamePhase {
         }
 
         ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
-        ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.SETTLEMENT);
+        ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.VILLAGE);
         ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
 
         ArrayList<Structure> builtStreets = buildStructures(currentPlayer, streetCommands);
@@ -81,10 +81,11 @@ class BuildPhase implements GamePhase {
             JsonObject object = element.getAsJsonObject();
 
             String structureString = object.get("structure").getAsString();
-            Structure structure = Game.stringToStructure(structureString);
-            String key = object.get("location").getAsString();
 
-            if (structure == Structure.NONE) {
+            Structure structure;
+            try {
+                structure = Enum.valueOf(Structure.class, structureString.toUpperCase());
+            } catch (IllegalArgumentException e) {
                 game.sendResponse(Constants.INVALIDSTRUCTUREERROR);
                 return null;
             }
@@ -92,9 +93,13 @@ class BuildPhase implements GamePhase {
             // validate if data is formatted properly and corresponding objects exist
             if (structure == structuresToReturn) {
                  if (structuresToReturn == Structure.STREET) {
+                     String key = object.get("location").getAsString();
                      if (!edgeExists(game.getBoard().getEdge(key), key)) return null;
                      commands.add(new BuildCommand(currentPlayer, structure, key));
+                 } else if (structuresToReturn == Structure.DEVELOPMENT_CARD) {
+                     commands.add(new BuildCommand(currentPlayer, structure, null));
                  } else {
+                     String key = object.get("location").getAsString();
                      if (!nodeExists(game.getBoard().getNode(key), key)) return null;
                      commands.add(new BuildCommand(currentPlayer, structure, key));
                  }
@@ -114,7 +119,7 @@ class BuildPhase implements GamePhase {
 
         ArrayList<BuildCommand> developmentCardRequests = getCommandsFromInput(currentPlayer, jsonArray, Structure.DEVELOPMENT_CARD);
         ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
-        ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.SETTLEMENT);
+        ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.VILLAGE);
         ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
 
         if (developmentCardRequests == null || streetCommands == null || villageCommands == null || cityCommands == null) { return false; }
@@ -126,7 +131,7 @@ class BuildPhase implements GamePhase {
         }
 
         // make an array with all the villages for further validation
-        ArrayList<Node> villages = game.getBoard().getStructuresFromPlayer(Structure.SETTLEMENT, currentPlayer);
+        ArrayList<Node> villages = game.getBoard().getStructuresFromPlayer(Structure.VILLAGE, currentPlayer);
         for (BuildCommand cmd : villageCommands) {
             villages.add(game.getBoard().getNode(cmd.key));
         }
@@ -339,7 +344,7 @@ class BuildPhase implements GamePhase {
             amountNeeded += Constants.DEVELOPMENT_CARD_COSTS.getOrDefault(resource, 0) * amountOfDevelopmentCards;
 
             if (amountNeeded > player.countResources(resource)) {
-                game.sendResponse(Constants.NOTENOUGHRESOURCESERROR.withAdditionalInfo(" Not enough " + Player.resourceToString(resource)));
+                game.sendResponse(Constants.NOTENOUGHRESOURCESERROR.withAdditionalInfo(" Not enough " + resource.toString()));
                 return false;
             }
         }
