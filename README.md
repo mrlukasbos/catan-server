@@ -1,4 +1,8 @@
+[![Build Status](https://travis-ci.com/mrlukasbos/Catan.svg?branch=master)](https://travis-ci.com/mrlukasbos/Catan)
+[![codecov](https://codecov.io/gh/mrlukasbos/Catan/branch/master/graph/badge.svg)](https://codecov.io/gh/mrlukasbos/Catan)
+
 # Catan challenge
+
 The goal of this challenge is to build a digital version of the catan boardgame, make a visualization for it, and then compete against each other by building a player ai.
 
 ![Screenshot of the interface](./doc/img/screenshot-interface.png)
