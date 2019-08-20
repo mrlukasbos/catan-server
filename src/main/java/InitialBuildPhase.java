@@ -52,6 +52,11 @@ public class InitialBuildPhase extends BuildPhase {
 
     @Override
     boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
+        if (jsonArray == null) {
+            game.sendResponse(Constants.MALFORMEDJSONERROR);
+            return false;
+        }
+
         ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
         ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.SETTLEMENT);
         ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);

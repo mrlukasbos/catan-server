@@ -29,10 +29,10 @@ class BuildPhase implements GamePhase {
     void build() {
         Player currentPlayer = game.getCurrentPlayer();
 
-        JsonArray jsonArray = null;
-        while (!commandIsValid(currentPlayer, jsonArray)) {
+        JsonArray jsonArray;
+        do {
             jsonArray = getCommandFromUser(currentPlayer);
-        }
+        } while (jsonArray == null || !commandIsValid(currentPlayer, jsonArray));
 
         // build the structures
         buildStructures(currentPlayer, jsonArray);
@@ -99,7 +99,10 @@ class BuildPhase implements GamePhase {
 
     // check for the whole command if the command is valid.
     boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
-        if (jsonArray == null) { return false; };
+        if (jsonArray == null) {
+            game.sendResponse(Constants.MALFORMEDJSONERROR);
+            return false;
+        }
 
         ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
         ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.SETTLEMENT);

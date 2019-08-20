@@ -1,5 +1,4 @@
 import com.google.gson.JsonArray;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +18,12 @@ class BuildPhaseTest {
         game.addPlayer(player);
         game.setCurrentPlayer(player);
         game.init();
+    }
+
+    @Test
+    void itShouldReturnFalseIfEmptyInputTest() {
+        assertFalse(buildPhase.commandIsValid(player, null));
+        assertEquals(game.getLastResponse().getCode(), Constants.MALFORMEDJSONERROR.getCode());
     }
 
     @Test
