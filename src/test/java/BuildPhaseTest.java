@@ -138,7 +138,7 @@ class BuildPhaseTest {
     }
 
     @Test
-    void villageCanNotBeOneEdgeNextToOtherVillage() {
+    void villageCanNotBeOneEdgeNextToOtherVillageTest() {
         game.getBoard().placeStreet(player, game.getBoard().getEdge("([3,2],[3,3])"));
         game.getBoard().placeStreet(player, game.getBoard().getEdge("([2,2],[3,2])"));
         game.getBoard().placeCity(player, game.getBoard().getNode("([2,2],[3,1],[3,2])"));
@@ -146,6 +146,20 @@ class BuildPhaseTest {
         player.addResources(Constants.VILLAGE_COSTS);
 
         String message = "[{ \"structure\": \"village\", \"location\": \"([2,2],[3,2],[3,3])\" }]";
+        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        assertFalse(buildPhase.commandIsValid(player, jsonArray));
+        assertEquals(game.getLastResponse().getCode(), Constants.STRUCTURETOOCLOSETOOTHERSTRUCTUREERROR.getCode());
+    }
+
+    @Test
+    void villageCanNotBeOneEdgeNextToOtherVillageInSameCommandTest() {
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([3,2],[3,3])"));
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([2,2],[3,2])"));
+
+        player.addResources(Constants.VILLAGE_COSTS);
+        player.addResources(Constants.VILLAGE_COSTS);
+
+        String message = "[{ \"structure\": \"village\", \"location\": \"([2,2],[3,2],[3,3])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
         assertFalse(buildPhase.commandIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.STRUCTURETOOCLOSETOOTHERSTRUCTUREERROR.getCode());

@@ -34,8 +34,10 @@ class BuildPhase implements GamePhase {
             jsonArray = getCommandFromUser(currentPlayer);
         } while (jsonArray == null || !commandIsValid(currentPlayer, jsonArray));
 
+
         // build the structures
         buildStructures(currentPlayer, jsonArray);
+        game.sendResponse(currentPlayer, Constants.OK.withAdditionalInfo("Message processed succesfully!"));
     }
 
     // build the structures if the command is valid
@@ -242,7 +244,7 @@ class BuildPhase implements GamePhase {
                 return false;
             } else {
                 for (Node additionalVillage : nodes) {
-                    if (additionalVillage == node) {
+                    if (additionalVillage == surroundingNode) {
                         game.sendResponse(Constants.STRUCTURETOOCLOSETOOTHERSTRUCTUREERROR.withAdditionalInfo("The conflicting structures are in the same command" + node.getKey()));
                         return false;
                     }
