@@ -105,7 +105,7 @@ class Player {
     // add resources to the resources of the player
     void addResources(Resource resource, int amount) {
         if (resource != Resource.NONE) {
-            resources.replace(resource, resources.get(resource) + amount);
+            resources.replace(resource, Math.max(0, resources.get(resource) + amount));
         }
     }
 
@@ -115,11 +115,20 @@ class Player {
         }
     }
 
-    // remove resources from the player
     void removeResources(Resource resource, int amount) {
-        // iterate over all resources to remove the amount needed.
-        int amountOfResources = countResources(resource);
-        resources.replace(resource, Math.max(0, amountOfResources - amount));
+        addResources(resource, -amount);
+    }
+
+    void removeResources(Map<Resource, Integer> resourcesToRemove) {
+        for (Map.Entry<Resource, Integer> entry : resourcesToRemove.entrySet()) {
+            removeResources(entry.getKey(), entry.getValue());
+        }
+    }
+
+    void removeResources() {
+        for (Resource resource : Constants.ALL_RESOURCES) {
+            resources.replace(resource, 0);
+        }
     }
 
     @java.lang.Override
@@ -213,9 +222,7 @@ class Player {
     }
 
     void pay(Structure structure) {
-        for (Map.Entry<Resource, Integer> entry : Constants.STRUCTURE_COSTS.get(structure).entrySet()) {
-            removeResources(entry.getKey(), entry.getValue());
-        }
+        removeResources(Constants.STRUCTURE_COSTS.get(structure));
     }
 }
 
