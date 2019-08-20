@@ -72,6 +72,8 @@ public class Node {
                 return "none";
             case CITY:
                 return "city";
+            case DEVELOPMENT_CARD:
+                return "development_card";
             case SETTLEMENT:
                 return "settlement";
             default:
@@ -104,5 +106,6 @@ enum Structure {
     NONE,
     SETTLEMENT,
     CITY,
+    DEVELOPMENT_CARD,
     STREET
 }

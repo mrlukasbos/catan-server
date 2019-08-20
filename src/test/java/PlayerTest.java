@@ -55,6 +55,7 @@ public class PlayerTest {
         assertTrue(player.canBuild(Structure.CITY));
         assertTrue(player.canBuildSomething());
         assertFalse(player.canBuild(Structure.SETTLEMENT));
+        assertFalse(player.canBuild(Structure.DEVELOPMENT_CARD));
 
         player.removeResources(Resource.ORE, 1);
         assertFalse(player.canBuildSomething());

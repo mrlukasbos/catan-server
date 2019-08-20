@@ -114,18 +114,19 @@ A single village, city or street
 ```
 
  [{ "structure": "village", "location": "([1,2],[2,1],[2,2])" }]
-  [{ "structure": "village", "location": "([4,3],[4,4],[5,3])" }]
+ [{ "structure": "village", "location": "([4,3],[4,4],[5,3])" }]
 
  [{ "structure": "city", "location": "([1,2],[2,1],[2,2])" }]
-  [{ "structure": "city", "location": "([3,3],[3,4],[4,3])" }]
+ [{ "structure": "city", "location": "([3,3],[3,4],[4,3])" }]
 
  [{ "structure": "street", "location": "([2,2],[3,1])" }]
  [{ "structure": "street", "location": "([1,4],[2,3])" }]
-  [{ "structure": "street", "location": "([4,3],[4,4])" }]
-  [{ "structure": "street", "location": "([3,3],[4,3])" }]
+ [{ "structure": "street", "location": "([4,3],[4,4])" }]
+ [{ "structure": "street", "location": "([3,3],[4,3])" }]
 
-  [{ "structure": "street", "location": "([2,4],[2,5])" }]
+ [{ "structure": "street", "location": "([2,4],[2,5])" }]
 
+ [{ "structure": "development_card" }]
 ```
 
 

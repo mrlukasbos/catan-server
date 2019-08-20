@@ -42,6 +42,12 @@ class BuildPhase implements GamePhase {
 
     // build the structures if the command is valid
     void buildStructures(Player currentPlayer, JsonArray jsonArray) {
+        ArrayList<BuildCommand> developmentCardRequests = getCommandsFromInput(currentPlayer, jsonArray, Structure.DEVELOPMENT_CARD);
+        for (int i = 0; i < developmentCardRequests.size(); i++) {
+            payStructure(currentPlayer, Structure.DEVELOPMENT_CARD);
+            currentPlayer.addDevelopmentCard();
+        }
+
         ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
         ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.SETTLEMENT);
         ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
@@ -106,11 +112,12 @@ class BuildPhase implements GamePhase {
             return false;
         }
 
+        ArrayList<BuildCommand> developmentCardRequests = getCommandsFromInput(currentPlayer, jsonArray, Structure.DEVELOPMENT_CARD);
         ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
         ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.SETTLEMENT);
         ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
 
-        if (streetCommands == null || villageCommands == null || cityCommands == null) { return false; }
+        if (developmentCardRequests == null || streetCommands == null || villageCommands == null || cityCommands == null) { return false; }
 
         // make an array with all the streets for further validation
         ArrayList<Edge> streets = game.getBoard().getStreetsFromPlayer(currentPlayer);
@@ -125,7 +132,7 @@ class BuildPhase implements GamePhase {
         }
 
 
-        return hasEnoughResources(currentPlayer, streetCommands.size(), villageCommands.size(), cityCommands.size())
+        return hasEnoughResources(currentPlayer, developmentCardRequests.size(), streetCommands.size(), villageCommands.size(), cityCommands.size())
                 && streetsAreValid(streetCommands)
                 && villagesAreValid(villageCommands, streets)
                 && citiesAreValid(cityCommands, villages);
@@ -324,11 +331,12 @@ class BuildPhase implements GamePhase {
         return true;
     }
 
-    private boolean hasEnoughResources(Player player, int amountOfStreets, int amountOfVillages, int amountOfCities) {
+    private boolean hasEnoughResources(Player player, int amountOfDevelopmentCards, int amountOfStreets, int amountOfVillages, int amountOfCities) {
         for (Resource resource : Constants.ALL_RESOURCES) {
             int amountNeeded = Constants.STREET_COSTS.getOrDefault(resource, 0) * amountOfStreets;
             amountNeeded += Constants.VILLAGE_COSTS.getOrDefault(resource, 0) * amountOfVillages;
             amountNeeded += Constants.CITY_COSTS.getOrDefault(resource, 0) * amountOfCities;
+            amountNeeded += Constants.DEVELOPMENT_CARD_COSTS.getOrDefault(resource, 0) * amountOfDevelopmentCards;
 
             if (amountNeeded > player.countResources(resource)) {
                 game.sendResponse(Constants.NOTENOUGHRESOURCESERROR.withAdditionalInfo(" Not enough " + Player.resourceToString(resource)));

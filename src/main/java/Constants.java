@@ -35,7 +35,16 @@ class Constants {
     static final Structure[] ALL_STRUCTURES = {
             Structure.STREET,
             Structure.SETTLEMENT,
-            Structure.CITY
+            Structure.CITY,
+            Structure.DEVELOPMENT_CARD
+    };
+
+    static final DevelopmentCard[] ALL_DEVELOPMENT_CARDS = {
+            DevelopmentCard.VICTORY_POINT,
+            DevelopmentCard.KNIGHT,
+            DevelopmentCard.MONOPOLY,
+            DevelopmentCard.ROAD_BUILDING,
+            DevelopmentCard.YEAR_OF_PLENTY
     };
 
     static final Map<Resource, Integer> STREET_COSTS = Map.of(
@@ -60,11 +69,12 @@ class Constants {
     static final Map<Structure, Map<Resource, Integer>> STRUCTURE_COSTS = Map.of(
             Structure.STREET, STREET_COSTS,
             Structure.SETTLEMENT, VILLAGE_COSTS,
-            Structure.CITY, CITY_COSTS
+            Structure.CITY, CITY_COSTS,
+            Structure.DEVELOPMENT_CARD, DEVELOPMENT_CARD_COSTS
         );
 
 
-            // RESPONSES
+    // RESPONSES
 
     // Acknowledgement
     static final Response OK = new Response(100, "Ok", "The received message is processed succesfully.");
@@ -82,7 +92,6 @@ class Constants {
     static final Response STRUCTURENOTCONNECTEDERROR = new Response(600, "StructureNotConnected", "The received structure is not connected.");
     static final Response CITYNOTBUILTONPLAYERSVILLAGEERROR = new Response(601, "CityNotBuiltOnVillage", "The received city is not built on top of a/your village.");
     static final Response STRUCTURETOOCLOSETOOTHERSTRUCTUREERROR = new Response(602, "StructureTooClose", "There is another structure too close to another structure.");
-    static final Response STRUCTURENOTONLANDERROR = new Response(603, "StructureNotOnLand", "The given structure is not placed on land.");
     static final Response STRUCTUREALREADYEXISTSERROR = new Response(604, "StructureAlreadyExists", "There is already a structure on the given node.");
     static final Response NOTENOUGHRESOURCESERROR = new Response(605, "InsufficientResources", "You have not enough resources to build this.");
     static final Response NOTAVILLAGEANDSTREETERROR = new Response(606, "NotAVillageAndStreet", "In the initial buildphase a command must exist out of a village and a street.");

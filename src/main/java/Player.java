@@ -138,6 +138,8 @@ class Player {
     public java.lang.String toString() {
 
         String resourcesString = getResourcesAsJSONString(resources);
+        String developmentCardsString = "[]";
+        // getDevelopmentCardsAsJSONString(developmentCards);
 
         return "{" +
                 "\"model\": \"player\", " +
@@ -146,8 +148,24 @@ class Player {
                 "\"color\": \"" + getColor() + "\", " +
                 "\"name\": \"" + getName() + "\", " +
                 "\"resources\": " + resourcesString +
+                "\"development_cards\": " + developmentCardsString +
+
                 "}" +
                 "}";
+    }
+
+    static String getDevelopmentCardsAsJSONString(HashMap<Resource, Integer> resources) {
+        String resourcesString = "[";
+        if (resources.size() == 0) {
+            resourcesString = "[]";
+        } else {
+            for (HashMap.Entry<Resource, Integer> entry : resources.entrySet()) {
+                resourcesString = resourcesString.concat("{\"type\":\"" + resourceToString(entry.getKey()) + "\", \"value\":" + entry.getValue()) + "},";
+            }
+            resourcesString = resourcesString.substring(0, resourcesString.length() - 1);
+            resourcesString = resourcesString.concat("]");
+        }
+        return resourcesString;
     }
 
     static String getResourcesAsJSONString(HashMap<Resource, Integer> resources) {
@@ -237,6 +255,15 @@ class Player {
         return getVisibleVictoryPoints() + developmentCards.get(DevelopmentCard.VICTORY_POINT);
     }
 
+    void addDevelopmentCard() {
+        int randomIndex = new Random().nextInt() % Constants.ALL_DEVELOPMENT_CARDS.length;
+        DevelopmentCard newCard = Constants.ALL_DEVELOPMENT_CARDS[randomIndex];
+        developmentCards.put(newCard, developmentCards.getOrDefault(newCard, 0) + 1);
+    }
+
+    void removeDevelopmentCard(DevelopmentCard card) {
+        developmentCards.put(card, Math.max(0, developmentCards.getOrDefault(card, 0) - 1));
+    }
 
 
 
