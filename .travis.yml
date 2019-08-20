@@ -14,6 +14,7 @@ before_install:
 
 script:
  - mvn clean package
+ - mvn test
 
 after_success:
   - codecov
