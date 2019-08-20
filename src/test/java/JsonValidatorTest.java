@@ -14,6 +14,7 @@ public class JsonValidatorTest {
         assertNull(validator.getJsonIfValid(player, "{ \"from\": \"stone\", \"to\": \"wood\" }, { \"from\": \"grain\", \"to\": \"stone\" }"));
         assertNull(validator.getJsonIfValid(player, "{ \"from\": \"stone\", \"to\": \"wood\" }, "));
         assertNull(validator.getJsonIfValid(player, "[ \"from\": \"stone\", \"to\": \"wood\" ] "));
+        assertNull(validator.getJsonIfValid(player, null));
     }
 
     @Test

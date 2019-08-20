@@ -21,6 +21,23 @@ class InitialBuildPhaseTest {
     }
 
     @Test
+    void theEdgeMustExistTest() {
+        // The edge is sorted incorrectly, so the test must fail
+        String message = " [{ \"structure\": \"street\", \"location\": \"([3,2],[3,1])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
+        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        assertFalse(buildPhase.commandIsValid(player, jsonArray));
+        assertEquals(game.getLastResponse().getCode(), Constants.EDGEDOESNOTEXISTERROR.getCode());
+    }
+
+    @Test
+    void theNodeMustExistTest() {
+        String message = " [{ \"structure\": \"street\", \"location\": \"([3,1],[3,2])\" }, { \"structure\": \"village\", \"location\": \"([5,2],[3,1],[3,2])\" }]";
+        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        assertFalse(buildPhase.commandIsValid(player, jsonArray));
+        assertEquals(game.getLastResponse().getCode(), Constants.NODEDOESNOTEXISTERROR.getCode());
+    }
+
+    @Test
     void buildingNothingIsIllegalTest() {
         String message = "[]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
