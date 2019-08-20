@@ -62,6 +62,12 @@ class Player {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
