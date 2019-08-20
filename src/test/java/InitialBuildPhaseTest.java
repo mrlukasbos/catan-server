@@ -142,4 +142,15 @@ class InitialBuildPhaseTest {
         assertEquals(game.getCurrentPlayer().getId(), player.getId()); // should be same player
     }
 
+    @Test
+    void buildingShouldBeFreeTest() {
+        player.addResources(Resource.WOOD, 3);
+        buildPhase.payStructure(player, Structure.STREET);
+        assertEquals(player.countResources(Resource.WOOD), 3);
+    }
+
+    @Test
+    void phaseNameShouldBeCorrectTest() {
+        assertEquals(buildPhase.getPhaseType(), Phase.INITIAL_BUILDING);
+    }
 }

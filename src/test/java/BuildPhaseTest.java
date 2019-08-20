@@ -22,6 +22,11 @@ class BuildPhaseTest {
     }
 
     @Test
+    void phaseNameShouldBeCorrectTest() {
+        assertEquals(buildPhase.getPhaseType(), Phase.BUILDING);
+    }
+
+    @Test
     void testBuildingNothing() {
         String message = "[]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
@@ -222,4 +227,30 @@ class BuildPhaseTest {
         assertEquals(game.getLastResponse().getCode(), Constants.NOTENOUGHRESOURCESERROR.getCode());
     }
 
+
+    @Test
+    void buildingStructuresShouldChangeBoardTest() {
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([3,2],[3,3])"));
+
+        player.addResources(Constants.STREET_COSTS);
+        player.addResources(Constants.VILLAGE_COSTS);
+        player.addResources(Constants.CITY_COSTS);
+
+        String message = "[{ \"structure\": \"street\", \"location\": \"([2,2],[3,2])\" }, { \"structure\": \"city\", \"location\": \"([2,2],[3,1],[3,2])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
+        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        assertTrue(buildPhase.commandIsValid(player, jsonArray));
+
+        assertEquals(game.getBoard().getStreetsFromPlayer(player).size(), 1);
+        assertEquals(game.getBoard().getAllStructures().size(), 0);
+
+        buildPhase.buildStructures(player, jsonArray);
+
+        assertEquals(game.getBoard().getStreetsFromPlayer(player).size(), 2);
+        assertEquals(game.getBoard().getAllStructures().size(), 1);
+        assertEquals(game.getBoard().getAllStructures().get(0), Structure.CITY);
+
+        // the player should be out of resources
+        assertEquals(player.countResources(), 0);
+
+    }
 }

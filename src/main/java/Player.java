@@ -95,7 +95,11 @@ class Player {
 
     // count the occurence of all resources together
     int countResources() {
-        return resources.size();
+        int count = 0;
+        for (Resource res : Constants.ALL_RESOURCES) {
+            count += countResources(res);
+        }
+        return count;
     }
 
     // add resources to the resources of the player

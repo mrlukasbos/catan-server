@@ -28,30 +28,42 @@ class BuildPhase implements GamePhase {
 
     void build() {
         Player currentPlayer = game.getCurrentPlayer();
-        JsonArray jsonArray = getValidCommandFromUser(currentPlayer);
+
+        JsonArray jsonArray = null;
+        while (!commandIsValid(currentPlayer, jsonArray)) {
+            jsonArray = getCommandFromUser(currentPlayer);
+        }
 
         // build the structures
         buildStructures(currentPlayer, jsonArray);
     }
 
     // build the structures if the command is valid
-    private void buildStructures(Player currentPlayer, JsonArray jsonArray) {
-        ArrayList<Structure> structuresToBuild = new ArrayList<>();
-        for (int i = 0; i < jsonArray.size(); i++) {
-            JsonElement element = jsonArray.get(i);
-            JsonObject object = element.getAsJsonObject();
+    void buildStructures(Player currentPlayer, JsonArray jsonArray) {
+        ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
+        ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.SETTLEMENT);
+        ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
 
-            String structureString = object.get("structure").getAsString();
-            Structure structure = Game.stringToStructure(structureString);
-            String key = object.get("location").getAsString();
+        ArrayList<Structure> builtStreets = buildStructures(currentPlayer, streetCommands);
+        ArrayList<Structure> builtVillages = buildStructures(currentPlayer, villageCommands);
+        ArrayList<Structure> builtCities = buildStructures(currentPlayer, cityCommands);
 
-            payStructure(currentPlayer, structure);
-            game.getBoard().placeStructure(currentPlayer, structure, key);
+        // for showing what we built in the events;
+        ArrayList<Structure> builtStructures = new ArrayList<>();
+        builtStructures.addAll(builtStreets);
+        builtStructures.addAll(builtVillages);
+        builtStructures.addAll(builtCities);
+        game.addEvent(new Event(game, EventType.BUILD, currentPlayer).withStructures(builtStructures));
+    }
 
-            structuresToBuild.add(structure);
+    private ArrayList<Structure> buildStructures(Player currentPlayer, ArrayList<BuildCommand> streetCommands) {
+        ArrayList<Structure> builtStructures = new ArrayList<>();
+        for (BuildCommand streetCmd : streetCommands) {
+            payStructure(currentPlayer, streetCmd.structure);
+            game.getBoard().placeStructure(currentPlayer, streetCmd.structure, streetCmd.key);
+            builtStructures.add(streetCmd.structure);
         }
-
-        game.addEvent(new Event(game, EventType.BUILD, currentPlayer).withStructures(structuresToBuild));
+        return builtStructures;
     }
 
     ArrayList<BuildCommand> getCommandsFromInput(Player currentPlayer, JsonArray jsonArray, Structure structuresToReturn) {
@@ -87,6 +99,8 @@ class BuildPhase implements GamePhase {
 
     // check for the whole command if the command is valid.
     boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
+        if (jsonArray == null) { return false; };
+
         ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
         ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.SETTLEMENT);
         ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
@@ -257,22 +271,18 @@ class BuildPhase implements GamePhase {
     }
 
     // keep running this function until we get valid output from the user
-    private JsonArray getValidCommandFromUser(Player currentPlayer) {
+    private JsonArray getCommandFromUser(Player currentPlayer) {
         currentPlayer.send(txt);
-        boolean buildSucceeded = false;
-        JsonArray jsonArray = null;
+        JsonArray jsonArray;
 
-        while (!buildSucceeded) {
-            String message = currentPlayer.listen();
-            game.print("Received message from player " + currentPlayer.getName() + ": " + message);
-            jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);
-            if (jsonArray == null) game.sendResponse(currentPlayer, Constants.MALFORMEDJSONERROR.withAdditionalInfo(message));
-            buildSucceeded = jsonArray != null && commandIsValid(currentPlayer, jsonArray);
-
-            if (!buildSucceeded) {
-                currentPlayer.send("try again! \n");
-            }
+        String message = currentPlayer.listen();
+        game.print("Received message from player " + currentPlayer.getName() + ": " + message);
+        jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);
+        if (jsonArray == null) {
+            game.sendResponse(currentPlayer, Constants.MALFORMEDJSONERROR.withAdditionalInfo(message));
+            return null;
         }
+
         return jsonArray;
     }
 
