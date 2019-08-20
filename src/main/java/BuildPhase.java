@@ -92,6 +92,7 @@ class BuildPhase implements GamePhase {
         ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
 
         if (streetCommands == null || villageCommands == null || cityCommands == null) {
+            game.print("streetcommands or villagecommands or citycommands == 0");
             game.sendResponse(Constants.MALFORMEDJSONERROR);
             return false;
         }

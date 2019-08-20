@@ -29,11 +29,15 @@ class Game extends Thread {
 
     // start the game in a seperate thread
     synchronized void startGame() {
-        this.board = new Board(this);
-        this.running = true;
+        init();
         print("Starting game");
         addEvent(new Event(this, EventType.GENERAL).withGeneralMessage("Starting the game"));
         start();
+    }
+
+    void init() {
+        this.board = new Board(this);
+        this.running = true;
     }
 
     // This function gets called after start() and runs the whole game

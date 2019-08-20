@@ -11,14 +11,14 @@ class BuildPhaseTest {
     private Interface iface = new Interface(10007);
     private Game game = new Game(iface);
     private BuildPhase buildPhase = new BuildPhase(game);
-    private Player player = new Player(0, "tester");
-    private Player player2 = new Player(1, "tester1");
+    private  Player player = new Player(0, "tester");
+    private  Player player2 = new Player(1, "tester1");
 
     @BeforeEach
     void beforeTest() {
         game.addPlayer(player);
         game.setCurrentPlayer(player);
-        game.startGame();
+        game.init();
     }
 
     @Test

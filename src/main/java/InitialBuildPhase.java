@@ -19,20 +19,34 @@ public class InitialBuildPhase extends BuildPhase {
     public Phase execute() {
         build();
 
+
         // in the initial build phase the first two 'rounds' are quite uncommon.
         // The player with the highest dice throw starts, and then it follows the normal order.
         // After that round all players can build again but in the reversed order
-        if (game.getBoard().getAllStructures().size() < game.getPlayers().size()*2) {
+        changePlayer();
+        game.signalGameChange();
+        return getNextPhase();
+    }
+
+    boolean ShouldProceedToNextPhase() {
+        return game.getBoard().getAllStructures().size() >= game.getPlayers().size()*2;
+    }
+
+    Phase getNextPhase() {
+        if (!ShouldProceedToNextPhase()) {
+            return Phase.INITIAL_BUILDING;
+        }
+        return Phase.THROW_DICE;
+    }
+
+    void changePlayer() {
+        if (!ShouldProceedToNextPhase()) {
             if (game.getBoard().getAllStructures().size() < game.getPlayers().size()) {
                 game.goToNextPlayer();
             } else if (game.getBoard().getAllStructures().size() != game.getPlayers().size()) {
                 game.goToPreviousPlayer();
             }
-            game.signalGameChange();
-            return Phase.INITIAL_BUILDING;
         }
-        game.signalGameChange();
-        return Phase.THROW_DICE;
     }
 
 
