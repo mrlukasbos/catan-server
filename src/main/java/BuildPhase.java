@@ -100,7 +100,7 @@ class BuildPhase implements GamePhase {
     // check for the whole command if the command is valid.
     boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
         if (jsonArray == null) {
-            game.sendResponse(Constants.MALFORMEDJSONERROR);
+            game.sendResponse(Constants.MALFORMEDJSONERROR.withAdditionalInfo("jsonArray is null"));
             return false;
         }
 
@@ -109,8 +109,7 @@ class BuildPhase implements GamePhase {
         ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
 
         if (streetCommands == null || villageCommands == null || cityCommands == null) {
-            game.print("streetcommands or villagecommands or citycommands == 0");
-            game.sendResponse(Constants.MALFORMEDJSONERROR);
+            game.sendResponse(Constants.MALFORMEDJSONERROR.withAdditionalInfo("streetcommands or villagecommands or citycommands is null"));
             return false;
         }
 

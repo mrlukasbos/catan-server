@@ -53,7 +53,7 @@ public class InitialBuildPhase extends BuildPhase {
     @Override
     boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
         if (jsonArray == null) {
-            game.sendResponse(Constants.MALFORMEDJSONERROR);
+            game.sendResponse(Constants.MALFORMEDJSONERROR.withAdditionalInfo("jsonArray is null"));
             return false;
         }
 
@@ -62,8 +62,10 @@ public class InitialBuildPhase extends BuildPhase {
         ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
 
         if (streetCommands == null || villageCommands == null || cityCommands == null) {
+            game.sendResponse(Constants.MALFORMEDJSONERROR.withAdditionalInfo("streetcommands or villagecommands or citycommands is null"));
             return false;
         }
+
 
         if (streetCommands.size() != 1 || villageCommands.size() != 1 || !cityCommands.isEmpty()) {
             game.sendResponse(Constants.NOTAVILLAGEANDSTREETERROR);
@@ -76,8 +78,7 @@ public class InitialBuildPhase extends BuildPhase {
             streets.add(game.getBoard().getEdge((cmd.key)));
         }
 
-        return streetsAreValid(streetCommands)
-                && villagesAreValid(villageCommands, streets);
+        return streetsAreValid(streetCommands) && villagesAreValid(villageCommands, streets);
     }
 
     // in the initial building phase the streets don't need to be connected
