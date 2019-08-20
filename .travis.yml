@@ -1,6 +1,11 @@
 language: java
 sudo: false
 
+cache:
+  directories:
+  - .autoconf
+  - $HOME/.m2
+
 jdk:
   - openjdk10
 
