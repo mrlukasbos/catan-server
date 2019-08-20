@@ -11,7 +11,7 @@ class InitialBuildPhaseTest {
     private Interface iface = new Interface(10007);
     private Game game = new Game(iface);
     private InitialBuildPhase buildPhase = new InitialBuildPhase(game);
-    private  Player player = new Player(0, "tester");
+    private  Player player = new Player(game,0, "tester");
 
     @BeforeEach
     void beforeTest() {
@@ -122,8 +122,8 @@ class InitialBuildPhaseTest {
 
     @Test
     void itChangesPlayerTest() {
-        Player player2 = new Player(1, "tester2");
-        Player player3 = new Player(2, "tester3");
+        Player player2 = new Player(game,1, "tester2");
+        Player player3 = new Player(game,2, "tester3");
 
         game.addPlayer(player2);
         game.addPlayer(player3);

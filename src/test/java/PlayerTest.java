@@ -6,8 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PlayerTest {
-    Player player = new Player(0, "tester");
-
+    Player player = new Player(null,0, "tester");
 
     @Test
     void itAddsAndRemovesRecourcesTest() {
@@ -78,19 +77,15 @@ public class PlayerTest {
         assertTrue(player.canTradeWithBank());
     }
 
-
-
     @Test
     void getResourcesAsJsonStringTest() {
         player.addResources(Constants.STREET_COSTS);
         String jsonString =Player.getResourcesAsJSONString(player.getResources());
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, jsonString);
         assertNotNull(jsonArray);
-
         for (JsonElement element : jsonArray) {
             String typename = element.getAsJsonObject().get("type").getAsString();
             int amount = element.getAsJsonObject().get("value").getAsInt();
-
             if (typename.equals("wood") || typename.equals("stone")) {
                 assertEquals(amount, 1);
             } else {

@@ -8,12 +8,15 @@ class Player {
     private String name;
     private int id;
     private HashMap<Resource, Integer> resources = new HashMap<>();
+    private HashMap<DevelopmentCard, Integer> developmentCards = new HashMap<>();
     private String color;
     private Socket socket;
+    private Game game;
 
-    Player(int id, String name) {
+    Player(Game game, int id, String name) {
         this.id = id;
         this.name = name;
+        this.game = game;
         this.color = String.format("#%06x", new Random().nextInt(0xffffff + 1));
 
         resources.put(Resource.GRAIN, 0);
@@ -224,6 +227,19 @@ class Player {
     void pay(Structure structure) {
         removeResources(Constants.STRUCTURE_COSTS.get(structure));
     }
+
+    int getVisibleVictoryPoints() {
+        return game.getBoard().getStructuresFromPlayer(Structure.CITY, this).size() +
+                game.getBoard().getStructuresFromPlayer(Structure.SETTLEMENT, this).size();
+    }
+
+    int getAllVictoryPoints() {
+        return getVisibleVictoryPoints() + developmentCards.get(DevelopmentCard.VICTORY_POINT);
+    }
+
+
+
+
 }
 
 enum Resource {

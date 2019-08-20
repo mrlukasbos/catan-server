@@ -4,6 +4,7 @@ import java.util.Map;
 class Constants {
     static final int MINIMUM_AMOUNT_OF_PLAYERS = 1;
     static final int MINIMUM_CARDS_FOR_TRADE = 4;
+    static final int VICTORY_POINTS_TO_WIN = 10;
 
     // some helpers for the hexagon coordinate system
     static final int[][] AXIAL_DIRECTIONS_ODD = {

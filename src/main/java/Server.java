@@ -70,7 +70,7 @@ public class Server extends Thread {
         BufferedReader reader = new BufferedReader(new InputStreamReader(newConnection.getInputStream()));
         String line = reader.readLine();
 
-        Player newPlayer = new Player(connections.size(), line);
+        Player newPlayer = new Player(game, connections.size(), line);
         newPlayer.setSocket(newConnection);
         connections.add(newPlayer);
         print("Just connected to " + line + " on address: " + newConnection.getRemoteSocketAddress());

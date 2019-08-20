@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JsonValidatorTest {
-    Player player = new Player(0, "tester");
+    Player player = new Player(null,0, "tester");
     jsonValidator validator = new jsonValidator();
 
     @Test

@@ -7,7 +7,7 @@ public class TradePhaseTest {
     Interface iface = new Interface(10007);
     Game game = new Game(iface);
     TradePhase tradePhase = new TradePhase(game);
-    Player player = new Player(0, "tester");
+    Player player = new Player(game,0, "tester");
 
     @Test
     public void testTradingNothing() {

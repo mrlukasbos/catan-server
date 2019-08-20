@@ -232,6 +232,15 @@ class Game extends Thread {
         setCurrentPlayer(getPreviousPlayer());
     }
 
+    Player getWinner() {
+        for (Player player : players) {
+            if (player.getAllVictoryPoints() >= Constants.VICTORY_POINTS_TO_WIN) {
+                print("the winner is " + player.getName());
+                return player;
+            }
+        }
+        return null;
+    }
 
 
     // Getters and Setters

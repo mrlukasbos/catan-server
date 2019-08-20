@@ -10,8 +10,8 @@ class BuildPhaseTest {
     private Interface iface = new Interface(10007);
     private Game game = new Game(iface);
     private BuildPhase buildPhase = new BuildPhase(game);
-    private  Player player = new Player(0, "tester");
-    private  Player player2 = new Player(1, "tester1");
+    private  Player player = new Player(game,0, "tester");
+    private  Player player2 = new Player(game,1, "tester1");
 
     @BeforeEach
     void beforeTest() {
