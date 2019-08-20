@@ -217,7 +217,7 @@ class BuildPhase implements GamePhase {
         if (villages.contains(node)) {
             return true;
         }
-        game.sendResponse(Constants.CITYNOTBUILTONVILLAGEERROR.withAdditionalInfo(node.getKey()));
+        game.sendResponse(Constants.CITYNOTBUILTONPLAYERSVILLAGEERROR.withAdditionalInfo(node.getKey()));
         return false;
     }
 

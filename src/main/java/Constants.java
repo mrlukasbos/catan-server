@@ -79,7 +79,7 @@ class Constants {
 
     // Rule issues
     static final Response STRUCTURENOTCONNECTEDERROR = new Response(600, "StructureNotConnected", "The received structure is not connected.");
-    static final Response CITYNOTBUILTONVILLAGEERROR = new Response(601, "CityNotBuiltOnVillage", "The received city is not built on top of a village.");
+    static final Response CITYNOTBUILTONPLAYERSVILLAGEERROR = new Response(601, "CityNotBuiltOnVillage", "The received city is not built on top of a/your village.");
     static final Response STRUCTURETOOCLOSETOOTHERSTRUCTUREERROR = new Response(602, "StructureTooClose", "There is another structure too close to another structure.");
     static final Response STRUCTURENOTONLANDERROR = new Response(603, "StructureNotOnLand", "The given structure is not placed on land.");
     static final Response STRUCTUREALREADYEXISTSERROR = new Response(604, "StructureAlreadyExists", "There is already a structure on the given node.");

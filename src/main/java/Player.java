@@ -46,20 +46,22 @@ class Player {
 
     // blocking implementation of reading
     synchronized String listen() {
-        try {
-            InputStream inputStream = getSocket().getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        if (getSocket() != null) {
+            try {
+                InputStream inputStream = getSocket().getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-            // nonblocking implementation
-            // if (inputStream.available() != 0 && reader.ready()) {
-            //     return reader.readLine();
-            // }
+                // nonblocking implementation
+                // if (inputStream.available() != 0 && reader.ready()) {
+                //     return reader.readLine();
+                // }
 
-            // blocking implementation
-            return reader.readLine();
+                // blocking implementation
+                return reader.readLine();
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
@@ -94,6 +96,12 @@ class Player {
     void addResources(Resource resource, int amount) {
         if (resource != Resource.NONE) {
             resources.replace(resource, resources.get(resource) + amount);
+        }
+    }
+
+    void addResources(Map<Resource, Integer> newResources) {
+        for (Map.Entry<Resource, Integer> entry : newResources.entrySet()) {
+            addResources(entry.getKey(), entry.getValue());
         }
     }
 

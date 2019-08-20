@@ -18,6 +18,7 @@ public class TradePhaseTest {
 
     @Test
     public void testTradingWithSufficientResources() {
+        game.setCurrentPlayer(player);
         player.addResources(Resource.ORE, 4);
 
         String message = "[{ \"from\": \"ore\", \"to\": \"wood\" }]";

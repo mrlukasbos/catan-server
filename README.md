@@ -59,9 +59,15 @@ During the build phase there is a specific set of rules on what can be built and
 Trading:
 ```
  [{ "from": "ore", "to": "wood" }]
+  [{ "from": "ore", "to": "grain" }]
  [{ "from": "grain", "to": "stone" }]
   [{ "from": "grain", "to": "wood" }]
  [{ "from": "whool", "to": "grain" }]
+  [{ "from": "whool", "to": "wood" }]
+
+  [{ "from": "wood", "to": "stone" }]
+  [{ "from": "wood", "to": "whool" }]
+
  [{ "from": "ore", "to": "ore" }] // could be useful when wanting to avoid bandit
 
  [{ "from": "stone", "to": "wood" }, { "from": "grain", "to": "stone" }]
@@ -104,12 +110,15 @@ A single village, city or street
 ```
 
  [{ "structure": "village", "location": "([1,2],[2,1],[2,2])" }]
+  [{ "structure": "village", "location": "([4,3],[4,4],[5,3])" }]
+
  [{ "structure": "city", "location": "([1,2],[2,1],[2,2])" }]
   [{ "structure": "city", "location": "([3,3],[3,4],[4,3])" }]
 
  [{ "structure": "street", "location": "([2,2],[3,1])" }]
  [{ "structure": "street", "location": "([1,4],[2,3])" }]
   [{ "structure": "street", "location": "([4,3],[4,4])" }]
+  [{ "structure": "street", "location": "([3,3],[4,3])" }]
 
   [{ "structure": "street", "location": "([2,4],[2,5])" }]
 
