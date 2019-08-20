@@ -136,10 +136,8 @@ class Player {
 
     @java.lang.Override
     public java.lang.String toString() {
-
-        String resourcesString = getResourcesAsJSONString(resources);
-        String developmentCardsString = "[]";
-        // getDevelopmentCardsAsJSONString(developmentCards);
+        String resourcesString = Helpers.getJSONArrayFromHashMap(resources, "type", "value");
+        String developmentCardsString = Helpers.getJSONArrayFromHashMap(developmentCards, "type", "value");
 
         return "{" +
                 "\"model\": \"player\", " +
@@ -152,34 +150,6 @@ class Player {
 
                 "}" +
                 "}";
-    }
-
-    static String getDevelopmentCardsAsJSONString(HashMap<Resource, Integer> resources) {
-        String resourcesString = "[";
-        if (resources.size() == 0) {
-            resourcesString = "[]";
-        } else {
-            for (HashMap.Entry<Resource, Integer> entry : resources.entrySet()) {
-                resourcesString = resourcesString.concat("{\"type\":\"" + entry.getKey().toString() + "\", \"value\":" + entry.getValue()) + "},";
-            }
-            resourcesString = resourcesString.substring(0, resourcesString.length() - 1);
-            resourcesString = resourcesString.concat("]");
-        }
-        return resourcesString;
-    }
-
-    static String getResourcesAsJSONString(HashMap<Resource, Integer> resources) {
-        String resourcesString = "[";
-        if (resources.size() == 0) {
-            resourcesString = "[]";
-        } else {
-            for (HashMap.Entry<Resource, Integer> entry : resources.entrySet()) {
-                resourcesString = resourcesString.concat("{\"type\":\"" + entry.getKey().toString() + "\", \"value\":" + entry.getValue()) + "},";
-            }
-            resourcesString = resourcesString.substring(0, resourcesString.length() - 1);
-            resourcesString = resourcesString.concat("]");
-        }
-        return resourcesString;
     }
 
     private void print(String msg) {

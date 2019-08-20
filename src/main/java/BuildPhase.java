@@ -42,10 +42,13 @@ class BuildPhase implements GamePhase {
 
     // build the structures if the command is valid
     void buildStructures(Player currentPlayer, JsonArray jsonArray) {
+        ArrayList<Structure> builtStructures = new ArrayList<>();
+
         ArrayList<BuildCommand> developmentCardRequests = getCommandsFromInput(currentPlayer, jsonArray, Structure.DEVELOPMENT_CARD);
         for (int i = 0; i < developmentCardRequests.size(); i++) {
             payStructure(currentPlayer, Structure.DEVELOPMENT_CARD);
             currentPlayer.addDevelopmentCard();
+            builtStructures.add(Structure.DEVELOPMENT_CARD);
         }
 
         ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
@@ -57,7 +60,6 @@ class BuildPhase implements GamePhase {
         ArrayList<Structure> builtCities = buildStructures(currentPlayer, cityCommands);
 
         // for showing what we built in the events;
-        ArrayList<Structure> builtStructures = new ArrayList<>();
         builtStructures.addAll(builtStreets);
         builtStructures.addAll(builtVillages);
         builtStructures.addAll(builtCities);

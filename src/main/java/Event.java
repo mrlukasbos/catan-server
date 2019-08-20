@@ -38,7 +38,8 @@ class Event {
 
     @Override
     public String toString() {
-        String structureString = getStructureString();
+        String structureString = Helpers.toJSONArray(structures, ",");
+        String resourcesString = Helpers.getJSONArrayFromHashMap(resources, "type", "value");
 
         String playerString = "null";
         if (player != null) {
@@ -52,25 +53,10 @@ class Event {
                 "\"moveCount\": " + moveCount + ", " +
                 "\"message\": \"" + message + "\", " +
                 "\"player\": " + playerString + ", " +
-                "\"resources\": " + Player.getResourcesAsJSONString(resources) + ", " +
+                "\"resources\": " + resourcesString + ", " +
                 "\"structures\": " + structureString +
                 "}" +
                 '}';
-    }
-
-    private String getStructureString() {
-        String structureString = "[";
-
-        if (structures.size() == 0) {
-            structureString = "[]";
-        } else {
-            for (Structure structure : structures) {
-                structureString = structureString.concat("\"" + structure.toString() + "\",");
-            }
-            structureString = structureString.substring(0, structureString.length() - 1);
-            structureString = structureString.concat("]");
-        }
-        return structureString;
     }
 }
 

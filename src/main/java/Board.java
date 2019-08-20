@@ -357,35 +357,9 @@ class Board {
 
     @Override
     public String toString() {
-        String tilesString = "[";
-        for (Tile tile : tiles) {
-            tilesString = tilesString.concat(tile.toString() + ",");
-        }
-        tilesString = tilesString.substring(0, tilesString.length() - 1);
-        tilesString = tilesString.concat("]");
-
-        String edgeString = "[";
-        for (Edge edge : edges) {
-            edgeString = edgeString.concat(edge.toString() + ",");
-        }
-        edgeString = edgeString.substring(0, edgeString.length() - 1);
-        edgeString = edgeString.concat("]");
-
-        String nodeString = "[";
-        for (Node node : nodes) {
-            nodeString = nodeString.concat(node.toString() + ",");
-        }
-        nodeString = nodeString.substring(0, nodeString.length() - 1);
-        nodeString = nodeString.concat("]");
-
-        String developmentCardsString = "[";
-        for (DevelopmentCard developmentCard : developmentCards) {
-            developmentCardsString = developmentCardsString.concat("\"" + developmentCard.toString() + "\",");
-        }
-        developmentCardsString = developmentCardsString.substring(0, developmentCardsString.length() - 1);
-        developmentCardsString = developmentCardsString.concat("]");
-
-
+        String tilesString = Helpers.toJSONArray(tiles, ",");
+        String edgeString = Helpers.toJSONArray(edges, ",");
+        String nodeString = Helpers.toJSONArray(nodes, ",");
 
         return "{" +
                 "\"model\": \"board\", " +
@@ -393,7 +367,6 @@ class Board {
                 "\"tiles\": " + tilesString + ", " +
                 "\"edges\": " + edgeString + ", " +
                 "\"nodes\": " + nodeString + ", " +
-                "\"development_cards\": " + developmentCardsString + ", " +
                 "\"bandits\": [" + bandit.toString() + "]" +
                 "}" +
                 '}';
