@@ -47,14 +47,13 @@ class Board {
     private List<Node> nodes;
     private List<DevelopmentCard> developmentCards;
     private Bandit bandit;
-    private Game game;
+   // private Game game;
 
     private Map<String, Tile> tileMap;
     private Map<String, Edge> edgeMap;
     private Map<String, Node> nodeMap;
 
-    Board(Game game) {
-        this.game = game;
+    Board() {
         init();
     }
 
@@ -413,7 +412,6 @@ class Board {
                 "\"tiles\": " + tilesString + ", " +
                 "\"edges\": " + edgeString + ", " +
                 "\"nodes\": " + nodeString + ", " +
-                "\"lastDiceThrow\": " + game.getLastDiceThrow() + ", " +
                 "\"development_cards\": " + developmentCardsString + ", " +
                 "\"bandits\": [" + bandit.toString() + "]" +
                 "}" +
