@@ -145,7 +145,7 @@ class BuildPhase implements GamePhase {
         // validate if the streets are legal
         for (BuildCommand cmd : streetCommands) {
             Edge edge = game.getBoard().getEdge(cmd.key);
-            if (edgeIsFree(streetsToBuild, edge) && edgeIsOnTerrain(edge)) {
+            if (edgeIsFree(streetsToBuild, edge)) {
                 streetsToBuild.add(edge);
             } else {
                 return false;
@@ -167,16 +167,6 @@ class BuildPhase implements GamePhase {
             } else {
                 return false;
             }
-        }
-        return true;
-    }
-
-
-    private boolean edgeIsOnTerrain(Edge edge) {
-        // a street cannot be placed between two tiles of water
-        if (!edge.isOnTerrain()) {
-            game.sendResponse(game.getCurrentPlayer(), Constants.STRUCTURENOTONLANDERROR.withAdditionalInfo(edge.getKey()));
-            return false;
         }
         return true;
     }
