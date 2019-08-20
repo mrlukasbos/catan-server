@@ -104,10 +104,10 @@ class Game extends Thread {
                     "\"model\": \"game\", " +
                     "\"attributes\": {" +
                     "\"moveCount\": " + moveCount + ", " +
-                    "\"players\": " + getPlayerString() + ", " +
+                    "\"players\": " + Helpers.toJSONArray(players, false, ",") + ", " +
                     "\"status\": \"" + getGameStatus() + "\", " +
                     "\"board\": " + getBoard().toString() + ", " +
-                    "\"events\": " + getEventString() + ", " +
+                    "\"events\": " + Helpers.toJSONArray(events, false, ",") + ", " +
                     "\"lastDiceThrow\": " + getLastDiceThrow() + ", " +
                     "\"phase\": \"" + currentPhase.getPhaseType().toString() + "\"," +
                     "\"currentPlayer\": " + getCurrentPlayer().getId() +
@@ -117,43 +117,12 @@ class Game extends Thread {
             return "{" +
                     "\"model\": \"game\", " +
                     "\"attributes\": {" +
-                    "\"players\": " + getPlayerString() + ", " +
+                    "\"players\": " + Helpers.toJSONArray(players, false, ",") + ", " +
                     "\"status\": \"" + getGameStatus() + "\"" +
                     "}" +
                     '}';
         }
     }
-
-    // returns the players formatted in JSON
-    private String getPlayerString() {
-        String playersString = "[";
-        if (getPlayers().size() > 0) {
-            for (Player player : getPlayers()) {
-                playersString = playersString.concat(player.toString() + ",");
-            }
-            playersString = playersString.substring(0, playersString.length() - 1);
-            playersString = playersString.concat("]");
-        } else {
-            playersString = "[]";
-        }
-        return playersString;
-    }
-
-    // returns the events formatted in JSON
-    private String getEventString() {
-        String eventString = "[";
-        if (events.size() > 0) {
-            for (Event event : events) {
-                eventString = eventString.concat(event.toString() + ",");
-            }
-            eventString = eventString.substring(0, eventString.length() - 1);
-            eventString = eventString.concat("]");
-        } else {
-            eventString = "[]";
-        }
-        return eventString;
-    }
-
 
     private String getGameStatus() {
         if (getPlayers().size() < Constants.MINIMUM_AMOUNT_OF_PLAYERS) {

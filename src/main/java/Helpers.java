@@ -3,10 +3,14 @@ import java.util.List;
 
 public class Helpers {
 
-    static <T> String toJSONArray(List<T> list, String joint) {
+    static <T> String toJSONArray(List<T> list, boolean escape, String joint) {
         String output = "[";
         for (T obj : list) {
-            output = "\"" + output.concat(obj.toString() + "\"" + joint);
+            if (escape) {
+                output = "\"" + output.concat(obj.toString() + "\"" + joint);
+            } else {
+                output = output.concat(obj.toString() + joint);
+            }
         }
         output = output.substring(0, output.length() - 1);
         output = output.concat("]");

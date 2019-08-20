@@ -38,7 +38,7 @@ class Event {
 
     @Override
     public String toString() {
-        String structureString = Helpers.toJSONArray(structures, ",");
+        String structureString = Helpers.toJSONArray(structures, false,",");
         String resourcesString = Helpers.getJSONArrayFromHashMap(resources, "type", "value");
 
         String playerString = "null";
