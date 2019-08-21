@@ -104,10 +104,10 @@ class Game extends Thread {
                     "\"model\": \"game\", " +
                     "\"attributes\": {" +
                     "\"moveCount\": " + moveCount + ", " +
-                    "\"players\": " + Helpers.toJSONArray(players, false, ",") + ", " +
+                    "\"players\": " + Helpers.toJSONArray(players, false) + ", " +
                     "\"status\": \"" + getGameStatus() + "\", " +
                     "\"board\": " + getBoard().toString() + ", " +
-                    "\"events\": " + Helpers.toJSONArray(events, false, ",") + ", " +
+                    "\"events\": " + Helpers.toJSONArray(events, false) + ", " +
                     "\"lastDiceThrow\": " + getLastDiceThrow() + ", " +
                     "\"phase\": \"" + currentPhase.getPhaseType().toString() + "\"," +
                     "\"currentPlayer\": " + getCurrentPlayer().getId() +
@@ -117,7 +117,7 @@ class Game extends Thread {
             return "{" +
                     "\"model\": \"game\", " +
                     "\"attributes\": {" +
-                    "\"players\": " + Helpers.toJSONArray(players, false, ",") + ", " +
+                    "\"players\": " + Helpers.toJSONArray(players, false) + ", " +
                     "\"status\": \"" + getGameStatus() + "\"" +
                     "}" +
                     '}';

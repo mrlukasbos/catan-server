@@ -357,9 +357,9 @@ class Board {
 
     @Override
     public String toString() {
-        String tilesString = Helpers.toJSONArray(tiles, false,",");
-        String edgeString = Helpers.toJSONArray(edges, false,",");
-        String nodeString = Helpers.toJSONArray(nodes, false,",");
+        String tilesString = Helpers.toJSONArray(tiles, false);
+        String edgeString = Helpers.toJSONArray(edges, false);
+        String nodeString = Helpers.toJSONArray(nodes, false);
 
         return "{" +
                 "\"model\": \"board\", " +
