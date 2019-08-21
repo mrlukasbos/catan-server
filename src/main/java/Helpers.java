@@ -17,7 +17,7 @@ public class Helpers {
                 output = output.concat(obj.toString() + joint);
             }
         }
-        output = output.substring(0, output.length() - 1);
+        output = output.substring(0, output.length() - joint.length());
         output = output.concat("]");
         return output;
     }
