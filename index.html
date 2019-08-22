@@ -45,6 +45,11 @@
                                 </div>
                             </div>
                         </div>
+                        <div style="display:flex; padding-top: 12px; flex-direction: column ">
+                            <div v-for="developmentCard in player.attributes.development_cards" >
+                                {{developmentCard.type}}: {{developmentCard.value}}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -65,7 +70,8 @@
                 <span v-if="event.type=='GENERAL'" style="font-style: italic;" >
                         {{event.attributes.message}}
                     </span>
-                <span v-else-if="event.type=='BUIlD'">
+
+                <span v-if="event.type == 'BUILD'">
                        <span v-if="event.attributes.structures.length">
                         builds
                         <span v-for="structure in event.attributes.structures"> {{structure}} </span>

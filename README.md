@@ -66,9 +66,12 @@ Trading:
   [{ "from": "ore", "to": "grain" }]
  [{ "from": "grain", "to": "stone" }]
   [{ "from": "grain", "to": "wood" }]
- [{ "from": "whool", "to": "grain" }]
-  [{ "from": "whool", "to": "wood" }]
+ [{ "from": "wool", "to": "grain" }]
+  [{ "from": "wool", "to": "wood" }]
+  [{ "from": "wool", "to": "ore" }]
+
   [{ "from": "grain", "to": "whool" }]
+ [{ "from": "grain", "to": "ore" }]
 
   [{ "from": "wood", "to": "stone" }]
   [{ "from": "wood", "to": "whool" }]
