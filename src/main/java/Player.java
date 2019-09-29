@@ -34,14 +34,15 @@ class Player {
         return socket;
     }
 
-    synchronized void send(String str) {
+    synchronized void send(Response response) {
         if (getSocket() != null) {
 
             try {
                 DataOutputStream out = new DataOutputStream(getSocket().getOutputStream());
-                out.writeUTF(str);
+                out.writeUTF(response.toString());
 
             } catch (IOException e) {
+                System.exit(1);
                 e.printStackTrace();
             }
         }

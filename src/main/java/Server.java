@@ -20,7 +20,7 @@ public class Server extends Thread {
     Server(int port) {
         try {
             serverSocket = new ServerSocket(port);
-            serverSocket.setSoTimeout(100000);
+            serverSocket.setSoTimeout(1000000000);
             print("Players can connect to: " + InetAddress.getLocalHost() + ":" + serverSocket.getLocalPort() + "...");
         } catch (IOException e) {
             e.printStackTrace();
