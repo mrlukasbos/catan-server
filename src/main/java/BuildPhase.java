@@ -3,11 +3,11 @@ import java.util.ArrayList;
 
 class BuildPhase implements GamePhase {
     Game game;
-    String txt;
+    Response request;
 
     BuildPhase(Game game) {
         this.game = game;
-        txt = "Please build if you like. \n";
+        request = Constants.BUILD_REQUEST;
     }
 
     public Phase getPhaseType() {
@@ -277,7 +277,7 @@ class BuildPhase implements GamePhase {
 
     // keep running this function until we get valid output from the user
     private JsonArray getCommandFromUser(Player currentPlayer) {
-        currentPlayer.send(txt);
+        currentPlayer.send(request.toString());
         JsonArray jsonArray;
 
         String message = currentPlayer.listen();

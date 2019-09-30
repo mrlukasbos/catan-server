@@ -33,7 +33,7 @@ public class Response {
                 "\"isError\": " + (code != 0) + ", " +
                 "\"errorCode\": " + code + ", " +
                 "\"additionalInfo\": \"" + additionalInformation + "\", " +
-                "\"description\": " + description +
+                "\"description\": \"" + description + "\"" +
                 "}" +
                 '}';
     }

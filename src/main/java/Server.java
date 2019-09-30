@@ -79,6 +79,10 @@ public class Server extends Thread {
             game.addPlayer(newPlayer);
             iface.broadcast(game.toString());
         }
+
+        // hack to immediatly start for testing purposses
+        game.startGame();
+
     }
 
     ArrayList<Player> getConnections() {

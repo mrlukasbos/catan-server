@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class TradePhase implements GamePhase {
     Game game;
-    String txt = "Trade cards if you need to.";
+    Response request = Constants.TRADE_REQUEST;
 
     TradePhase(Game game) {
         this.game = game;
@@ -55,7 +55,7 @@ public class TradePhase implements GamePhase {
 
     // keep running this function until we get valid output from the user
     private JsonArray getValidCommandFromUser(Player currentPlayer) {
-        currentPlayer.send(txt);
+        currentPlayer.send(request.toString());
         boolean tradeSucceeded = false;
         JsonArray jsonArray = null;
 
@@ -67,7 +67,7 @@ public class TradePhase implements GamePhase {
             tradeSucceeded = jsonArray != null && tradeIsValid(currentPlayer, jsonArray);
 
             if (!tradeSucceeded) {
-                currentPlayer.send("try again! \n");
+                currentPlayer.send(request.toString());
             }
         }
         return jsonArray;

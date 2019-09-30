@@ -78,6 +78,11 @@ class Constants {
     // Acknowledgement
     static final Response OK = new Response(0, "Ok", "The received message is processed succesfully.");
 
+    // Requests
+    static final Response TRADE_REQUEST = new Response(100, "TradeRequest", "Please trade something if you like");
+    static final Response BUILD_REQUEST = new Response(101, "BuildRequest", "Please build something if you like");
+    static final Response INITIAL_BUILD_REQUEST = new Response(102, "InitialBuildRequest", "Build a street and a village");
+
     // Parsing issues
     static final Response MALFORMEDJSONERROR = new Response(500, "MalformedJSON", "The received JSON message is invalid.");
     static final Response NODEDOESNOTEXISTERROR = new Response(501, "NodeDoesNotExist", "The received node does not exist.");

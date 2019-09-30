@@ -36,11 +36,11 @@ class Player {
 
     synchronized void send(String str) {
         if (getSocket() != null) {
-
             try {
-                DataOutputStream out = new DataOutputStream(getSocket().getOutputStream());
-                out.writeUTF(str);
-
+                str += "\r\n";
+                BufferedOutputStream bos = new BufferedOutputStream(getSocket().getOutputStream());
+                bos.write(str.getBytes("UTF-8"));
+                bos.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -55,7 +55,7 @@ class Player {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 // nonblocking implementation
-                // if (inputStream.available() != 0 && reader.ready()) {
+                // if (inputStream.available() !
                 //     return reader.readLine();
                 // }
 
