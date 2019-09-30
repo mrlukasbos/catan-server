@@ -56,7 +56,7 @@ class Game extends Thread {
     // Update all players with the most recent data
     // Should be called after every state, so after every dicethrow, succeeded buildcommand, etc.
     void signalGameChange() {
-        getPlayers().forEach((p) -> p.send(Constants.BOARD.withData(board.toString())));
+        getPlayers().forEach((p) -> p.send(getBoard().toString()));
         iface.broadcast(toString());
     }
 
@@ -150,7 +150,7 @@ class Game extends Thread {
     // Respond to user input for given player, can be an error or an acknowledgement
     void sendResponse(Player player, Response response) {
         print(player.getName() + "(" + player.getId() + "): "+ response.toString());
-        player.send(response);
+        player.send(response.toString());
         lastResponse = response;
     }
 

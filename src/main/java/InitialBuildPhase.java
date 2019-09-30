@@ -7,7 +7,7 @@ public class InitialBuildPhase extends BuildPhase {
 
     InitialBuildPhase(Game game) {
         super(game);
-        request = Constants.INITIAL_BUILD_REQUEST;
+        txt = "Please build a settlement and a street. \n";
     }
 
     @Override

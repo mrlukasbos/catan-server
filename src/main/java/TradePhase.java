@@ -55,7 +55,7 @@ public class TradePhase implements GamePhase {
 
     // keep running this function until we get valid output from the user
     private JsonArray getValidCommandFromUser(Player currentPlayer) {
-        currentPlayer.send(Constants.TRADE_REQUEST);
+        currentPlayer.send(txt);
         boolean tradeSucceeded = false;
         JsonArray jsonArray = null;
 
@@ -67,7 +67,7 @@ public class TradePhase implements GamePhase {
             tradeSucceeded = jsonArray != null && tradeIsValid(currentPlayer, jsonArray);
 
             if (!tradeSucceeded) {
-                currentPlayer.send(Constants.TRADE_REQUEST.withAdditionalInfo(" your previous attempt was wrong!"));
+                currentPlayer.send("try again! \n");
             }
         }
         return jsonArray;

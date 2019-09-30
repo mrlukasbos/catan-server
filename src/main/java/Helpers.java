@@ -22,10 +22,6 @@ public class Helpers {
         return output;
     }
 
-    static String toJSONMessage(String message) {
-        return "{ \"messsage\": \"" + message + "\"}";
-    }
-
     // TODO needs a test
     static <T> String getJSONArrayFromHashMap(HashMap<T, Integer> map, String keyName, String valueName) {
         String output = "[";

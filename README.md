@@ -74,7 +74,7 @@ Trading:
  [{ "from": "grain", "to": "ore" }]
 
   [{ "from": "wood", "to": "stone" }]
-  [{ "from": "wood", "to": "wool" }]
+  [{ "from": "wood", "to": "whool" }]
 
  [{ "from": "ore", "to": "ore" }] // could be useful when wanting to avoid bandit
 

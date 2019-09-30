@@ -3,11 +3,11 @@ import java.util.ArrayList;
 
 class BuildPhase implements GamePhase {
     Game game;
-    Response request;
+    String txt;
 
     BuildPhase(Game game) {
         this.game = game;
-        request = Constants.BUILD_REQUEST;
+        txt = "Please build if you like. \n";
     }
 
     public Phase getPhaseType() {
@@ -277,20 +277,18 @@ class BuildPhase implements GamePhase {
 
     // keep running this function until we get valid output from the user
     private JsonArray getCommandFromUser(Player currentPlayer) {
-        currentPlayer.send(request);
+        currentPlayer.send(txt);
         JsonArray jsonArray;
 
         String message = currentPlayer.listen();
-        if (message != null) {
-            game.print("Received message from player " + currentPlayer.getName() + ": " + message);
-            jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);
-            if (jsonArray == null) {
-                game.sendResponse(currentPlayer, Constants.MALFORMEDJSONERROR.withAdditionalInfo(message));
-                return null;
-            }
-            return jsonArray;
+        game.print("Received message from player " + currentPlayer.getName() + ": " + message);
+        jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);
+        if (jsonArray == null) {
+            game.sendResponse(currentPlayer, Constants.MALFORMEDJSONERROR.withAdditionalInfo(message));
+            return null;
         }
-        return null;
+
+        return jsonArray;
     }
 
     boolean streetsAreConnected(ArrayList<BuildCommand> streetCommands) {

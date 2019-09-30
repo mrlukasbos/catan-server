@@ -1,32 +1,24 @@
 public class Response {
     private int code = 0;
-    private String jsonData;
-    private String additionalInfo;
+    private String title;
+    private String description;
+    private String additionalInformation;
 
-    Response(int code) {
+    Response(int code, String title, String description) {
         this.code = code;
-        this.jsonData = "{}";
-        this.additionalInfo = "";
+        this.title = title;
+        this.description = description;
     }
 
-    Response(int code, String jsonData) {
+    private Response(int code, String title, String description, String additionalInformation) {
         this.code = code;
-        this.jsonData = jsonData;
-        this.additionalInfo = "";
+        this.title = title;
+        this.description = description;
+        this.additionalInformation = additionalInformation;
     }
 
-    private Response(int code, String jsonData, String additionalInfo) {
-        this.code = code;
-        this.jsonData = jsonData;
-        this.additionalInfo = additionalInfo;
-    }
-
-    Response withData(String data) {
-        return new Response(this.code, data, this.additionalInfo);
-    }
-
-    Response withAdditionalInfo(String info) {
-        return new Response(code, jsonData, info);
+    Response withAdditionalInfo(String additionalInformation) {
+        return new Response(this.code, this.title, this.description, additionalInformation);
     }
 
     public int getCode() {
@@ -35,10 +27,14 @@ public class Response {
 
     @Override
     public String toString() {
-        if (jsonData.isEmpty()) System.out.println("[response] Warning: no data is sent with the response!");
         return  "{" +
-                "\"code\": " + code + ", " +
-                "\"data\": " + jsonData +
-                "}\r\n";
+                "\"model\": \"response\", " +
+                "\"attributes\": {" +
+                "\"isError\": " + (code != 0) + ", " +
+                "\"errorCode\": " + code + ", " +
+                "\"additionalInfo\": \"" + additionalInformation + "\", " +
+                "\"description\": " + description +
+                "}" +
+                '}';
     }
 }
