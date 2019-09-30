@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -42,6 +43,7 @@ class Player {
                 bos.write(str.getBytes("UTF-8"));
                 bos.flush();
             } catch (IOException e) {
+               // System.exit(1);
                 e.printStackTrace();
             }
         }
@@ -51,16 +53,9 @@ class Player {
     synchronized String listen() {
         if (getSocket() != null) {
             try {
-                InputStream inputStream = getSocket().getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                // nonblocking implementation
-                // if (inputStream.available() !
-                //     return reader.readLine();
-                // }
-
-                // blocking implementation
-                return reader.readLine();
+                BufferedInputStream bf = new BufferedInputStream(getSocket().getInputStream());
+                BufferedReader r = new BufferedReader(new InputStreamReader(bf, StandardCharsets.UTF_8));
+                return r.readLine();
 
             } catch (IOException e) {
                 e.printStackTrace();

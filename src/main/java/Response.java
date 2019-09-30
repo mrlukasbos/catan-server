@@ -30,9 +30,10 @@ public class Response {
         return  "{" +
                 "\"model\": \"response\", " +
                 "\"attributes\": {" +
-                "\"isError\": " + (code != 0) + ", " +
-                "\"errorCode\": " + code + ", " +
-                "\"additionalInfo\": \"" + additionalInformation + "\", " +
+                "\"title\": \"" + title + "\", " +
+                "\"is_error\": " + (code != 0) + ", " +
+                "\"code\": " + code + ", " +
+                "\"additional_info\": \"" + additionalInformation + "\", " +
                 "\"description\": \"" + description + "\"" +
                 "}" +
                 '}';
