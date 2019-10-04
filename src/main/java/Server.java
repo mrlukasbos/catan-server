@@ -20,7 +20,7 @@ public class Server extends Thread {
     Server(int port) {
         try {
             serverSocket = new ServerSocket(port);
-            serverSocket.setSoTimeout(100000);
+            serverSocket.setSoTimeout(0);
             print("Players can connect to: " + InetAddress.getLocalHost() + ":" + serverSocket.getLocalPort() + "...");
         } catch (IOException e) {
             e.printStackTrace();
@@ -70,7 +70,7 @@ public class Server extends Thread {
         BufferedReader reader = new BufferedReader(new InputStreamReader(newConnection.getInputStream()));
         String line = reader.readLine();
 
-        Player newPlayer = new Player(game, connections.size(), line);
+        Player newPlayer = new Player(game, game.getPlayers().size(), line);
         newPlayer.setSocket(newConnection);
         connections.add(newPlayer);
         print("Just connected to " + line + " on address: " + newConnection.getRemoteSocketAddress());

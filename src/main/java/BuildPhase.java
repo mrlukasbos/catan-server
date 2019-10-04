@@ -30,8 +30,16 @@ class BuildPhase implements GamePhase {
         Player currentPlayer = game.getCurrentPlayer();
 
         JsonArray jsonArray;
+        int amountOfFailures = 0;
+
         do {
             jsonArray = getCommandFromUser(currentPlayer);
+
+            if (amountOfFailures > 10) {
+                game.sendResponse(currentPlayer, Constants.TOO_MUCH_FAILURES.withAdditionalInfo("You failed to build"));
+                return;
+            }
+            amountOfFailures++;
         } while (jsonArray == null || !commandIsValid(currentPlayer, jsonArray));
 
 

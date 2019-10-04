@@ -79,9 +79,9 @@ class Constants {
     static final Response OK = new Response(0, "Ok", "The received message is processed succesfully.");
 
     // Requests
-    static final Response TRADE_REQUEST = new Response(100, "TradeRequest", "Please trade something if you like");
-    static final Response BUILD_REQUEST = new Response(101, "BuildRequest", "Please build something if you like");
-    static final Response INITIAL_BUILD_REQUEST = new Response(102, "InitialBuildRequest", "Build a street and a village");
+    static final Response TRADE_REQUEST = new Response(100, "TradeRequest", "Please trade something if you like.");
+    static final Response BUILD_REQUEST = new Response(101, "BuildRequest", "Please build something if you like.");
+    static final Response INITIAL_BUILD_REQUEST = new Response(102, "InitialBuildRequest", "Build a street and a village.");
 
     // Parsing issues
     static final Response MALFORMEDJSONERROR = new Response(500, "MalformedJSON", "The received JSON message is invalid.");
@@ -89,7 +89,9 @@ class Constants {
     static final Response EDGEDOESNOTEXISTERROR = new Response(502, "EdgeDoesNotExist", "The received edge does not exist.");
     static final Response INVALIDSTRUCTUREERROR = new Response(503, "InvalidStructure", "The received structure is invalid.");
 
-    static final Response INVALID_TRADE_ERROR = new Response(504, "InvalidTrade", "An invalid resource was given to the trade command");
+    static final Response INVALID_TRADE_ERROR = new Response(504, "InvalidTrade", "An invalid resource was given to the trade command.");
+
+    static final Response TOO_MUCH_FAILURES = new Response(505, "TooMuchFailures", "You failed to often so your turn is skipped.");
 
 
     // Rule issues

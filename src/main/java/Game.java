@@ -5,23 +5,24 @@ All game mechanics
 import java.util.ArrayList;
 
 class Game extends Thread {
-    private int lastDiceThrow = 0;
-    private Board board = new Board();
-    private ArrayList<Player> players = new ArrayList<Player>();
-    private Player currentPlayer;
     private boolean running = false;
+
+    private int lastDiceThrow;
+    private Board board;
+    private ArrayList<Player> players = new ArrayList<>();
+    private Player currentPlayer;
     private Interface iface;
-    private int moveCount = 0;
-    private ArrayList<Event> events = new ArrayList<>();
-    private Response lastResponse = null;
+    private int moveCount;
+    private ArrayList<Event> events;
+    private Response lastResponse;
 
     // All gamePhases
-    private DiceThrowPhase diceThrowPhase = new DiceThrowPhase(this);
-    private SetupPhase setupPhase = new SetupPhase(this);
-    private InitialBuildPhase initialBuildPhase = new InitialBuildPhase(this);
-    private BuildPhase normalBuildPhase = new BuildPhase(this);
-    private TradePhase tradePhase = new TradePhase(this);
-    private GamePhase currentPhase = new SetupPhase(this);
+    private DiceThrowPhase diceThrowPhase;
+    private SetupPhase setupPhase;
+    private InitialBuildPhase initialBuildPhase;
+    private BuildPhase normalBuildPhase;
+    private TradePhase tradePhase;
+    private GamePhase currentPhase;
 
     Game(Interface iface) {
         this.iface = iface;
@@ -32,12 +33,25 @@ class Game extends Thread {
         init();
         print("Starting game");
         addEvent(new Event(this, EventType.GENERAL).withGeneralMessage("Starting the game"));
-        start();
+
+        if (!isAlive()) start();
     }
 
     void init() {
-        this.board = new Board();
         this.running = true;
+
+        this.board = new Board();
+        lastDiceThrow = 0;
+        moveCount = 0;
+        events = new ArrayList<>();
+        lastResponse = null;
+
+        diceThrowPhase = new DiceThrowPhase(this);
+        setupPhase = new SetupPhase(this);
+        initialBuildPhase = new InitialBuildPhase(this);
+        normalBuildPhase = new BuildPhase(this);
+        tradePhase = new TradePhase(this);
+        currentPhase = new SetupPhase(this);
     }
 
     // This function gets called after start() and runs the whole game
@@ -49,6 +63,12 @@ class Game extends Thread {
                 Phase nextPhase = currentPhase.execute();
                 print("Going to phase: " + nextPhase.toString());
                 currentPhase = getGamePhase(nextPhase);
+            } else {
+               try {
+                   Thread.sleep(200);
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
             }
         }
     }
@@ -63,17 +83,19 @@ class Game extends Thread {
 
 
     // Stop the game and reset all values such that we can eventually restart it
-    void quit() {
-        this.board = null;
-        this.players = null;
+    synchronized void quit() {
+        this.board = new Board();;
+        this.players = new ArrayList<>();
         this.running = false;
         print("Stopping game");
-
-        try {
-            join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//
+//        try {
+//            join();
+//            print("Stopped game");
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     // Convert PhaseType to GamePhase

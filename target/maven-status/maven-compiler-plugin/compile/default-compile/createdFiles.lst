@@ -1,15 +1,13 @@
 Board.class
 DevelopmentCard.class
-Player$1.class
 Interface.class
 Type.class
+Helpers.class
 Board$3.class
-Event$1.class
 Node.class
 jsonValidator.class
 Main.class
 Response.class
-Tile$1.class
 Board$4.class
 InitialBuildPhase.class
 Orientation.class
@@ -17,7 +15,6 @@ Board$1.class
 Bandit.class
 TradePhase.class
 Constants.class
-Node$1.class
 Player.class
 BuildCommand.class
 Board$1sortByY.class

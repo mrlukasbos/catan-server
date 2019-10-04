@@ -66,9 +66,9 @@ class Tile implements Comparable<Tile> {
     public java.lang.String toString() {
         return "{" +
                 "\"model\": \"tile\", " +
-                "\"key\": \"" + getKey() + "\", " +
                 "\"attributes\": {" +
-                "\"type\": \"" + type.toString() + "\", " +
+                "\"key\": \"" + getKey() + "\", " +
+                "\"resource_type\": \"" + type.toString() + "\", " +
                 "\"number\": " + number + ", " +
                 "\"orientation\": \"" + orientation.toString() + "\", " +
                 "\"x\": " + x + ", " +

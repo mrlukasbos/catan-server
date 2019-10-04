@@ -59,8 +59,8 @@ public class Edge {
         }
         return "{" +
                 "\"model\": \"edge\", " +
-                "\"key\": \"" + getKey() + "\", " +
                 "\"attributes\": {" +
+                "\"key\": \"" + getKey() + "\", " +
                 playerString +
                 "\"road\": " + road +
                 "}" +

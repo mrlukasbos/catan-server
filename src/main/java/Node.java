@@ -75,8 +75,8 @@ public class Node {
         }
         return "{" +
                 "\"model\": \"node\", " +
-                "\"key\": \"" + getKey() + "\", " +
                 "\"attributes\": {" +
+                "\"key\": \"" + getKey() + "\", " +
                 "\"structure\": \"" + structure.toString() + "\"," +
                 playerString +
                 "\"t_key\": \"" + t.getKey() + "\"," +

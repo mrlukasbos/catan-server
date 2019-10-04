@@ -43,8 +43,9 @@ class Player {
                 bos.write(str.getBytes("UTF-8"));
                 bos.flush();
             } catch (IOException e) {
-               // System.exit(1);
-                e.printStackTrace();
+                // we just quit the game whenever something goes wrong so we can reconnect
+                game.quit();
+                // e.printStackTrace();
             }
         }
     }
@@ -136,8 +137,8 @@ class Player {
 
         return "{" +
                 "\"model\": \"player\", " +
-                "\"id\": " + getId() + ", " +
                 "\"attributes\": {" +
+                "\"id\": " + getId() + ", " +
                 "\"color\": \"" + getColor() + "\", " +
                 "\"name\": \"" + getName() + "\", " +
                 "\"resources\": " + resourcesString + ", " +
