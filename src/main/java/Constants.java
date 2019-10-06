@@ -77,6 +77,7 @@ class Constants {
 
     // Acknowledgement
     static final Response OK = new Response(0, "Ok", "The received message is processed succesfully.");
+    static final Response ID_ACK  = new Response(1, "Id_Ack", "Your id is in the given additional info");
 
     // Requests
     static final Response TRADE_REQUEST = new Response(100, "TradeRequest", "Please trade something if you like.");

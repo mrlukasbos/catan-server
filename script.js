@@ -33,7 +33,7 @@ svg.append("g")
         return path(topojson.feature(topology, d));
     })
     .attr("class", function (d) {
-        return d.tile.attributes.type;
+        return d.tile.attributes.resource_type;
     });
 
 svg.append("g")
@@ -65,7 +65,7 @@ svg.append("g")
         return path.centroid(topojson.feature(topology, d))[1];
     })
     .text(function (d) {
-        return d.tile.key;
+        return d.tile.attributes.key;
     })
     .attr("text-anchor", "middle");
 
@@ -81,7 +81,7 @@ svg.append("g")
         return path.centroid(topojson.feature(topology, d))[1] + 15;
     })
     .text(function (d) {
-        var str = d.tile.attributes.type.toLowerCase();
+        var str = d.tile.attributes.resource_type.toLowerCase();
         return str;
     })
     .attr("text-anchor", "middle");
@@ -103,12 +103,12 @@ for (var i = 0; i < players.length; i++) {
 
     function redraw(border) {
         border.attr("d", path(topojson.mesh(topology, topology.objects.hexagons, function (a, b) {
-            var edge1 = getEdge(a.tile.key, b.tile.key);
-            var edge2 = getEdge(b.tile.key, a.tile.key);
+            var edge1 = getEdge(a.tile.attributes.key, b.tile.attributes.key);
+            var edge2 = getEdge(b.tile.attributes.key, a.tile.attributes.key);
 
-            if (edge1 && edge1.attributes.player == player.id) {
+            if (edge1 && edge1.attributes.player == player.attributes.id) {
                 return edge1.attributes.road;
-            } else if (edge2 && edge2.attributes.player == player.id) {
+            } else if (edge2 && edge2.attributes.player == player.attributes.id) {
                 return edge2.attributes.road;
             }
             return false;
@@ -119,24 +119,26 @@ for (var i = 0; i < players.length; i++) {
 svg.append("g")
     .attr("class", "nodes")
     .selectAll("path")
-    .data(nodes)
+    .data(nodes.map(function(n) {
+        return n.attributes;
+    }))
     .enter().append("path")
     .attr("transform", function (d) {
         var coordinate = path.centroid(topojson.merge(topology, [
-            getHexByKey(d.attributes.t_key),
-            getHexByKey(d.attributes.l_key),
-            getHexByKey(d.attributes.r_key)
+            getHexByKey(d.t_key),
+            getHexByKey(d.l_key),
+            getHexByKey(d.r_key)
         ]));
         return "translate(" + coordinate[0] + "," + coordinate[1] + ")";
     })
     .attr("d", function (d) {
-        if (d.attributes.structure == "VILLAGE") {
+        if (d.structure == "VILLAGE") {
             return "M0 -10 L10 -2 L10 10 L-10 10 L-10 -2 L0 -10 Z"
-        } else if (d.attributes.structure == "CITY") {
+        } else if (d.structure == "CITY") {
             return "M-12 -2 L1 -2 L1 -10 L6 -12 L11 -10 L11 12 L-12 12 L-12 -2 Z"
         }
     }).attr('fill', function (d) {
-        return d.attributes.player_color;
+        return d.player_color;
     }).attr('stroke', '#000000');
 
 
@@ -196,7 +198,7 @@ function getEdge(a, b) {
 }
 
 function matchKey(item) {
-    return item.key == this;
+    return item.attributes.key == this;
 }
 
 function getHexByKey(key) {
@@ -204,7 +206,7 @@ function getHexByKey(key) {
 }
 
 function matchTile(item) {
-    return item.tile.key == this;
+    return item.tile.attributes.key == this;
 }
 
 function hexProjection(radius) {
@@ -276,12 +278,12 @@ var app = new Vue({
                 json = JSON.parse(message);
             
                 this.json = json;
-                this.lastDiceThrow = json.attributes.lastDiceThrow;
+                this.lastDiceThrow = json.attributes.last_dice_throw;
                 this.players = json.attributes.players;
                 this.status = json.attributes.status;
                 this.currentPlayerId = json.attributes.currentPlayer;
                 this.events = json.attributes.events.reverse();
-                this.moveCount = json.attributes.moveCount;
+                this.moveCount = json.attributes.move_count;
 
                 if (json.attributes.board) {
                 draw();

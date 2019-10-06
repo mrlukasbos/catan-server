@@ -40,18 +40,18 @@ class Event {
         String structureString = Helpers.toJSONArray(structures, true);
         String resourcesString = Helpers.getJSONArrayFromHashMap(resources, "type", "value");
 
-        String playerString = "null";
+        String playerString = "";
         if (player != null) {
-            playerString = player.toString();
+            playerString = "\"player\": " + player.getId() + ", ";
         }
 
         return "{" +
                 "\"model\": \"event\", " +
-                "\"type\": \"" + type.toString() + "\", " +
                 "\"attributes\": {" +
-                "\"moveCount\": " + moveCount + ", " +
+                "\"event_type\": \"" + type.toString() + "\", " +
+                "\"move_count\": " + moveCount + ", " +
                 "\"message\": \"" + message + "\", " +
-                "\"player\": " + playerString + ", " +
+                playerString +
                 "\"resources\": " + resourcesString + ", " +
                 "\"structures\": " + structureString +
                 "}" +

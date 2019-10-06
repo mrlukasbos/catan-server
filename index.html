@@ -31,8 +31,8 @@
                     <div style="background: white;  margin-bottom: 12px; border-radius: 2px;  padding:12px; ">
                         <div style="display:flex; align-items: center; padding-bottom: 12px; border-bottom: 1px solid whitesmoke;">
                             <span style="margin: 4px 4px; flex: 3; font-weight: 100 "
-                                  :style="{ 'color': player.attributes.color }"> {{player.attributes.name}} <small>({{player.id}})</small></span>
-                            <div v-if="player.id == currentPlayerId" style="display: flex; align-items: center;">
+                                  :style="{ 'color': player.attributes.color }"> {{player.attributes.name}} <small>({{player.attributes.id}})</small></span>
+                            <div v-if="player.attributes.id == currentPlayerId" style="display: flex; align-items: center;">
                                 <div style="width: 6px; height: 6px; border-radius: 50%; background-color: steelblue"></div>
                             </div>
                         </div>
@@ -67,11 +67,11 @@
                      {{event.attributes.player.attributes.name}}
                     </span>
 
-                <span v-if="event.type=='GENERAL'" style="font-style: italic;" >
+                <span v-if="event.attributes.event_type=='GENERAL'" style="font-style: italic;" >
                         {{event.attributes.message}}
                     </span>
 
-                <span v-if="event.type == 'BUILD'">
+                <span v-if="event.event_type == 'BUILD'">
                        <span v-if="event.attributes.structures.length">
                         builds
                         <span v-for="structure in event.attributes.structures"> {{structure}} </span>
@@ -83,7 +83,7 @@
 
 
                     </span>
-                <span v-else-if="event.type == 'GET_RESOURCES'" style="font-style: italic;" >
+                <span v-else-if="event.attributes.event_type == 'GET_RESOURCES'" style="font-style: italic;" >
                         <span v-if="event.attributes.resources.length" >
                             receives
                             <span v-for="resource in event.attributes.resources">
@@ -96,7 +96,7 @@
                         </span>
                     </span>
 
-                <span v-else-if="event.type == 'TRADE'">
+                <span v-else-if="event.attributes.event_type == 'TRADE'">
                         <span v-if="event.attributes.resources.length">
                             trades
                             <span v-for="resource in event.attributes.resources">

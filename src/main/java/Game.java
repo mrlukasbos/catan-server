@@ -77,7 +77,7 @@ class Game extends Thread {
     // Should be called after every state, so after every dicethrow, succeeded buildcommand, etc.
     void signalGameChange() {
         System.out.println("Sending board info to players");
-        getPlayers().forEach((p) -> p.send(getBoard().toString()));
+        getPlayers().forEach((p) -> p.send(toString()));
         iface.broadcast(toString());
     }
 
@@ -126,7 +126,7 @@ class Game extends Thread {
             return "{" +
                     "\"model\": \"game\", " +
                     "\"attributes\": {" +
-                    "\"moveCount\": " + moveCount + ", " +
+                    "\"move_count\": " + moveCount + ", " +
                     "\"players\": " + Helpers.toJSONArray(players, false) + ", " +
                     "\"status\": \"" + getGameStatus() + "\", " +
                     "\"board\": " + getBoard().toString() + ", " +
