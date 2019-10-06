@@ -24,4 +24,4 @@ out/*
 hs_err_pid*
 
 # Intelij files
-.idea/workspace.xml
+.idea/*

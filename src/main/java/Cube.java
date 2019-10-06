@@ -1,6 +1,6 @@
 public class Cube {
 
-    int x, y, z;
+    private int x, y, z;
     Cube(Tile tile) {
         x = tile.getX() - (tile.getY() + (Math.abs(tile.getY())%2))/2;
         z = tile.getY();
