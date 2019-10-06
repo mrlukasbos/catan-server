@@ -13,7 +13,7 @@ class Game extends Thread {
     private Player currentPlayer;
     private Interface iface;
     private int moveCount;
-    private ArrayList<Event> events;
+    private ArrayList<Event> events = new ArrayList<>();
     private Response lastResponse;
 
     // All gamePhases
