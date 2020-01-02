@@ -52,7 +52,7 @@ public class TradePhaseTest {
         String message = "[{ \"from\": \"ore\", \"to\": \"stone\" }, { \"from\": \"grain\", \"to\": \"ore\" }]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
         assertFalse(tradePhase.tradeIsValid(player, jsonArray));
-        assertEquals(game.getLastResponse().getCode(), Constants.NOTENOUGHRESOURCESERROR.getCode());
+        assertEquals(game.getLastResponse().getCode(), Constants.INSUFFICIENT_RESOURCES_ERROR.getCode());
     }
 
     @Test
@@ -63,7 +63,7 @@ public class TradePhaseTest {
         String message = "[{ \"from\": \"ore\", \"to\": \"wood\" }]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
         assertFalse(tradePhase.tradeIsValid(player, jsonArray));
-        assertEquals(game.getLastResponse().getCode(), Constants.NOTENOUGHRESOURCESERROR.getCode());
+        assertEquals(game.getLastResponse().getCode(), Constants.INSUFFICIENT_RESOURCES_ERROR.getCode());
     }
 
     @Test
@@ -74,7 +74,7 @@ public class TradePhaseTest {
         String message = "[{ \"from\": \"grain\", \"to\": \"wood\" }, { \"from\": \"grain\", \"to\": \"ore\" }]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
         assertFalse(tradePhase.tradeIsValid(player, jsonArray));
-        assertEquals(game.getLastResponse().getCode(), Constants.NOTENOUGHRESOURCESERROR.getCode());
+        assertEquals(game.getLastResponse().getCode(), Constants.INSUFFICIENT_RESOURCES_ERROR.getCode());
     }
 
     @Test

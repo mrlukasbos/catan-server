@@ -63,7 +63,7 @@ public class TradePhase implements GamePhase {
             String message = currentPlayer.listen();
             game.print("Received message from player " + currentPlayer.getName() + ": " + message);
             jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);
-            if (jsonArray == null) game.sendResponse(currentPlayer, Constants.MALFORMEDJSONERROR.withAdditionalInfo(message));
+            if (jsonArray == null) game.sendResponse(currentPlayer, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
             tradeSucceeded = jsonArray != null && tradeIsValid(currentPlayer, jsonArray);
 
             if (!tradeSucceeded) {
@@ -107,7 +107,7 @@ public class TradePhase implements GamePhase {
         for (Map.Entry<Resource, Integer> entry : resourcesNeeded.entrySet()) {
             int playerResourceCount = player.countResources(entry.getKey());
             if (playerResourceCount < entry.getValue()) {
-                game.sendResponse(Constants.NOTENOUGHRESOURCESERROR.withAdditionalInfo(
+                game.sendResponse(Constants.INSUFFICIENT_RESOURCES_ERROR.withAdditionalInfo(
                                 "required " + entry.getValue() +
                                 " " + entry.getKey().toString() +
                                 " while you have " + playerResourceCount));

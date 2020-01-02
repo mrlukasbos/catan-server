@@ -53,7 +53,7 @@ public class InitialBuildPhase extends BuildPhase {
     @Override
     boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
         if (jsonArray == null) {
-            game.sendResponse(Constants.MALFORMEDJSONERROR.withAdditionalInfo("jsonArray is null"));
+            game.sendResponse(Constants.MALFORMED_JSON_ERROR.withAdditionalInfo("jsonArray is null"));
             return false;
         }
 
@@ -65,7 +65,7 @@ public class InitialBuildPhase extends BuildPhase {
 
 
         if (streetCommands.size() != 1 || villageCommands.size() != 1 || !cityCommands.isEmpty()) {
-            game.sendResponse(Constants.NOTAVILLAGEANDSTREETERROR);
+            game.sendResponse(Constants.NOT_A_VILLAGE_AND_STREET_ERROR);
             return false;
         }
 

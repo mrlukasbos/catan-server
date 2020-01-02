@@ -423,6 +423,8 @@ class Board {
         return edgeMap.containsKey(key);
     }
 
+    Tile getTile(String key) { return tileMap.get(key); }
+
     public Bandit getBandit() {
         return bandit;
     }
