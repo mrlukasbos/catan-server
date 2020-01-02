@@ -46,7 +46,7 @@ class Game extends Thread {
         events = new ArrayList<>();
         lastResponse = null;
 
-        diceThrowPhase = new DiceThrowPhase(this);
+        diceThrowPhase = new DiceThrowPhase(this, new Dice(2));
         setupPhase = new SetupPhase(this);
         initialBuildPhase = new InitialBuildPhase(this);
         normalBuildPhase = new BuildPhase(this);
@@ -240,9 +240,9 @@ class Game extends Thread {
 
     void setLastDiceThrow(int diceThrow) { lastDiceThrow = diceThrow; }
 
-
-
-
+    public ArrayList<Event> getEvents() {
+        return events;
+    }
 }
 
 enum Phase {

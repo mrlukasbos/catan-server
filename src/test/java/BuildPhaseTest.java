@@ -134,8 +134,6 @@ class BuildPhaseTest {
         assertEquals(game.getLastResponse().getCode(), Constants.STRUCTURENOTCONNECTEDERROR.getCode());
     }
 
-
-
     @Test
     void villageCanNotBePlacedWithoutResourcesTest() {
         game.getBoard().placeStreet(player, game.getBoard().getEdge("([3,2],[3,3])"));
