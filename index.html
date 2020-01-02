@@ -71,7 +71,7 @@
                         {{event.attributes.message}}
                     </span>
 
-                <span v-if="event.event_type == 'BUILD'">
+                <span v-if="event.attributes.event_type == 'BUILD'">
                        <span v-if="event.attributes.structures.length">
                         builds
                         <span v-for="structure in event.attributes.structures"> {{structure}} </span>

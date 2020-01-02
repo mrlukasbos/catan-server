@@ -84,7 +84,7 @@ public class Server extends Thread {
         }
 
         // hack to immediatly start for testing purposses
-        game.startGame();
+    //    game.startGame();
 
     }
 
