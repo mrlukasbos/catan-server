@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 class MoveBanditPhaseTest {
     private Interface iface = new Interface(10007);
     private Game game = new Game(iface);

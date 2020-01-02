@@ -94,7 +94,6 @@ class Tile implements Comparable<Tile> {
             case ORE: return Resource.ORE;
             default: return Resource.NONE;
         }
-
     }
 
     public boolean isTerrain() {
