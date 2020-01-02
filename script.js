@@ -236,6 +236,7 @@ function hexProjection(radius) {
 }
 }
 
+
 var app = new Vue({
     el: '#app',
     data: {
@@ -273,7 +274,7 @@ var app = new Vue({
             }
 
             this.socket.onmessage = (data) => {
-                console.log(data.data);
+
                 var message = data.data.toString();
                 json = JSON.parse(message);
             
@@ -282,12 +283,16 @@ var app = new Vue({
                 this.players = json.attributes.players;
                 this.status = json.attributes.status;
                 this.currentPlayerId = json.attributes.currentPlayer;
-                this.events = json.attributes.events.reverse();
+
+                this.events = this.formattedEvents(json.attributes.events.reverse());
+                console.log(json.attributes.events.reverse());
+                console.log( this.events);
+
                 this.moveCount = json.attributes.move_count;
 
                 if (json.attributes.board) {
-                draw();
-            }
+                 draw();
+                }
             }
         },
         startGame: function(event) {
@@ -305,7 +310,23 @@ var app = new Vue({
                 this.socket.close();
                 delete this.socket;
             }
+        },
+
+        formattedEvents: function(evts) {
+            var self = this;
+            return evts.map(function(evt) {
+
+                var player_id = evt.attributes.player;
+
+                var complete_player = self.players.filter(function (player) {
+                    return player.attributes.id == player_id;
+                })[0];
+
+                evt.attributes.player_full = complete_player;
+                return evt;
+            });
         }
+
     },
     mounted: function() {
         if (localStorage.ip) {

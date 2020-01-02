@@ -70,7 +70,7 @@ During the build phase there is a specific set of rules on what can be built and
 [{ "from": "wool", "to": "wood" }]
 [{ "from": "wool", "to": "ore" }]
 
-[{ "from": "grain", "to": "whool" }]
+[{ "from": "grain", "to": "wool" }]
 [{ "from": "grain", "to": "ore" }]
 
 [{ "from": "wood", "to": "stone" }]
@@ -126,6 +126,7 @@ During the build phase there is a specific set of rules on what can be built and
 
 [{ "structure": "development_card" }]
 ```
+
 
 It is perfectly legal to build multiple things after each other in one command. 
 For example: building this city alone might not be legal:

@@ -43,6 +43,7 @@ public class Interface extends WebSocketServer {
     // Create an interface for a specific port
     Interface(int port) {
         super(new InetSocketAddress(port));
+        setReuseAddr(true);
     }
 
     // Start the interface thread

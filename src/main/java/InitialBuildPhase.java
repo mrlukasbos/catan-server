@@ -57,14 +57,15 @@ public class InitialBuildPhase extends BuildPhase {
             return false;
         }
 
+        ArrayList<BuildCommand> developmentCardCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.DEVELOPMENT_CARD);
         ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
         ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.VILLAGE);
         ArrayList<BuildCommand> cityCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.CITY);
 
-        if (streetCommands == null || villageCommands == null || cityCommands == null) { return false; }
+        if (streetCommands == null || villageCommands == null || cityCommands == null || developmentCardCommands == null) { return false; }
 
 
-        if (streetCommands.size() != 1 || villageCommands.size() != 1 || !cityCommands.isEmpty()) {
+        if (streetCommands.size() != 1 || villageCommands.size() != 1 || !cityCommands.isEmpty() || !developmentCardCommands.isEmpty()) {
             game.sendResponse(Constants.NOT_A_VILLAGE_AND_STREET_ERROR);
             return false;
         }

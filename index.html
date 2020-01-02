@@ -63,15 +63,15 @@
             <div v-for="(event, index) in events" style="padding-bottom: 8px"
                  v-bind:style="[event.attributes.moveCount >= json.attributes.moveCount ? {'font-weight': 600} : {}]">
 
-                    <span v-if="event.attributes.player" :style="{ 'color': event.attributes.player.attributes.color }">
-                     {{event.attributes.player.attributes.name}}
+                    <span v-if="event.attributes.player_full" :style="{ 'color': event.attributes.player_full.attributes.color }">
+                        {{event.attributes.player_full.attributes.name}}
                     </span>
 
                 <span v-if="event.attributes.event_type=='GENERAL'" style="font-style: italic;" >
                         {{event.attributes.message}}
                     </span>
 
-                <span v-if="event.event_type == 'BUILD'">
+                <span v-if="event.attributes.event_type == 'BUILD'">
                        <span v-if="event.attributes.structures.length">
                         builds
                         <span v-for="structure in event.attributes.structures"> {{structure}} </span>

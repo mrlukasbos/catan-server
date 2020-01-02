@@ -1,4 +1,4 @@
-public class Cube {
+class Cube {
 
     private int x, y, z;
     Cube(Tile tile) {

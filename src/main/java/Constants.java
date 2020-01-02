@@ -91,7 +91,7 @@ class Constants {
     static final Response INVALID_STRUCTURE_ERROR = new Response(503, "InvalidStructure", "The received structure is invalid.");
     static final Response INVALID_TRADE_ERROR = new Response(504, "InvalidTrade", "An invalid resource was given to the trade command.");
     static final Response TOO_MUCH_FAILURES = new Response(505, "TooMuchFailures", "You failed to often so your turn is skipped.");
-    static final Response INVALID_BANDIT_MOVE_ERROR = new Response(504, "InvalidBanditMove", "An invalid location was given to the move command.");
+    static final Response INVALID_BANDIT_MOVE_ERROR = new Response(506, "InvalidBanditMove", "An invalid location was given to the move command.");
 
     // Rule issues
     static final Response STRUCTURE_NOT_CONNECTED_ERROR = new Response(600, "StructureNotConnected", "The received structure is not connected.");
