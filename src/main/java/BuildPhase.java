@@ -146,7 +146,6 @@ class BuildPhase implements GamePhase {
             villages.add(game.getBoard().getNode(cmd.key));
         }
 
-
         return hasEnoughResources(currentPlayer, developmentCardRequests.size(), streetCommands.size(), villageCommands.size(), cityCommands.size())
                 && streetsAreValid(streetCommands)
                 && villagesAreValid(villageCommands, streets)
@@ -273,6 +272,7 @@ class BuildPhase implements GamePhase {
             for (Edge street : streets) {
                 if (surroundingEdge == street) {
                     hasNeighbouringStreet = true;
+                    break;
                 }
             }
         }

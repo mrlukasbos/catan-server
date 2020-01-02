@@ -89,11 +89,8 @@ class Constants {
     static final Response NODEDOESNOTEXISTERROR = new Response(501, "NodeDoesNotExist", "The received node does not exist.");
     static final Response EDGEDOESNOTEXISTERROR = new Response(502, "EdgeDoesNotExist", "The received edge does not exist.");
     static final Response INVALIDSTRUCTUREERROR = new Response(503, "InvalidStructure", "The received structure is invalid.");
-
     static final Response INVALID_TRADE_ERROR = new Response(504, "InvalidTrade", "An invalid resource was given to the trade command.");
-
     static final Response TOO_MUCH_FAILURES = new Response(505, "TooMuchFailures", "You failed to often so your turn is skipped.");
-
 
     // Rule issues
     static final Response STRUCTURENOTCONNECTEDERROR = new Response(600, "StructureNotConnected", "The received structure is not connected.");

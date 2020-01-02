@@ -31,7 +31,7 @@ public class Response {
                 "\"model\": \"response\", " +
                 "\"attributes\": {" +
                 "\"title\": \"" + title + "\", " +
-                "\"is_error\": " + (code != 0) + ", " +
+                "\"is_error\": " + (code > 200) + ", " +
                 "\"code\": " + code + ", " +
                 "\"additional_info\": \"" + additionalInformation + "\", " +
                 "\"description\": \"" + description + "\"" +
