@@ -85,6 +85,17 @@ class Tile implements Comparable<Tile> {
         return type;
     }
 
+    public Resource produces() {
+        switch (type) {
+            case WOOL: return Resource.WOOL;
+            case WOOD: return Resource.WOOD;
+            case STONE: return Resource.STONE;
+            case GRAIN: return Resource.GRAIN;
+            case ORE: return Resource.ORE;
+            default: return Resource.NONE;
+        }
+    }
+
     public boolean isTerrain() {
         return (orientation == Orientation.NONE && type != Type.SEA);
     }

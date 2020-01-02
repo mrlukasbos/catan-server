@@ -60,77 +60,71 @@ During the build phase there is a specific set of rules on what can be built and
 
 ### Legal build commands
 
-Trading:
+#### Trading:
 ```
- [{ "from": "ore", "to": "wood" }]
-  [{ "from": "ore", "to": "grain" }]
- [{ "from": "grain", "to": "stone" }]
-  [{ "from": "grain", "to": "wood" }]
- [{ "from": "wool", "to": "grain" }]
-  [{ "from": "wool", "to": "wood" }]
-  [{ "from": "wool", "to": "ore" }]
+[{ "from": "ore", "to": "wood" }]
+[{ "from": "ore", "to": "grain" }]
+[{ "from": "grain", "to": "stone" }]
+[{ "from": "grain", "to": "wood" }]
+[{ "from": "wool", "to": "grain" }]
+[{ "from": "wool", "to": "wood" }]
+[{ "from": "wool", "to": "ore" }]
 
-  [{ "from": "grain", "to": "wool" }]
- [{ "from": "grain", "to": "ore" }]
+[{ "from": "grain", "to": "wool" }]
+[{ "from": "grain", "to": "ore" }]
 
-  [{ "from": "wood", "to": "stone" }]
-  [{ "from": "wood", "to": "whool" }]
+[{ "from": "wood", "to": "stone" }]
+[{ "from": "wood", "to": "whool" }]
 
- [{ "from": "ore", "to": "ore" }] // could be useful when wanting to avoid bandit
+[{ "from": "ore", "to": "ore" }] // could be useful when wanting to avoid bandit
 
- [{ "from": "stone", "to": "wood" }, { "from": "grain", "to": "stone" }]
- [{ "from": "stone", "to": "wood" }, { "from": "stone", "to": "ore" }]
- 
-  [{ "from": "grain", "to": "wood" }, { "from": "grain", "to": "ore" }]
-  [{ "from": "whool", "to": "wood" }, { "from": "whool", "to": "ore" }]
-  [{ "from": "ore", "to": "wood" }, { "from": "ore", "to": "grain" }]
-  [{ "from": "stone", "to": "wood" }, { "from": "stone", "to": "grain" }]
+[{ "from": "stone", "to": "wood" }, { "from": "grain", "to": "stone" }]
+[{ "from": "stone", "to": "wood" }, { "from": "stone", "to": "ore" }]
 
-  [{ "from": "whool", "to": "wood" }, { "from": "wood", "to": "stone" }]
+[{ "from": "grain", "to": "wood" }, { "from": "grain", "to": "ore" }]
+[{ "from": "whool", "to": "wood" }, { "from": "whool", "to": "ore" }]
+[{ "from": "ore", "to": "wood" }, { "from": "ore", "to": "grain" }]
+[{ "from": "stone", "to": "wood" }, { "from": "stone", "to": "grain" }]
 
-
+[{ "from": "whool", "to": "wood" }, { "from": "wood", "to": "stone" }]
 ```
 
-
-A street and a village:
+#### A street and a village:
 ```
- [{ "structure": "street", "location": "([3,4],[4,3])" }, { "structure": "village", "location": "([3,3],[3,4],[4,3])" }]
- [{ "structure": "street", "location": "([1,4],[2,4])" }, { "structure": "village", "location": "([1,4],[2,4],[2,5])" }]
- [{ "structure": "street", "location": "([2,3],[2,4])" }, { "structure": "village", "location": "([2,3],[2,4],[3,3])" }]
- [{ "structure": "village", "location": "([1,2],[1,3],[2,3])" }, { "structure": "street", "location": "([1,2],[1,3])" }]
- [{ "structure": "village", "location": "([1,2],[2,1],[2,2])" }, { "structure": "street", "location": "([1,2],[2,2])" }]
-
+[{ "structure": "street", "location": "([3,4],[4,3])" }, { "structure": "village", "location": "([3,3],[3,4],[4,3])" }]
+[{ "structure": "street", "location": "([1,4],[2,4])" }, { "structure": "village", "location": "([1,4],[2,4],[2,5])" }]
+[{ "structure": "street", "location": "([2,3],[2,4])" }, { "structure": "village", "location": "([2,3],[2,4],[3,3])" }]
+[{ "structure": "village", "location": "([1,2],[1,3],[2,3])" }, { "structure": "street", "location": "([1,2],[1,3])" }]
+[{ "structure": "village", "location": "([1,2],[2,1],[2,2])" }, { "structure": "street", "location": "([1,2],[2,2])" }]
 ```
 
-Interfering villages:
+#### Interfering villages:
 ```
- [{ "structure": "street", "location": "([3,1],[3,2])" }, { "structure": "village", "location": "([2,2],[3,1],[3,2])" }]
- [{ "structure": "street", "location": "([2,2],[3,1])" }, { "structure": "village", "location": "([2,1],[2,2],[3,1])" }]
-```
-
-
-Building nothing:
-```
- []
+[{ "structure": "street", "location": "([3,1],[3,2])" }, { "structure": "village", "location": "([2,2],[3,1],[3,2])" }]
+[{ "structure": "street", "location": "([2,2],[3,1])" }, { "structure": "village", "location": "([2,1],[2,2],[3,1])" }]
 ```
 
-A single village, city or street
+#### Building nothing:
+```
+[]
 ```
 
- [{ "structure": "village", "location": "([1,2],[2,1],[2,2])" }]
- [{ "structure": "village", "location": "([4,3],[4,4],[5,3])" }]
+#### A single village, city or street
+```
+[{ "structure": "village", "location": "([1,2],[2,1],[2,2])" }]
+[{ "structure": "village", "location": "([4,3],[4,4],[5,3])" }]
 
- [{ "structure": "city", "location": "([1,2],[2,1],[2,2])" }]
- [{ "structure": "city", "location": "([3,3],[3,4],[4,3])" }]
+[{ "structure": "city", "location": "([1,2],[2,1],[2,2])" }]
+[{ "structure": "city", "location": "([3,3],[3,4],[4,3])" }]
 
- [{ "structure": "street", "location": "([2,2],[3,1])" }]
- [{ "structure": "street", "location": "([1,4],[2,3])" }]
- [{ "structure": "street", "location": "([4,3],[4,4])" }]
- [{ "structure": "street", "location": "([3,3],[4,3])" }]
+[{ "structure": "street", "location": "([2,2],[3,1])" }]
+[{ "structure": "street", "location": "([1,4],[2,3])" }]
+[{ "structure": "street", "location": "([4,3],[4,4])" }]
+[{ "structure": "street", "location": "([3,3],[4,3])" }]
 
- [{ "structure": "street", "location": "([2,4],[2,5])" }]
+[{ "structure": "street", "location": "([2,4],[2,5])" }]
 
- [{ "structure": "development_card" }]
+[{ "structure": "development_card" }]
 ```
 
 
@@ -147,12 +141,17 @@ If you want to build a city from nothing, you first have to build a village and 
 
 Other examples
 ```
- (a city and a street)
- [{ "structure": "city", "location": "([1,2],[2,1],[2,2])" }, { "structure": "street", "location": "([2,2],[3,1])" }]
+(a city and a street)
+[{ "structure": "city", "location": "([1,2],[2,1],[2,2])" }, { "structure": "street", "location": "([2,2],[3,1])" }]
 
- (a village and street that are not connected)
- [{ "structure": "village", "location": "([1,2],[2,1],[2,2])" }, { "structure": "street", "location": "([2,2],[3,1])" }]
+(a village and street that are not connected)
+[{ "structure": "village", "location": "([1,2],[2,1],[2,2])" }, { "structure": "street", "location": "([2,2],[3,1])" }]
 
- (two streets)
- [{ "structure": "street", "location": "([3,1],[3,2])" }, { "structure": "street", "location": "([2,2],[3,2])" }]
-*/
+(two streets)
+[{ "structure": "street", "location": "([3,1],[3,2])" }, { "structure": "street", "location": "([2,2],[3,2])" }]
+```
+
+#### Moving the bandit
+```
+[{"location": "[3,1]"}]
+```

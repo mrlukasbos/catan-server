@@ -130,11 +130,9 @@ class Board {
         return availableHarbors.remove(new Random().nextInt(availableHarbors.size()));
     }
 
-
     public String tileCoordinatesToKey(int x, int y) {
         return "[" + x + "," + y + "]";
     }
-
 
     private void addTile(Tile tile) {
         tiles.add(tile);
@@ -214,8 +212,6 @@ class Board {
     }
 
     double getDistance(Node a, Node b) {
-
-
         // count the high-y tiles (either 1 or 2)
         // sort on y
         class sortByY implements Comparator<Tile> {
@@ -386,7 +382,6 @@ class Board {
         return tilesWithNumber;
     }
 
-
     // get all nodes around a tile
     public List<Node> getNodes(Tile tile) {
         return tile.getNodes();
@@ -426,6 +421,12 @@ class Board {
 
     boolean hasEdge(String key) {
         return edgeMap.containsKey(key);
+    }
+
+    Tile getTile(String key) { return tileMap.get(key); }
+
+    public Bandit getBandit() {
+        return bandit;
     }
 }
 

@@ -23,6 +23,7 @@ class Game extends Thread {
     private BuildPhase normalBuildPhase;
     private TradePhase tradePhase;
     private GamePhase currentPhase;
+    private MoveBanditPhase moveBanditPhase;
 
     Game(Interface iface) {
         this.iface = iface;
@@ -46,12 +47,13 @@ class Game extends Thread {
         events = new ArrayList<>();
         lastResponse = null;
 
-        diceThrowPhase = new DiceThrowPhase(this);
+        diceThrowPhase = new DiceThrowPhase(this, new Dice(2));
         setupPhase = new SetupPhase(this);
         initialBuildPhase = new InitialBuildPhase(this);
         normalBuildPhase = new BuildPhase(this);
         tradePhase = new TradePhase(this);
         currentPhase = new SetupPhase(this);
+        moveBanditPhase = new MoveBanditPhase(this);
     }
 
     // This function gets called after start() and runs the whole game
@@ -111,7 +113,11 @@ class Game extends Thread {
                 return normalBuildPhase;
             case TRADING:
                 return tradePhase;
-            case MOVE_BANDIT: // for the time being
+            case FORCE_DISCARD: //TODO: implement force discard phase before moving the bandit
+                return normalBuildPhase;
+            case MOVE_BANDIT:
+                return moveBanditPhase;
+            case STEAL_CARD: //TODO: implement steal card phase after moving the bandit
                 return normalBuildPhase;
             default:
                 print("We reached an unknown phase which is probably not a good thing");
@@ -240,9 +246,9 @@ class Game extends Thread {
 
     void setLastDiceThrow(int diceThrow) { lastDiceThrow = diceThrow; }
 
-
-
-
+    public ArrayList<Event> getEvents() {
+        return events;
+    }
 }
 
 enum Phase {
@@ -251,6 +257,7 @@ enum Phase {
     THROW_DICE,
     FORCE_DISCARD,
     MOVE_BANDIT,
+    STEAL_CARD,
     TRADING,
     BUILDING
 }

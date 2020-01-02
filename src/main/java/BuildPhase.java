@@ -96,7 +96,7 @@ class BuildPhase implements GamePhase {
             try {
                 structure = Enum.valueOf(Structure.class, structureString.toUpperCase());
             } catch (IllegalArgumentException e) {
-                game.sendResponse(Constants.INVALIDSTRUCTUREERROR);
+                game.sendResponse(Constants.INVALID_STRUCTURE_ERROR);
                 return null;
             }
 
@@ -123,7 +123,7 @@ class BuildPhase implements GamePhase {
     // check for the whole command if the command is valid.
     boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
         if (jsonArray == null) {
-            game.sendResponse(Constants.MALFORMEDJSONERROR.withAdditionalInfo("jsonArray is null"));
+            game.sendResponse(Constants.MALFORMED_JSON_ERROR.withAdditionalInfo("jsonArray is null"));
             return false;
         }
 
@@ -194,7 +194,7 @@ class BuildPhase implements GamePhase {
 
     private boolean edgeIsFree(ArrayList<Edge> otherEdgesInSameCmd, Edge edge) {
         if (edge.isRoad() || otherEdgesInSameCmd.contains(edge)) {
-            game.sendResponse(game.getCurrentPlayer(), Constants.STRUCTUREALREADYEXISTSERROR.withAdditionalInfo(edge.getKey()));
+            game.sendResponse(game.getCurrentPlayer(), Constants.STRUCTURE_ALREADY_EXISTS_ERROR.withAdditionalInfo(edge.getKey()));
             return false;
         }
         return true;
@@ -202,7 +202,7 @@ class BuildPhase implements GamePhase {
 
     private boolean edgeExists(Edge edge, String key) {
         if (edge == null) {
-            game.sendResponse(Constants.EDGEDOESNOTEXISTERROR.withAdditionalInfo(key));
+            game.sendResponse(Constants.EDGE_DOES_NOT_EXIST_ERROR.withAdditionalInfo(key));
             return false;
         }
         return true;
@@ -210,7 +210,7 @@ class BuildPhase implements GamePhase {
 
     private boolean nodeExists(Node node, String key) {
         if (node == null) {
-            game.sendResponse(Constants.NODEDOESNOTEXISTERROR.withAdditionalInfo(key));
+            game.sendResponse(Constants.NODE_DOES_NOT_EXIST_ERROR.withAdditionalInfo(key));
             return false;
         }
         return true;
@@ -226,7 +226,7 @@ class BuildPhase implements GamePhase {
             }
         }
         if (!hasNeighbouringStreet) {
-            game.sendResponse(Constants.STRUCTURENOTCONNECTEDERROR.withAdditionalInfo(edge.getKey()));
+            game.sendResponse(Constants.STRUCTURE_NOT_CONNECTED_ERROR.withAdditionalInfo(edge.getKey()));
             return false;
         }
         return true;
@@ -234,7 +234,7 @@ class BuildPhase implements GamePhase {
 
     private boolean nodeIsEmpty(ArrayList<Node> villagesFromSameCommand, Node node) {
         if (node.hasPlayer() || node.hasStructure() || villagesFromSameCommand.contains(node)) {
-            game.sendResponse(Constants.STRUCTUREALREADYEXISTSERROR.withAdditionalInfo(node.getKey()));
+            game.sendResponse(Constants.STRUCTURE_ALREADY_EXISTS_ERROR.withAdditionalInfo(node.getKey()));
             return false;
         }
         return true;
@@ -244,19 +244,19 @@ class BuildPhase implements GamePhase {
         if (villages.contains(node)) {
             return true;
         }
-        game.sendResponse(Constants.CITYNOTBUILTONPLAYERSVILLAGEERROR.withAdditionalInfo(node.getKey()));
+        game.sendResponse(Constants.CITY_NOT_BUILT_ON_VILLAGE_ERROR.withAdditionalInfo(node.getKey()));
         return false;
     }
 
     private boolean nodeStructureIsAtLeastTwoEdgesFromOtherStructure(ArrayList<Node> nodes, Node node) {
         for (Node surroundingNode : game.getBoard().getSurroundingNodes(node)) {
             if (surroundingNode.hasStructure()) {
-                game.sendResponse(Constants.STRUCTURETOOCLOSETOOTHERSTRUCTUREERROR.withAdditionalInfo(node.getKey()));
+                game.sendResponse(Constants.STRUCTURE_TOO_CLOSE_TO_OTHER_STRUCTURE_ERROR.withAdditionalInfo(node.getKey()));
                 return false;
             } else {
                 for (Node additionalVillage : nodes) {
                     if (additionalVillage == surroundingNode) {
-                        game.sendResponse(Constants.STRUCTURETOOCLOSETOOTHERSTRUCTUREERROR.withAdditionalInfo("The conflicting structures are in the same command" + node.getKey()));
+                        game.sendResponse(Constants.STRUCTURE_TOO_CLOSE_TO_OTHER_STRUCTURE_ERROR.withAdditionalInfo("The conflicting structures are in the same command" + node.getKey()));
                         return false;
                     }
                 }
@@ -277,7 +277,7 @@ class BuildPhase implements GamePhase {
             }
         }
         if (!hasNeighbouringStreet) {
-            game.sendResponse(Constants.STRUCTURENOTCONNECTEDERROR.withAdditionalInfo(node.getKey()));
+            game.sendResponse(Constants.STRUCTURE_NOT_CONNECTED_ERROR.withAdditionalInfo(node.getKey()));
             return false;
         }
         return true;
@@ -292,7 +292,7 @@ class BuildPhase implements GamePhase {
         game.print("Received message from player " + currentPlayer.getName() + ": " + message);
         jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);
         if (jsonArray == null) {
-            game.sendResponse(currentPlayer, Constants.MALFORMEDJSONERROR.withAdditionalInfo(message));
+            game.sendResponse(currentPlayer, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
             return null;
         }
 
@@ -339,7 +339,7 @@ class BuildPhase implements GamePhase {
             }
 
             if (!moreStreetsGotConnected) {
-                game.sendResponse(Constants.STRUCTURENOTCONNECTEDERROR);
+                game.sendResponse(Constants.STRUCTURE_NOT_CONNECTED_ERROR);
                 return false;
             }
         }
@@ -354,7 +354,7 @@ class BuildPhase implements GamePhase {
             amountNeeded += Constants.DEVELOPMENT_CARD_COSTS.getOrDefault(resource, 0) * amountOfDevelopmentCards;
 
             if (amountNeeded > player.countResources(resource)) {
-                game.sendResponse(Constants.NOTENOUGHRESOURCESERROR.withAdditionalInfo(" Not enough " + resource.toString()));
+                game.sendResponse(Constants.INSUFFICIENT_RESOURCES_ERROR.withAdditionalInfo(" Not enough " + resource.toString()));
                 return false;
             }
         }

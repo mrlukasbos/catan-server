@@ -3,9 +3,11 @@ import java.util.HashMap;
 
 public class DiceThrowPhase implements GamePhase {
     Game game;
+    Dice dice;
 
-    DiceThrowPhase(Game game) {
+    DiceThrowPhase(Game game, Dice dice) {
         this.game = game;
+        this.dice = dice;
     }
 
     public Phase getPhaseType() {
@@ -13,16 +15,15 @@ public class DiceThrowPhase implements GamePhase {
     }
 
     public Phase execute() {
-        Dice d = new Dice(2);
-        int dice = d.throwDice();
-        game.setLastDiceThrow(dice);
-        game.addEvent(new Event(game, EventType.GENERAL, game.getCurrentPlayer()).withGeneralMessage(" has thrown " + dice));
+        int diceValue = dice.throwDice();
+        game.setLastDiceThrow(diceValue);
+        game.addEvent(new Event(game, EventType.GENERAL, game.getCurrentPlayer()).withGeneralMessage(" has thrown " + diceValue));
 
-        if (dice == 7) {
+        if (diceValue == 7) {
             game.signalGameChange();
             return Phase.MOVE_BANDIT;
         } else {
-            distributeResourcesForDice(dice);
+            distributeResourcesForDice(diceValue);
 
             game.signalGameChange();
             return Phase.TRADING;
@@ -39,14 +40,13 @@ public class DiceThrowPhase implements GamePhase {
         }
 
         for (Tile tile : game.getBoard().getTilesForDiceNumber(diceThrow)) {
+            if (game.getBoard().getBandit().getTile() == tile) continue;
             for (Node node : game.getBoard().getNodes(tile)) {
                 // TODO This needs some looking into, currently each tile returns 18 nodes. These are obviously duplicates created during board.init()
-                // game.print("nodes for tile " + game.getBoard().getNodes(tile).size());
+//                game.print("nodes for tile " + game.getBoard().getNodes(tile).size());
                 if (node.hasPlayer() && node.hasStructure()) {
                     int amount = node.getStructure() == Structure.CITY ? 2 : 1;
-
-                    // TODO make this into a tile.getResource()
-                    Resource resource = Enum.valueOf(Resource.class, tile.getType().toString());
+                    Resource resource = tile.produces();
 
                     node.getPlayer().addResources(resource, amount);
                     resourcesForPlayerId.get(node.getPlayer().getId()).put(resource, amount);
