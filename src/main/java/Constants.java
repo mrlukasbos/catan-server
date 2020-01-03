@@ -83,6 +83,7 @@ class Constants {
     static final Response BUILD_REQUEST = new Response(101, "BuildRequest", "Please build something if you like.");
     static final Response INITIAL_BUILD_REQUEST = new Response(102, "InitialBuildRequest", "Build a street and a village.");
     static final Response MOVE_BANDIT_REQUEST = new Response(103, "MoveBanditRequest", "Move the bandit to a tile.");
+    static final Response DISCARD_RESOURCES_REQUEST = new Response(104, "DiscardResourcesRequest", "Discard at least the amount of resources given in the additional info.");
 
     // Parsing issues
     static final Response MALFORMED_JSON_ERROR = new Response(500, "MalformedJSON", "The received JSON message is invalid.");

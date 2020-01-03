@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class ForceDiscardPhase implements GamePhase {
     Game game;
-    Response request = Constants.MOVE_BANDIT_REQUEST;
+    Response request = Constants.DISCARD_RESOURCES_REQUEST;
 
     ForceDiscardPhase(Game game) {
         this.game = game;
@@ -43,7 +43,7 @@ public class ForceDiscardPhase implements GamePhase {
 
     // keep running this function until we get valid output from the user
     private JsonArray getValidCommandFromUser(Player player) {
-        player.send(request.toString());
+        player.send(request.withAdditionalInfo(Double.toString(Math.floor(player.countResources()/2))).toString());
         boolean discardSucceeded = false;
         JsonArray jsonArray = null;
 
@@ -55,7 +55,7 @@ public class ForceDiscardPhase implements GamePhase {
             discardSucceeded = jsonArray != null && discardIsValid(player, jsonArray);
 
             if (!discardSucceeded) {
-                player.send(request.toString());
+                player.send(request.withAdditionalInfo(Double.toString(Math.floor(player.countResources()/2))).toString());
             }
         }
         return jsonArray;
