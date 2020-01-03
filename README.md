@@ -58,6 +58,10 @@ During the build phase there is a specific set of rules on what can be built and
 - To build you need to have enough resources to do so
 - Cities can only be built by replacing a village
 
+### Game phases
+The following UML state diagram shows the different game phases and their relation.
+![Game phases](./CatanStateDiagram.png)
+
 ### Legal build commands
 
 #### Trading:
