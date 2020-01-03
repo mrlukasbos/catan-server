@@ -17,6 +17,9 @@ public class MoveBanditPhase implements GamePhase {
     public Phase execute() {
         JsonArray jsonArray = getValidCommandFromUser(game.getCurrentPlayer());
         move(game.getCurrentPlayer(), jsonArray);
+
+        game.addEvent(new Event(game, EventType.BANDIT_PLACED, game.getCurrentPlayer()).withGeneralMessage(" placed the bandit"));
+
         game.signalGameChange();
         return Phase.TRADING;
     }

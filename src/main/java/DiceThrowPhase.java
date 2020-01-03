@@ -21,7 +21,7 @@ public class DiceThrowPhase implements GamePhase {
 
         if (diceValue == 7) {
             game.signalGameChange();
-            return Phase.MOVE_BANDIT;
+            return Phase.FORCE_DISCARD;
         } else {
             distributeResourcesForDice(diceValue);
 

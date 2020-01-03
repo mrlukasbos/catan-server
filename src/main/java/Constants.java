@@ -102,4 +102,7 @@ class Constants {
     static final Response NOT_A_VILLAGE_AND_STREET_ERROR = new Response(606, "NotAVillageAndStreet", "In the initial buildphase a command must exist out of a village and a street.");
     static final Response CAN_NOT_PLACE_BANDIT_ON_SEA_TILE_ERROR = new Response(607, "CanNotPlaceBanditOnSeaTile", "The bandit can not be placed on a sea tile.");
     static final Response CAN_NOT_PLACE_BANDIT_ON_SAME_TILE_ERROR = new Response(608, "CanNotPlaceBanditOnSameTile", "The bandit can not be placed on the same tile as it is currently at.");
+    static final Response NOT_ENOUGH_RESOURCES_DISCARDED_ERROR = new Response(609, "NotEnoughResourcesDiscarded", "You should discard at least half your resources (rounded down).");
+    static final Response MORE_RESOURCES_DISCARDED_THAN_OWNED_ERROR = new Response(610, "MoreResourcesDiscardedThanOwned", "You can not discard more resources than you currently have.");
+
 }
