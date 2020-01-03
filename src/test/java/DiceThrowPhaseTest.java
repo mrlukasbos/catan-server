@@ -29,10 +29,10 @@ class DiceThrowPhaseTest {
     }
 
     @Test
-    void nextPhaseIsMoveBanditTest() {
+    void nextPhaseIsForceDiscardTest() {
         diceStub.shouldThrow(7);
         Phase nextPhase = diceThrowPhase.execute();
-        assertEquals(Phase.MOVE_BANDIT, nextPhase);
+        assertEquals(Phase.FORCE_DISCARD, nextPhase);
     }
 
     @Test

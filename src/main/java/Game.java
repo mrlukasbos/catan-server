@@ -24,6 +24,7 @@ class Game extends Thread {
     private TradePhase tradePhase;
     private GamePhase currentPhase;
     private MoveBanditPhase moveBanditPhase;
+    private ForceDiscardPhase forceDiscardPhase;
 
     Game(Interface iface) {
         this.iface = iface;
@@ -113,8 +114,8 @@ class Game extends Thread {
                 return normalBuildPhase;
             case TRADING:
                 return tradePhase;
-            case FORCE_DISCARD: //TODO: implement force discard phase before moving the bandit
-                return normalBuildPhase;
+            case FORCE_DISCARD:
+                return forceDiscardPhase;
             case MOVE_BANDIT:
                 return moveBanditPhase;
             case STEAL_CARD: //TODO: implement steal card phase after moving the bandit

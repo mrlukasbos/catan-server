@@ -151,6 +151,12 @@ Other examples
 [{ "structure": "street", "location": "([3,1],[3,2])" }, { "structure": "street", "location": "([2,2],[3,2])" }]
 ```
 
+#### Discarding cards
+```
+[{ "wool": 1, "ore": 1, "wood": 1, "grain": 1, "stone": 1 }]
+[{ "ore": 1, "wood": 1 }]
+```
+
 #### Moving the bandit
 ```
 [{"location": "[3,1]"}]
