@@ -284,9 +284,9 @@ var app = new Vue({
                 this.status = json.attributes.status;
                 this.currentPlayerId = json.attributes.currentPlayer;
 
-                this.events = this.formattedEvents(json.attributes.events.reverse());
-                console.log(json.attributes.events.reverse());
-                console.log( this.events);
+                if (json.attributes.events) {
+                    this.events = this.formattedEvents(json.attributes.events.reverse());
+                }
 
                 this.moveCount = json.attributes.move_count;
 

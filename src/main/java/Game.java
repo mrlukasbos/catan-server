@@ -26,7 +26,9 @@ class Game extends Thread {
     private MoveBanditPhase moveBanditPhase;
     private ForceDiscardPhase forceDiscardPhase;
 
-    Game(Interface iface) {
+    Game(Interface iface)
+    {
+        this.board = new Board();
         this.iface = iface;
     }
 
@@ -41,7 +43,6 @@ class Game extends Thread {
 
     void init() {
         this.running = true;
-
         this.board = new Board();
         lastDiceThrow = 0;
         moveCount = 0;
@@ -55,6 +56,7 @@ class Game extends Thread {
         tradePhase = new TradePhase(this);
         currentPhase = new SetupPhase(this);
         moveBanditPhase = new MoveBanditPhase(this);
+        forceDiscardPhase = new ForceDiscardPhase(this);
     }
 
     // This function gets called after start() and runs the whole game
@@ -62,6 +64,10 @@ class Game extends Thread {
     // After every state change we signal a change, which transmits the new data to all connections
     public void run() {
         while (true) {
+
+            // if player has disconnected
+            // quit game
+
             if (isRunning()) {
                 Phase nextPhase = currentPhase.execute();
                 print("Going to phase: " + nextPhase.toString());
@@ -147,6 +153,7 @@ class Game extends Thread {
             return "{" +
                     "\"model\": \"game\", " +
                     "\"attributes\": {" +
+                    "\"board\": " + getBoard().toString() + ", " +
                     "\"players\": " + Helpers.toJSONArray(players, false) + ", " +
                     "\"status\": \"" + getGameStatus() + "\"" +
                     "}" +
