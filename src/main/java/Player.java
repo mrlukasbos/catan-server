@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class Player {
     private String name;
@@ -134,7 +135,7 @@ class Player {
     @java.lang.Override
     public java.lang.String toString() {
         String resourcesString = Helpers.getJSONArrayFromHashMap(resources, "type", "value");
-        String developmentCardsString = Helpers.getJSONArrayFromHashMap(developmentCards, "type", "value");
+        String usedDevelopmentCardsString = Helpers.getJSONArrayFromHashMap(usedDevelopmentCards, "type", "value");
 
         return "{" +
                 "\"model\": \"player\", " +
@@ -143,8 +144,8 @@ class Player {
                 "\"color\": \"" + getColor() + "\", " +
                 "\"name\": \"" + getName() + "\", " +
                 "\"resources\": " + resourcesString + ", " +
-                "\"development_cards\": " + developmentCardsString +
-
+                "\"used_development_cards\": " + usedDevelopmentCardsString + ", " +
+                "\"unused_development_cards\": " + amountOfUnusedDevelopmentCards() +
                 "}" +
                 "}";
     }
@@ -208,6 +209,12 @@ class Player {
 
     public int amountOfUsedDevelopmentcard(DevelopmentCard developmentCard) {
         return usedDevelopmentCards.getOrDefault(developmentCard, 0);
+    }
+
+    public int amountOfUnusedDevelopmentCards() {
+        AtomicInteger total = new AtomicInteger();
+        developmentCards.forEach((developmentCard, amount) -> total.addAndGet(amount));
+        return total.get();
     }
 }
 

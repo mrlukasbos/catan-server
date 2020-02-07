@@ -204,6 +204,10 @@ class Game extends Thread {
         if (getWinner() == null) {
             moveCount++;
             setCurrentPlayer(getNextPlayer());
+        } else {
+            this.addEvent(new Event(this, EventType.GENERAL, getWinner()).withGeneralMessage(" won the game with " + getWinner().getVictoryPoints() + " points"));
+            signalGameChange();
+            quit();
         }
     }
 

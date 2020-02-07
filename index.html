@@ -28,25 +28,40 @@
             <div v-if="players.length">
                 <div v-for="player in players">
                     <div style="background: white;  margin-bottom: 12px; border-radius: 2px;  padding:12px; ">
-                        <div style="display:flex; align-items: center; padding-bottom: 12px; border-bottom: 1px solid whitesmoke;">
+                        <div style="display:flex; align-items: center; padding-bottom: 2px; border-bottom: 1px solid whitesmoke;">
                             <span style="margin: 4px 4px; flex: 3; font-weight: 100 "
                                   :style="{ 'color': player.attributes.color }"> {{player.attributes.name}} <small>({{player.attributes.id}})</small></span>
-                            <div v-if="player.attributes.id == currentPlayerId" style="display: flex; align-items: center;">
+                            <div v-if="player.attributes.id == currentPlayerId"
+                                 style="display: flex; align-items: center;">
                                 <div style="width: 6px; height: 6px; border-radius: 50%; background-color: steelblue"></div>
                             </div>
                         </div>
-                        <div style="display:flex; padding-top: 12px; ">
-                            <div v-for="resource in player.attributes.resources" style="display: flex">
-                                <div v-if="resource.value!=0">
-                                    <div style="font-weight: 100; width: 18px; height: 28px; border-radius: 5%; margin-right: 4px; display: flex; align-items: center; justify-content: center;"
-                                         class="resource" v-bind:class="resource.type"> {{resource.value}}
+                        <div style="display:flex; padding-top: 4px; justify-content: flex-start;">
+                            <div style="flex-grow: 1">
+                                <small>Resources</small>
+                                <div style="width: 100%; display: flex;">
+                                    <div v-for="resource in player.attributes.resources" style="display: flex;">
+                                        <div v-if="resource.value!=0">
+                                            <div style="font-weight: 100; width: 18px; height: 28px; border-radius: 5%; margin-right: 4px; display: flex; align-items: center; justify-content: center;"
+                                                 class="resource" v-bind:class="resource.type"> {{resource.value}}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div style="display:flex; padding-top: 12px; flex-direction: column ">
-                            <div v-for="developmentCard in player.attributes.development_cards" >
-                                {{developmentCard.type}}: {{developmentCard.value}}
+                            <div style="align-self: flex-start">
+                                <small>Developmentcards ({{player.attributes.unused_development_cards}})</small>
+                                <div style="width: 100%; display: flex;">
+                                    <div v-for="developmentcard in player.attributes.used_development_cards"
+                                         style="display: flex">
+                                        <div v-if="developmentcard.value!=0">
+                                            <div style="font-weight: 100; width: 18px; height: 28px; border-radius: 5%; margin-right: 4px; display: flex; align-items: center; justify-content: center;"
+                                                 class="developmentcard" v-bind:class="developmentcard.type">
+                                                {{developmentcard.value}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -62,11 +77,12 @@
             <div v-for="(event, index) in events" style="padding-bottom: 8px"
                  v-bind:style="[event.attributes.moveCount >= json.attributes.moveCount ? {'font-weight': 600} : {}]">
 
-                    <span v-if="event.attributes.player_full" :style="{ 'color': event.attributes.player_full.attributes.color }">
+                    <span v-if="event.attributes.player_full"
+                          :style="{ 'color': event.attributes.player_full.attributes.color }">
                         {{event.attributes.player_full.attributes.name}}
                     </span>
 
-                <span v-if="event.attributes.event_type=='GENERAL'" style="font-style: italic;" >
+                <span v-if="event.attributes.event_type=='GENERAL'" style="font-style: italic;">
                         {{event.attributes.message}}
                     </span>
 
@@ -82,8 +98,8 @@
 
 
                     </span>
-                <span v-else-if="event.attributes.event_type == 'GET_RESOURCES'" style="font-style: italic;" >
-                        <span v-if="event.attributes.resources.length" >
+                <span v-else-if="event.attributes.event_type == 'GET_RESOURCES'" style="font-style: italic;">
+                        <span v-if="event.attributes.resources.length">
                             receives
                             <span v-for="resource in event.attributes.resources">
                                 <span class="resource-txt" v-bind:class="resource.type"> {{resource.value}} {{resource.type}} </span>
@@ -99,7 +115,7 @@
                         <span v-if="event.attributes.resources.length">
                             trades
                             <span v-for="resource in event.attributes.resources">
-                                <span  class="resource-txt" v-bind:class="resource.type"> {{resource.value}} {{resource.type}} </span>
+                                <span class="resource-txt" v-bind:class="resource.type"> {{resource.value}} {{resource.type}} </span>
 
                         </span>
                         </span>
@@ -133,7 +149,7 @@
         </div>
     </div>
     <div class="board">
-        <div id="d3-holder"></div>  
+        <div id="d3-holder"></div>
     </div>
 </div>
 </body>

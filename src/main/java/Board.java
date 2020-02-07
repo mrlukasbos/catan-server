@@ -386,7 +386,7 @@ class Board {
     public boolean giveDevelopmentCardToPlayer(Player player) {
         if (developmentCards.isEmpty()) return false;
 
-        int randomIndex = new Random().nextInt() % developmentCards.size();
+        int randomIndex = Math.abs(new Random().nextInt() % developmentCards.size());
         player.addDevelopmentCard(developmentCards.remove(randomIndex));
         return true;
     }
