@@ -1,7 +1,6 @@
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CalculateScoreTest {
     private Game game = new Game(new Interface(8888));
@@ -33,7 +32,13 @@ class CalculateScoreTest {
 
         assertTrue(false);
 
-        // TODO
+        // TODO longest road calculation
+        /*
+            1. Find circles
+                -> If a circle is found split it at both sides of the 3rd grade node
+                -> Continue searching for more circles recursively
+            2. For each resulting tree(s) calculate the distances between each leaf. (every 1st grade node is a leaf)
+         */
     }
 
     @Test
@@ -120,14 +125,21 @@ class CalculateScoreTest {
         player.useDevelopmentCard(DevelopmentCard.VICTORY_POINT);
 
         assertEquals(1, player.getVictoryPoints());
-
-        // TODO
     }
 
     @Test
     void getsWinner() {
-        assertTrue(false);
+        game.startGame();
+        Player player = new Player(game, 1, "test");
+        game.addPlayer(player);
 
-        // TODO
+        assertNull(game.getWinner());
+
+        for (int i = 0; i < 10; i++) {
+            player.addDevelopmentCard(DevelopmentCard.VICTORY_POINT);
+            player.useDevelopmentCard(DevelopmentCard.VICTORY_POINT);
+        }
+
+        assertEquals(player, game.getWinner());
     }
 }

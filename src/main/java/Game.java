@@ -201,9 +201,10 @@ class Game extends Thread {
     }
 
     void goToNextPlayer() {
-        Player winner = getWinner(); // TODO handle winner
-        moveCount++;
-        setCurrentPlayer(getNextPlayer());
+        if (getWinner() == null) {
+            moveCount++;
+            setCurrentPlayer(getNextPlayer());
+        }
     }
 
     // move the currentPlayer id to the
@@ -241,7 +242,7 @@ class Game extends Thread {
     }
 
     void assignLongestRoadAward() {
-        // TODO
+        // TODO see test for description
     }
 
     // Getters and Setters
