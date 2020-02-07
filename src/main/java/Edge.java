@@ -8,11 +8,13 @@ public class Edge {
     private Tile b;
     private boolean road;
     private Player player;
+    private HarbourType harbour;
 
     Edge(Tile a, Tile b) {
         this.a = a;
         this.b = b;
         this.road = false;
+        this.harbour = HarbourType.HARBOUR_NONE;
     }
 
     public Player getPlayer() {
@@ -33,6 +35,18 @@ public class Edge {
 
     void setRoad(boolean road) {
         this.road = road;
+    }
+
+    void setHarbour(HarbourType harbour) {
+        this.harbour = harbour;
+    }
+
+    boolean isHarbour() {
+        return this.harbour != HarbourType.HARBOUR_NONE;
+    }
+
+    HarbourType getHarbourType() {
+        return this.harbour;
     }
 
     Tile[] getTiles() {
@@ -62,8 +76,18 @@ public class Edge {
                 "\"attributes\": {" +
                 "\"key\": \"" + getKey() + "\", " +
                 playerString +
-                "\"road\": " + road +
+                "\"road\": " + road  + ", " +
+                "\"harbour\": " + isHarbour() +
                 "}" +
                 "}";
     }
+}
+enum HarbourType{
+    HARBOUR_NONE,
+    HARBOUR_WOOL,
+    HARBOUR_WOOD,
+    HARBOUR_STONE,
+    HARBOUR_GRAIN,
+    HARBOUR_ORE,
+    HARBOUR_ALL,
 }

@@ -7,7 +7,6 @@ class Tile implements Comparable<Tile> {
     private int y;
     private Type type;
     private int number; // the number of the dice to be hit
-    private Orientation orientation;
 
     private ArrayList<Node> nodes = new ArrayList<>();
 
@@ -16,7 +15,6 @@ class Tile implements Comparable<Tile> {
         this.y = y;
         this.type = type;
         this.number = 0;
-        this.orientation = Orientation.NONE;
     }
 
     Tile(int x, int y, Type type, int number) {
@@ -24,15 +22,6 @@ class Tile implements Comparable<Tile> {
         this.y = y;
         this.type = type;
         this.number = number;
-        this.orientation = Orientation.NONE;
-    }
-
-    Tile(int x, int y, Type type, Orientation orientation) {
-        this.x = x;
-        this.y = y;
-        this.type = type;
-        this.number = 0;
-        this.orientation = orientation;
     }
 
     // to get the distance between two tiles we need to convert to the cube system and then do the calculation
@@ -40,9 +29,7 @@ class Tile implements Comparable<Tile> {
     int getDistance(Tile otherTile) {
         Cube a = new Cube(this);
         Cube b = new Cube(otherTile);
-
         return a.getDistance(b);
-
     }
 
     // this also contains nodes that are not the same as in the board.getNodes().
@@ -57,7 +44,6 @@ class Tile implements Comparable<Tile> {
         return nodes;
     }
 
-
     boolean isEven() {
         return Math.abs(getY())%2 == 0;
     }
@@ -70,7 +56,6 @@ class Tile implements Comparable<Tile> {
                 "\"key\": \"" + getKey() + "\", " +
                 "\"resource_type\": \"" + type.toString() + "\", " +
                 "\"number\": " + number + ", " +
-                "\"orientation\": \"" + orientation.toString() + "\", " +
                 "\"x\": " + x + ", " +
                 "\"y\": " + y +
                 "}" +
@@ -97,7 +82,7 @@ class Tile implements Comparable<Tile> {
     }
 
     public boolean isTerrain() {
-        return (orientation == Orientation.NONE && type != Type.SEA);
+        return (type != Type.SEA);
     }
 
     public Integer getCoordinateSum() {
@@ -128,21 +113,5 @@ enum Type {
     GRAIN,
     ORE,
     SEA,
-    HARBOUR_WOOL,
-    HARBOUR_WOOD,
-    HARBOUR_STONE,
-    HARBOUR_GRAIN,
-    HARBOUR_ORE,
-    HARBOUR_ALL
 }
 
-// used for harbours
-enum Orientation {
-    TOP_LEFT,
-    TOP_RIGHT,
-    LEFT,
-    RIGHT,
-    BOTTOM_LEFT,
-    BOTTOM_RIGHT,
-    NONE
-}

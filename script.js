@@ -96,6 +96,20 @@ svg.append("path")
 for (var i = 0; i < players.length; i++) {
     var player = players[i];
 
+    var harbourBorder = svg.append("path")
+        .attr("class", "harbour-edge")
+        .attr("stroke", "#247aff")
+        .call(redrawHarbour);
+
+    function redrawHarbour(harbourBorder) {
+        harbourBorder.attr("d", path(topojson.mesh(topology, topology.objects.hexagons, function (a, b) {
+            var edge1 = getEdge(a.tile.attributes.key, b.tile.attributes.key);
+            var edge2 = getEdge(b.tile.attributes.key, a.tile.attributes.key);
+            if (edge1) console.log(edge1);
+            return (edge1 && edge1.attributes.harbour) || (edge2 && edge2.attributes.harbour);
+        })));
+    }
+
     var border = svg.append("path")
         .attr("class", "border")
         .attr("stroke", player.attributes.color)
@@ -115,6 +129,9 @@ for (var i = 0; i < players.length; i++) {
         })));
     }
 }
+
+
+
 
 svg.append("g")
     .attr("class", "nodes")
