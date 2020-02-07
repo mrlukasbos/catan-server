@@ -10,6 +10,7 @@ class Player {
     private int id;
     private HashMap<Resource, Integer> resources = new HashMap<>();
     private HashMap<DevelopmentCard, Integer> developmentCards = new HashMap<>();
+    private HashMap<DevelopmentCard, Integer> usedDevelopmentCards = new HashMap<>();
     private String color;
     private Socket socket;
     private Game game;
@@ -177,27 +178,37 @@ class Player {
         removeResources(Constants.STRUCTURE_COSTS.get(structure));
     }
 
-    int getVisibleVictoryPoints() {
-        return game.getBoard().getStructuresFromPlayer(Structure.CITY, this).size() +
-                game.getBoard().getStructuresFromPlayer(Structure.VILLAGE, this).size();
+    int getVictoryPoints() {
+        return game.getBoard().getStructuresFromPlayer(Structure.VILLAGE, this).size() +
+                (game.getBoard().getStructuresFromPlayer(Structure.CITY, this).size() * 2)
+                + getLongestRoadScore() + getLargestArmyScore() + amountOfUsedDevelopmentcard(DevelopmentCard.VICTORY_POINT);
     }
 
-    int getAllVictoryPoints() {
-        return getVisibleVictoryPoints() + developmentCards.get(DevelopmentCard.VICTORY_POINT);
+    int getLongestRoadScore() {
+        if (game.getLongestRoadAward().getPlayer() == this) return 2;
+        return 0;
     }
 
-    void addDevelopmentCard() {
-        int randomIndex = new Random().nextInt() % Constants.ALL_DEVELOPMENT_CARDS.length;
-        DevelopmentCard newCard = Constants.ALL_DEVELOPMENT_CARDS[randomIndex];
-        developmentCards.put(newCard, developmentCards.getOrDefault(newCard, 0) + 1);
+    int getLargestArmyScore() {
+        if (game.getLargestArmyAward().getPlayer() == this) return 2;
+        return 0;
     }
 
-    void removeDevelopmentCard(DevelopmentCard card) {
-        developmentCards.put(card, Math.max(0, developmentCards.getOrDefault(card, 0) - 1));
+    void addDevelopmentCard(DevelopmentCard developmentCard) {
+        developmentCards.put(developmentCard, developmentCards.getOrDefault(developmentCard, 0) + 1);
     }
 
+    boolean useDevelopmentCard(DevelopmentCard developmentCard) {
+        if (developmentCards.getOrDefault(developmentCard, 0) == 0) return false;
 
+        developmentCards.put(developmentCard, developmentCards.getOrDefault(developmentCard, 0) - 1);
+        usedDevelopmentCards.put(developmentCard, usedDevelopmentCards.getOrDefault(developmentCard, 0) + 1);
+        return true;
+    }
 
+    public int amountOfUsedDevelopmentcard(DevelopmentCard developmentCard) {
+        return usedDevelopmentCards.getOrDefault(developmentCard, 0);
+    }
 }
 
 enum Resource {
