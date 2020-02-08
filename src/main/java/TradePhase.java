@@ -41,11 +41,13 @@ public class TradePhase implements GamePhase {
             resourceFrom = Enum.valueOf(Resource.class, object.get("from").getAsString().toUpperCase());
             resourceTo = Enum.valueOf(Resource.class, object.get("to").getAsString().toUpperCase());
 
-            player.removeResources(resourceFrom, Constants.MINIMUM_CARDS_FOR_TRADE);
+            int requiredResourcesForBankTrade = getRequiredAmountOfCardsToTrade(player, resourceFrom);
+
+            player.removeResources(resourceFrom, requiredResourcesForBankTrade);
             player.addResources(resourceTo, 1);
 
             HashMap<Resource, Integer> resourcesMap = new HashMap<>();
-            resourcesMap.put(resourceFrom, Constants.MINIMUM_CARDS_FOR_TRADE);
+            resourcesMap.put(resourceFrom, requiredResourcesForBankTrade);
             resourcesMap.put(resourceTo, 1);
 
             game.addEvent(new Event(game, EventType.TRADE, player).withResources(resourcesMap));
@@ -99,8 +101,10 @@ public class TradePhase implements GamePhase {
                 return false;
             }
 
-            // add 4 to the corresponsing resource and subtract the resource we get (so we need one less)
-            resourcesNeeded.put(resourceFrom, resourcesNeeded.getOrDefault(resourceFrom, 0) + Constants.MINIMUM_CARDS_FOR_TRADE);
+            int requiredResourcesForBankTrade = getRequiredAmountOfCardsToTrade(player, resourceFrom);
+
+            // add 4 to the corresponding resource and subtract the resource we get (so we need one less)
+            resourcesNeeded.put(resourceFrom, resourcesNeeded.getOrDefault(resourceFrom, 0) + requiredResourcesForBankTrade);
             resourcesNeeded.put(resourceTo, resourcesNeeded.getOrDefault(resourceTo, 0) - 1);
         }
 
@@ -115,5 +119,17 @@ public class TradePhase implements GamePhase {
             }
         }
         return true;
+    }
+
+    int getRequiredAmountOfCardsToTrade(Player player, Resource resourceFrom) {
+        int requiredResourcesForBankTrade =  Constants.MINIMUM_CARDS_FOR_TRADE; // default (harbours change this)
+        if (game.getBoard().playerHasHarbour(player, HarbourType.HARBOUR_ALL)) {
+            requiredResourcesForBankTrade = 3;
+        } else if (game.getBoard().playerHasHarbour(player)) {
+            if (game.getBoard().playerHasHarbour(player, Constants.RESOURCES_HARBOURS.get(resourceFrom))) {
+                requiredResourcesForBankTrade = 2;
+            }
+        }
+        return requiredResourcesForBankTrade;
     }
 }

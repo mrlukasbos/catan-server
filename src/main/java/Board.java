@@ -13,13 +13,13 @@ class Board {
         for (int i = 0; i < 3; i++) add(Type.ORE);
         for (int i = 0; i < 3; i++) add(Type.STONE);
     }};
-    private static final ArrayList<Type> HARBOR_TILES = new ArrayList<>() {{
-        for (int i = 0; i < 4; i++) add(Type.HARBOUR_ALL);
-        add(Type.HARBOUR_WOOL);
-        add(Type.HARBOUR_WOOD);
-        add(Type.HARBOUR_ORE);
-        add(Type.HARBOUR_STONE);
-        add(Type.HARBOUR_GRAIN);
+    private static final ArrayList<HarbourType> HARBOR_TYPES = new ArrayList<>() {{
+        for (int i = 0; i < 4; i++) add(HarbourType.HARBOUR_ALL);
+        add(HarbourType.HARBOUR_WOOL);
+        add(HarbourType.HARBOUR_WOOD);
+        add(HarbourType.HARBOUR_ORE);
+        add(HarbourType.HARBOUR_STONE);
+        add(HarbourType.HARBOUR_GRAIN);
     }};
     private static final ArrayList<DevelopmentCard> DEVELOPMENT_CARDS = new ArrayList<>() {{
         for (int i = 0; i < 14; i++) add(DevelopmentCard.KNIGHT);
@@ -29,16 +29,17 @@ class Board {
         for (int i = 0; i < 2; i++) add(DevelopmentCard.YEAR_OF_PLENTY);
     }};
     private static final int[] TILE_NUMBERS = {5, 2, 6, 10, 9, 4, 3, 8, 11, 5, 8, 4, 3, 6, 10, 11, 12, 9};
-    private static final Map<String, Orientation> HARBOR_ORIENTATIONS = new HashMap<String, Orientation>() {{
-        put("[1,0]", Orientation.BOTTOM_RIGHT);
-        put("[3,0]", Orientation.BOTTOM_LEFT);
-        put("[5,1]", Orientation.BOTTOM_LEFT);
-        put("[6,3]", Orientation.LEFT);
-        put("[5,5]", Orientation.TOP_LEFT);
-        put("[3,6]", Orientation.TOP_LEFT);
-        put("[1,6]", Orientation.TOP_RIGHT);
-        put("[0,4]", Orientation.RIGHT);
-        put("[0,2]", Orientation.RIGHT);
+
+    private static final ArrayList<String> HARBOUR_EDGES = new ArrayList<>() {{
+        add("([1,0],[2,1])");
+        add("([3,0],[3,1])");
+        add("([4,1],[5,1])");
+        add("([5,3],[6,3])");
+        add("([4,4],[5,5])");
+        add("([3,6],[4,5])");
+        add("([1,6],[2,5])");
+        add("([0,4],[1,4])");
+        add("([0,2],[1,3])");
     }};
 
     private List<Tile> tiles;
@@ -66,7 +67,6 @@ class Board {
         nodeMap = new HashMap<>();
 
         ArrayList<Type> availableTerrains = new ArrayList<>(TERRAIN_TILES);
-        ArrayList<Type> availableHarbors = new ArrayList<>(HARBOR_TILES);
         int tileNumberIndex = 0;
 
         for (int y = 0; y < SIZE; y++) {
@@ -84,11 +84,7 @@ class Board {
 
                     addTile(tile);
                 } else if (distanceFromCenter == 3) {
-                    if (HARBOR_ORIENTATIONS.containsKey(tileCoordinatesToKey(x, y))) {
-                        addTile(new Tile(x, y, getRandomHarborType(availableHarbors), HARBOR_ORIENTATIONS.get(tileCoordinatesToKey(x, y))));
-                    } else {
-                        addTile(new Tile(x, y, Type.SEA));
-                    }
+                    addTile(new Tile(x, y, Type.SEA));
                 }
             }
         }
@@ -97,6 +93,19 @@ class Board {
             if (tile.isTerrain()) {
                 createEdgesForTile(tile);
                 createNodesForTile(tile);
+            }
+        }
+
+        // set the harbours to the edges and corresponding tiles
+        ArrayList<HarbourType> availableHarbors = new ArrayList<>(HARBOR_TYPES);
+        for (Edge edge : edges) {
+            if (HARBOUR_EDGES.contains(edge.getKey())) {
+                edge.setHarbour(getRandomHarborType(availableHarbors));
+                for (Tile tile : edge.getTiles()   ) {
+                    if (!tile.isTerrain()) {
+                        tile.setHarbour(edge.getHarbourType());
+                    }
+                }
             }
         }
 
@@ -123,7 +132,7 @@ class Board {
         return availableTerrains.remove(new Random().nextInt(availableTerrains.size()));
     }
 
-    private Type getRandomHarborType(ArrayList<Type> availableHarbors) {
+    private HarbourType getRandomHarborType(ArrayList<HarbourType> availableHarbors) {
         return availableHarbors.remove(new Random().nextInt(availableHarbors.size()));
     }
 
@@ -326,6 +335,17 @@ class Board {
         return structures;
     }
 
+    // get cities and villages from player
+    ArrayList<Node> getCitiesAndVillagesFromPlayer(Player player) {
+        ArrayList<Node> structures = new ArrayList<>();
+        for (Node node : nodes) {
+            boolean isVillageOrCity = node.getStructure() == Structure.CITY || node.getStructure() == Structure.VILLAGE;
+            if (node.hasStructure() && isVillageOrCity && node.hasPlayer() && node.getPlayer() == player) {
+                structures.add(node);
+            }
+        }
+        return structures;
+    }
 
     ArrayList<Node> getStructuresFromPlayer(Structure structureType, Player player) {
         ArrayList<Node> structures = new ArrayList<>();
@@ -442,6 +462,38 @@ class Board {
 
     public Bandit getBandit() {
         return bandit;
+    }
+
+    HarbourType getHarbourTypeForNode(Node node) {
+        for (Edge edge : getSurroundingEdges(node) ) {
+            if (edge != null && edge.isHarbour()) {
+                return edge.getHarbourType();
+            }
+        }
+        return HarbourType.HARBOUR_NONE;
+    }
+
+    boolean nodeIsHarbour(Node node) {
+        for (Edge edge : getSurroundingEdges(node) ) {
+            if (edge != null && edge.isHarbour()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    boolean playerHasHarbour(Player player) {
+        for (Node node : getCitiesAndVillagesFromPlayer(player)) {
+            if (nodeIsHarbour(node)) return true;
+        }
+        return false;
+    }
+
+    boolean playerHasHarbour(Player player, HarbourType harbourType) {
+        for (Node node : getCitiesAndVillagesFromPlayer(player)) {
+            if (getHarbourTypeForNode(node) == harbourType) return true;
+        }
+        return false;
     }
 }
 

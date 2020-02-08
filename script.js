@@ -81,9 +81,17 @@ svg.append("g")
         return path.centroid(topojson.feature(topology, d))[1] + 15;
     })
     .text(function (d) {
-        var str = d.tile.attributes.resource_type.toLowerCase();
+        var str = "";
+        if (d.tile.attributes.resource_type === "SEA") {
+            if (d.tile.attributes.harbour_type !== "HARBOUR_NONE") {
+                str = d.tile.attributes.harbour_type.toLowerCase();
+            }
+        } else {
+            str = d.tile.attributes.resource_type.toLowerCase();
+        }
         return str;
     })
+
     .attr("text-anchor", "middle");
 
 svg.append("path")
@@ -95,6 +103,20 @@ svg.append("path")
 
 for (var i = 0; i < players.length; i++) {
     var player = players[i];
+
+    var harbourBorder = svg.append("path")
+        .attr("class", "harbour-edge")
+        .attr("stroke", "#247aff")
+        .call(redrawHarbour);
+
+    function redrawHarbour(harbourBorder) {
+        harbourBorder.attr("d", path(topojson.mesh(topology, topology.objects.hexagons, function (a, b) {
+            var edge1 = getEdge(a.tile.attributes.key, b.tile.attributes.key);
+            var edge2 = getEdge(b.tile.attributes.key, a.tile.attributes.key);
+            if (edge1) console.log(edge1);
+            return (edge1 && edge1.attributes.harbour) || (edge2 && edge2.attributes.harbour);
+        })));
+    }
 
     var border = svg.append("path")
         .attr("class", "border")
@@ -115,6 +137,9 @@ for (var i = 0; i < players.length; i++) {
         })));
     }
 }
+
+
+
 
 svg.append("g")
     .attr("class", "nodes")

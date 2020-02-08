@@ -74,6 +74,14 @@ class Constants {
             Structure.DEVELOPMENT_CARD, DEVELOPMENT_CARD_COSTS
         );
 
+    static final Map<Resource, HarbourType> RESOURCES_HARBOURS = Map.of(
+            Resource.GRAIN, HarbourType.HARBOUR_GRAIN,
+            Resource.ORE, HarbourType.HARBOUR_ORE,
+            Resource.WOOL, HarbourType.HARBOUR_WOOL,
+            Resource.WOOD, HarbourType.HARBOUR_WOOD,
+            Resource.STONE, HarbourType.HARBOUR_STONE
+    );
+
     // RESPONSES
 
     // Acknowledgement

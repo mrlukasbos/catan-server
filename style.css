@@ -121,6 +121,12 @@ button:hover {
     pointer-events: none;
 }
 
+.harbour-edge {
+    opacity: .6;
+    stroke-width: 16px;
+    stroke-linecap: round;
+}
+
 .numbers {
     font-size: 25px;
 }

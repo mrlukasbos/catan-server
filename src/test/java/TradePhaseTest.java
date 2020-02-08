@@ -114,4 +114,75 @@ public class TradePhaseTest {
         assertEquals(player.countResources(Resource.WOOD), 1);
     }
 
+    @Test
+    public void testTradeWithHarbours() {
+        game.setCurrentPlayer(player);
+        Board board = game.getBoard();
+
+        Edge harbourAllEdge = null;
+        for (Edge edge : board.getEdges()) {
+            if (edge.isHarbour() && edge.getHarbourType() == HarbourType.HARBOUR_ALL) {
+                harbourAllEdge = edge;
+                break;
+            }
+        }
+        assertNotNull(harbourAllEdge);
+        // get a node that is connected to this harbour_all edge
+        Node harbourAllNode = board.getSurroundingNodes(harbourAllEdge).get(0);
+
+        // set up a trade of 3 ore to wood
+        player.addResources(Resource.ORE, 3);
+        String message = "[{ \"from\": \"ore\", \"to\": \"wood\" }]";
+        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+
+        // the trade should initially not be legal
+        assertFalse(tradePhase.tradeIsValid(player, jsonArray));
+
+        // place a village on the harbour_all node. Now the same trade should be legal
+        board.placeVillage(player, harbourAllNode);
+        assertTrue(tradePhase.tradeIsValid(player, jsonArray));
+
+
+        // the actual transaction should work as well
+        tradePhase.trade(player, jsonArray);
+        assertEquals(player.countResources(Resource.ORE), 0);
+        assertEquals(player.countResources(Resource.WOOD), 1);
+    }
+
+
+    @Test
+    public void testTradeWithHarbourOfResource() {
+        game.setCurrentPlayer(player);
+        Board board = game.getBoard();
+
+        Edge harbourStoneEdge = null;
+        for (Edge edge : board.getEdges()) {
+            if (edge.isHarbour() && edge.getHarbourType() == HarbourType.HARBOUR_STONE) {
+                harbourStoneEdge = edge;
+                break;
+            }
+        }
+        assertNotNull(harbourStoneEdge);
+        // get a node that is connected to this harbour_all edge
+        Node harbourStoneNode = board.getSurroundingNodes(harbourStoneEdge).get(0);
+
+        // set up a trade of 2 stone to wood
+        player.addResources(Resource.STONE, 2);
+        String message = "[{ \"from\": \"stone\", \"to\": \"wood\" }]";
+        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+
+        // the trade should initially not be legal
+        assertFalse(tradePhase.tradeIsValid(player, jsonArray));
+
+        // place a village on the harbour_all node. Now the same trade should be legal
+        board.placeVillage(player, harbourStoneNode);
+        assertTrue(tradePhase.tradeIsValid(player, jsonArray));
+
+        // the actual transaction should work as well
+        tradePhase.trade(player, jsonArray);
+        assertEquals(player.countResources(Resource.STONE), 0);
+        assertEquals(player.countResources(Resource.WOOD), 1);
+    }
 }
+
+
