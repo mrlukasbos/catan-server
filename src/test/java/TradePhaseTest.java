@@ -7,7 +7,7 @@ public class TradePhaseTest {
     Interface iface = new Interface(10007);
     Game game = new Game(iface);
     TradePhase tradePhase = new TradePhase(game);
-    Player player = new Player(game,0, "tester");
+    PlayerStub player = new PlayerStub(game,0, "tester");
 
     @Test
     public void testTradingNothing() {
@@ -182,6 +182,14 @@ public class TradePhaseTest {
         tradePhase.trade(player, jsonArray);
         assertEquals(player.countResources(Resource.STONE), 0);
         assertEquals(player.countResources(Resource.WOOD), 1);
+    }
+
+    @Test
+    void itHandlesUserCommandsTest() {
+        player.setMessageFromPlayer("[{ \"from\": \"stone\", \"to\": \"wood\" }]");
+        player.addResources(Resource.STONE, 4);
+        JsonArray jsonArray = tradePhase.getValidCommandFromUser(player);
+        assertTrue(tradePhase.tradeIsValid(player, jsonArray));
     }
 }
 

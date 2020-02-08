@@ -10,7 +10,7 @@ class InitialBuildPhaseTest {
     private Interface iface = new Interface(10007);
     private Game game = new Game(iface);
     private InitialBuildPhase buildPhase = new InitialBuildPhase(game);
-    private  Player player = new Player(game,0, "tester");
+    private  PlayerStub player = new PlayerStub(game,0, "tester");
 
     @BeforeEach
     void beforeTest() {
@@ -157,5 +157,14 @@ class InitialBuildPhaseTest {
     @Test
     void phaseNameShouldBeCorrectTest() {
         assertEquals(buildPhase.getPhaseType(), Phase.INITIAL_BUILDING);
+    }
+
+    @Test
+    void itHandlesUserCommandsTest() {
+        int amountOfStructures = buildPhase.game.getBoard().getAllStructures().size();
+        String message = "[{ \"structure\": \"street\", \"location\": \"([3,1],[3,2])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
+        player.setMessageFromPlayer(message);
+        buildPhase.build();
+        assertEquals(amountOfStructures+1, buildPhase.game.getBoard().getAllStructures().size());
     }
 }

@@ -33,7 +33,7 @@ public class MoveBanditPhase implements GamePhase {
     }
 
     // keep running this function until we get valid output from the user
-    private JsonArray getValidCommandFromUser(Player currentPlayer) {
+    JsonArray getValidCommandFromUser(Player currentPlayer) {
         currentPlayer.send(request.toString());
         boolean moveSucceeded = false;
         JsonArray jsonArray = null;

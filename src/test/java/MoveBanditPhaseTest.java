@@ -10,8 +10,8 @@ class MoveBanditPhaseTest {
     private Interface iface = new Interface(10007);
     private Game game = new Game(iface);
     private MoveBanditPhase moveBanditPhase = new MoveBanditPhase(game);
-    private  Player player = new Player(game,0, "tester");
-    private  Player player2 = new Player(game,1, "tester1");
+    private  PlayerStub player = new PlayerStub(game,0, "tester");
+    private  PlayerStub player2 = new PlayerStub(game,1, "tester1");
 
     @BeforeEach
     void beforeTest() {
@@ -70,5 +70,15 @@ class MoveBanditPhaseTest {
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
         assertFalse(moveBanditPhase.moveIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.CAN_NOT_PLACE_BANDIT_ON_SAME_TILE_ERROR.getCode());
+    }
+
+    @Test
+    void itHandlesUserCommandsTest() {
+        String message = "[{ \"location\": \"" + game.getBoard().getTilesForDiceNumber(8).get(0).getKey() + "\" }]";
+        player.setMessageFromPlayer(message);
+        JsonArray jsonArray = moveBanditPhase.getValidCommandFromUser(player);
+        assertTrue(moveBanditPhase.moveIsValid(player, jsonArray));
+        moveBanditPhase.move(player, jsonArray);
+        assertEquals(game.getLastResponse().getCode(), Constants.OK.getCode());
     }
 }
