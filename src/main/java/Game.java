@@ -246,7 +246,38 @@ class Game extends Thread {
     }
 
     void assignLongestRoadAward() {
-        // TODO see test for description
+        int longestRoad = 0;
+        Player playerWithLongestRoad = null;
+        for (Player player : players) {
+            ArrayList<Edge> streets = getBoard().getStreetsFromPlayer(player);
+
+            // iterate over every street
+            int max = 0;
+            for (Edge street : streets) {
+                max = Math.max(findNeighbours(player, 0, getBoard().getSurroundingEdges(street), new ArrayList<Edge>()), max);
+            }
+            
+            if (max > longestRoad) {
+                longestRoad = max;
+                playerWithLongestRoad = player;
+            }
+        }
+        // TODO fix problem with equal road lengths
+        longestRoadAward.setPlayer(playerWithLongestRoad);
+    }
+
+    int findNeighbours(Player player, int depth, ArrayList<Edge> stack, ArrayList<Edge> visitedEdges) {
+        if (stack == null || stack.isEmpty()) return depth;
+        ArrayList<Edge> neighbours = new ArrayList<>();
+        for (Edge neighbour : stack) {
+            if (neighbour != null && neighbour.isRoad() && (neighbour.hasPlayer() && neighbour.getPlayer() == player) && !visitedEdges.contains(neighbour)) {
+                for (Edge newEdge : getBoard().getSurroundingEdges(neighbour)) {
+                    neighbours.add(newEdge);
+                }
+                visitedEdges.add(neighbour);
+            }
+        }
+        return findNeighbours(player,depth+1, neighbours, visitedEdges);
     }
 
     // Getters and Setters

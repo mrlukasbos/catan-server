@@ -264,6 +264,23 @@ class Board {
         return tileDistance;
     }
 
+    // Get the edges surrounding an edge
+    // Tiles are sorted from small to big, and keys are noted from small to big coordinate sums
+    ArrayList<Edge> getSurroundingEdges(Edge e) {
+        ArrayList<Node> surroundingNodes = getSurroundingNodes(e);
+
+        ArrayList<Edge> surroundingEdges = new ArrayList<>();
+        for (Node n : surroundingNodes) {
+            ArrayList<Edge> edgesAroundNode = getSurroundingEdges(n);
+            for (Edge edgeAroundNode :  edgesAroundNode) {
+                if (edgeAroundNode != null && edgeAroundNode != e) {
+                    surroundingEdges.add(edgeAroundNode);
+                }
+            }
+        }
+        return surroundingEdges;
+    }
+
 
     // Get the edges surrounding a node
     // Tiles are sorted from small to big, and keys are noted from small to big coordinate sums

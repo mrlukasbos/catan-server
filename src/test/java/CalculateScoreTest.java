@@ -27,16 +27,21 @@ class CalculateScoreTest {
         game.startGame();
         Player player = new Player(game, 1, "test");
         game.addPlayer(player);
+        Player player2 = new Player(game, 2, "test2");
+        game.addPlayer(player2);
 
         assertEquals(0, player.getVictoryPoints());
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([1,1],[1,2])"));
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([1,2],[2,1])"));
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([1,2],[2,2])"));
 
-        // TODO longest road calculation
-        /*
-            1. Find circles
-                -> If a circle is found split it at both sides of the 3rd grade node
-                -> Continue searching for more circles recursively
-            2. For each resulting tree(s) calculate the distances between each leaf. (every 1st grade node is a leaf)
-         */
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,6],[4,5])"));
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,5],[4,5])"));
+
+        game.assignLongestRoadAward();
+        assertEquals(0, player2.getVictoryPoints());
+        assertEquals(2, player.getVictoryPoints());
+
     }
 
     @Test
