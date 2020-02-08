@@ -7,14 +7,15 @@ class Tile implements Comparable<Tile> {
     private int y;
     private Type type;
     private int number; // the number of the dice to be hit
-
     private ArrayList<Node> nodes = new ArrayList<>();
+    private HarbourType harbour;
 
     Tile(int x, int y, Type type) {
         this.x = x;
         this.y = y;
         this.type = type;
         this.number = 0;
+        this.harbour = HarbourType.HARBOUR_NONE;
     }
 
     Tile(int x, int y, Type type, int number) {
@@ -22,6 +23,7 @@ class Tile implements Comparable<Tile> {
         this.y = y;
         this.type = type;
         this.number = number;
+        this.harbour = HarbourType.HARBOUR_NONE;
     }
 
     // to get the distance between two tiles we need to convert to the cube system and then do the calculation
@@ -48,6 +50,18 @@ class Tile implements Comparable<Tile> {
         return Math.abs(getY())%2 == 0;
     }
 
+    public HarbourType getHarbour() {
+        return harbour;
+    }
+
+    public void setHarbour(HarbourType harbour) {
+        this.harbour = harbour;
+    }
+
+    boolean hasHarbour() {
+        return this.harbour != HarbourType.HARBOUR_NONE;
+    }
+
     @java.lang.Override
     public java.lang.String toString() {
         return "{" +
@@ -55,6 +69,7 @@ class Tile implements Comparable<Tile> {
                 "\"attributes\": {" +
                 "\"key\": \"" + getKey() + "\", " +
                 "\"resource_type\": \"" + type.toString() + "\", " +
+                "\"harbour_type\": \"" + harbour.toString() + "\", " +
                 "\"number\": " + number + ", " +
                 "\"x\": " + x + ", " +
                 "\"y\": " + y +

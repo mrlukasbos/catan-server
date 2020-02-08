@@ -96,10 +96,16 @@ class Board {
             }
         }
 
+        // set the harbours to the edges and corresponding tiles
         ArrayList<HarbourType> availableHarbors = new ArrayList<>(HARBOR_TYPES);
         for (Edge edge : edges) {
             if (HARBOUR_EDGES.contains(edge.getKey())) {
                 edge.setHarbour(getRandomHarborType(availableHarbors));
+                for (Tile tile : edge.getTiles()   ) {
+                    if (!tile.isTerrain()) {
+                        tile.setHarbour(edge.getHarbourType());
+                    }
+                }
             }
         }
 
@@ -428,6 +434,24 @@ class Board {
 
     public Bandit getBandit() {
         return bandit;
+    }
+
+    HarbourType getHarbourTypeForNode(Node node) {
+        for (Edge edge : getSurroundingEdges(node) ) {
+            if (edge != null && edge.isHarbour()) {
+                return edge.getHarbourType();
+            }
+        }
+        return HarbourType.HARBOUR_NONE;
+    }
+
+    boolean nodeIsHarbour(Node node) {
+        for (Edge edge : getSurroundingEdges(node) ) {
+            if (edge != null && edge.isHarbour()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

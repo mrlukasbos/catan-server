@@ -81,9 +81,17 @@ svg.append("g")
         return path.centroid(topojson.feature(topology, d))[1] + 15;
     })
     .text(function (d) {
-        var str = d.tile.attributes.resource_type.toLowerCase();
+        var str = "";
+        if (d.tile.attributes.resource_type === "SEA") {
+            if (d.tile.attributes.harbour_type !== "HARBOUR_NONE") {
+                str = d.tile.attributes.harbour_type.toLowerCase();
+            }
+        } else {
+            str = d.tile.attributes.resource_type.toLowerCase();
+        }
         return str;
     })
+
     .attr("text-anchor", "middle");
 
 svg.append("path")
