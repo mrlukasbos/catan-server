@@ -34,14 +34,22 @@ class CalculateScoreTest {
         game.getBoard().placeStreet(player, game.getBoard().getEdge("([1,1],[1,2])"));
         game.getBoard().placeStreet(player, game.getBoard().getEdge("([1,2],[2,1])"));
         game.getBoard().placeStreet(player, game.getBoard().getEdge("([1,2],[2,2])"));
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([2,2],[2,3])"));
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([2,2],[3,3])"));
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([3,2],[3,3])"));
 
         game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,6],[4,5])"));
-        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,5],[4,5])"));
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,5],[4,5])")); // start cycle
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,4],[3,5])"));
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([2,4],[3,5])"));
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([2,5],[3,5])"));
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([2,6],[3,5])"));
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,5],[3,6])")); // end cycle
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([2,4],[2,5])"));
 
         game.assignLongestRoadAward();
-        assertEquals(0, player2.getVictoryPoints());
-        assertEquals(2, player.getVictoryPoints());
-
+        assertEquals(2, player2.getVictoryPoints());
+        assertEquals(0, player.getVictoryPoints());
     }
 
     @Test

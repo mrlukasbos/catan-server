@@ -256,13 +256,15 @@ class Game extends Thread {
             for (Edge street : streets) {
                 max = Math.max(findNeighbours(player, 0, getBoard().getSurroundingEdges(street), new ArrayList<Edge>()), max);
             }
-            
+            print("length for player " + player.getName() + " is: " + max);
             if (max > longestRoad) {
                 longestRoad = max;
                 playerWithLongestRoad = player;
             }
         }
+        // TODO only award when road is longer or equal than 7
         // TODO fix problem with equal road lengths
+        // TODO check circles
         longestRoadAward.setPlayer(playerWithLongestRoad);
     }
 
@@ -321,6 +323,11 @@ class Game extends Thread {
     public LongestRoadAward getLongestRoadAward() {
         return longestRoadAward;
     }
+}
+
+class EdgeTrace {
+    Edge edge;
+    ArrayList<Edge> trace;
 }
 
 enum Phase {
