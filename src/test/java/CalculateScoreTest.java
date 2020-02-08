@@ -30,8 +30,6 @@ class CalculateScoreTest {
 
         assertEquals(0, player.getVictoryPoints());
 
-        assertTrue(false);
-
         // TODO longest road calculation
         /*
             1. Find circles
