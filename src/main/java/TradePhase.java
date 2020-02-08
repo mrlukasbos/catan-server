@@ -121,7 +121,7 @@ public class TradePhase implements GamePhase {
         return true;
     }
 
-    private int getRequiredAmountOfCardsToTrade(Player player, Resource resourceFrom) {
+    int getRequiredAmountOfCardsToTrade(Player player, Resource resourceFrom) {
         int requiredResourcesForBankTrade =  Constants.MINIMUM_CARDS_FOR_TRADE; // default (harbours change this)
         if (game.getBoard().playerHasHarbour(player, HarbourType.HARBOUR_ALL)) {
             requiredResourcesForBankTrade = 3;

@@ -33,6 +33,7 @@ class BoardTest {
     void harbourTest(){
         Board board = game.getBoard();
         assertFalse(board.playerHasHarbour(player));
+        assertFalse(board.playerHasHarbour(player, HarbourType.HARBOUR_ALL));
 
         // this edge should be a harbour
         Edge harbourEdge = board.getEdge("([1,0],[2,1])");
@@ -46,6 +47,4 @@ class BoardTest {
         assertTrue(board.playerHasHarbour(player));
         assertTrue(board.playerHasHarbour(player, harbourEdge.getHarbourType()));
     }
-
-
 }
