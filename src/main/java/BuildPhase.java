@@ -55,7 +55,7 @@ class BuildPhase implements GamePhase {
         ArrayList<BuildCommand> developmentCardRequests = getCommandsFromInput(currentPlayer, jsonArray, Structure.DEVELOPMENT_CARD);
         for (int i = 0; i < developmentCardRequests.size(); i++) {
             payStructure(currentPlayer, Structure.DEVELOPMENT_CARD);
-            currentPlayer.addDevelopmentCard();
+            game.getBoard().giveDevelopmentCardToPlayer(currentPlayer);
             builtStructures.add(Structure.DEVELOPMENT_CARD);
         }
 

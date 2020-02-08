@@ -9,6 +9,8 @@ class Game extends Thread {
 
     private int lastDiceThrow;
     private Board board;
+    private LargestArmyAward largestArmyAward;
+    private LongestRoadAward longestRoadAward;
     private ArrayList<Player> players = new ArrayList<>();
     private Player currentPlayer;
     private Interface iface;
@@ -44,6 +46,8 @@ class Game extends Thread {
     void init() {
         this.running = true;
         this.board = new Board();
+        this.largestArmyAward = new LargestArmyAward();
+        this.longestRoadAward = new LongestRoadAward();
         lastDiceThrow = 0;
         moveCount = 0;
         events = new ArrayList<>();
@@ -197,11 +201,18 @@ class Game extends Thread {
     }
 
     void goToNextPlayer() {
-        moveCount++;
-        setCurrentPlayer(getNextPlayer());
+        if (getWinner() == null) {
+            moveCount++;
+            setCurrentPlayer(getNextPlayer());
+        } else {
+            this.addEvent(new Event(this, EventType.GENERAL, getWinner()).withGeneralMessage(" won the game with " + getWinner().getVictoryPoints() + " points"));
+            signalGameChange();
+            quit();
+        }
     }
 
-    // move the currentPlayer id to the previous Player in the array.
+    // move the currentPlayer id to the
+    // +previous Player in the array.
     private Player getPreviousPlayer() {
 
         // we need to use floormod because % does not work for negative numbers
@@ -214,8 +225,10 @@ class Game extends Thread {
     }
 
     Player getWinner() {
+        assignLargestArmyAward();
+        assignLongestRoadAward();
         for (Player player : players) {
-            if (player.getAllVictoryPoints() >= Constants.VICTORY_POINTS_TO_WIN) {
+            if (player.getVictoryPoints() >= Constants.VICTORY_POINTS_TO_WIN) {
                 print("the winner is " + player.getName());
                 return player;
             }
@@ -223,6 +236,18 @@ class Game extends Thread {
         return null;
     }
 
+    void assignLargestArmyAward() {
+        for (Player player: players) {
+            int amountOfKnights = player.amountOfUsedDevelopmentcard(DevelopmentCard.KNIGHT);
+            if (amountOfKnights >= Constants.MINIMUM_AMOUNT_OF_KNIGHTS_FOR_AWARD && amountOfKnights > largestArmyAward.getAmountOfKnights()) {
+                largestArmyAward.setPlayer(player, amountOfKnights);
+            }
+        }
+    }
+
+    void assignLongestRoadAward() {
+        // TODO see test for description
+    }
 
     // Getters and Setters
 
@@ -256,6 +281,14 @@ class Game extends Thread {
 
     public ArrayList<Event> getEvents() {
         return events;
+    }
+
+    public LargestArmyAward getLargestArmyAward() {
+        return largestArmyAward;
+    }
+
+    public LongestRoadAward getLongestRoadAward() {
+        return longestRoadAward;
     }
 }
 

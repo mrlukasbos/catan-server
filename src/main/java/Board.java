@@ -27,7 +27,6 @@ class Board {
         for (int i = 0; i < 2; i++) add(DevelopmentCard.MONOPOLY);
         for (int i = 0; i < 2; i++) add(DevelopmentCard.ROAD_BUILDING);
         for (int i = 0; i < 2; i++) add(DevelopmentCard.YEAR_OF_PLENTY);
-
     }};
     private static final int[] TILE_NUMBERS = {5, 2, 6, 10, 9, 4, 3, 8, 11, 5, 8, 4, 3, 6, 10, 11, 12, 9};
 
@@ -48,6 +47,7 @@ class Board {
     private List<Node> nodes;
     private List<DevelopmentCard> developmentCards;
     private Bandit bandit;
+
     private Map<String, Tile> tileMap;
     private Map<String, Edge> edgeMap;
     private Map<String, Node> nodeMap;
@@ -115,7 +115,6 @@ class Board {
 //        }
     }
 
-
     private int calculateDistanceFromCenter(int col, int row) {
         int x = col - (row + (row & 1)) / 2;
         int z = row;
@@ -156,7 +155,7 @@ class Board {
         for (int i = 0; i < 6; i++) {
             Tile b = tileMap.get(tileCoordinatesToKey(a.getX() + directions[i][0], a.getY() + directions[i][1]));
 
-            Edge newEdge = new Edge(a,b);
+            Edge newEdge = new Edge(a, b);
             if (!edgeMap.containsKey(newEdge.getKey())) {
                 addEdge(new Edge(a, b));
             }
@@ -182,7 +181,7 @@ class Board {
 
     ArrayList<Node> getSurroundingNodes(Node n) {
         ArrayList<Node> surroundingNodes = new ArrayList<Node>();
-        for(Node node : nodes) {
+        for (Node node : nodes) {
             int tilesInCommon = 0;
 
             for (Tile t : node.getTiles()) {
@@ -203,7 +202,7 @@ class Board {
     // get nodes surrounding an edge, there should usually be two of them
     ArrayList<Node> getSurroundingNodes(Edge edge) {
         ArrayList<Node> surroundingNodes = new ArrayList<Node>();
-        for(Node node : nodes) {
+        for (Node node : nodes) {
             int tilesInCommon = 0;
             for (Tile t : node.getTiles()) {
                 if (t == edge.getTiles()[0] || t == edge.getTiles()[1]) {
@@ -240,10 +239,8 @@ class Board {
         Arrays.sort(aTiles, new sortByY());
         boolean aNodeIsHighY = aTiles[0].getY() == aTiles[1].getY();
 
-
         Tile keyTileA = aTiles[0];
         Tile keyTileB = bTiles[0];
-
 
         // if we are of the same kind:
         int tileDistance;
@@ -272,7 +269,7 @@ class Board {
     // Tiles are sorted from small to big, and keys are noted from small to big coordinate sums
     ArrayList<Edge> getSurroundingEdges(Node n) {
 
-        Tile [] tiles = n.getSortedNeighboursTiles();
+        Tile[] tiles = n.getSortedNeighboursTiles();
 
         String edgeKey1 = "(" + tiles[0].getKey() + "," + tiles[1].getKey() + ")";
         String edgeKey2 = "(" + tiles[0].getKey() + "," + tiles[2].getKey() + ")";
@@ -313,9 +310,15 @@ class Board {
 
     void placeStructure(Player p, Structure structure, String key) {
         switch (structure) {
-            case STREET: placeStreet(p, getEdge(key)); break;
-            case VILLAGE: placeVillage(p, getNode(key)); break;
-            case CITY: placeCity(p, getNode(key)); break;
+            case STREET:
+                placeStreet(p, getEdge(key));
+                break;
+            case VILLAGE:
+                placeVillage(p, getNode(key));
+                break;
+            case CITY:
+                placeCity(p, getNode(key));
+                break;
             default: {
 
             }
@@ -381,12 +384,24 @@ class Board {
 
     public List<Tile> getTilesForDiceNumber(int number) {
         List<Tile> tilesWithNumber = new ArrayList<>();
-        for (Tile t: tiles ) {
-            if(t.getNumber() == number) {
+        for (Tile t : tiles) {
+            if (t.getNumber() == number) {
                 tilesWithNumber.add(t);
             }
         }
         return tilesWithNumber;
+    }
+
+    public boolean giveDevelopmentCardToPlayer(Player player) {
+        if (developmentCards.isEmpty()) return false;
+
+        int randomIndex = Math.abs(new Random().nextInt() % developmentCards.size());
+        player.addDevelopmentCard(developmentCards.remove(randomIndex));
+        return true;
+    }
+
+    public int amountOfavailableDevelopmentCards() {
+        return developmentCards.size();
     }
 
     // get all nodes around a tile
@@ -430,7 +445,9 @@ class Board {
         return edgeMap.containsKey(key);
     }
 
-    Tile getTile(String key) { return tileMap.get(key); }
+    Tile getTile(String key) {
+        return tileMap.get(key);
+    }
 
     public Bandit getBandit() {
         return bandit;
