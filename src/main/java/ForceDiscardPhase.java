@@ -42,7 +42,7 @@ public class ForceDiscardPhase implements GamePhase {
     }
 
     // keep running this function until we get valid output from the user
-    private JsonArray getValidCommandFromUser(Player player) {
+    JsonArray getValidCommandFromUser(Player player) {
         player.send(request.withAdditionalInfo(Double.toString(Math.floor(player.countResources()/2))).toString());
         boolean discardSucceeded = false;
         JsonArray jsonArray = null;

@@ -8,8 +8,8 @@ class ForceDiscardPhaseTest {
     private Interface iface = new Interface(10007);
     private Game game = new Game(iface);
     private ForceDiscardPhase forceDiscardPhase = new ForceDiscardPhase(game);
-    private  Player player = new Player(game,0, "tester");
-    private  Player player2 = new Player(game,1, "tester1");
+    private  PlayerStub player = new PlayerStub(game,0, "tester");
+    private  PlayerStub player2 = new PlayerStub(game,1, "tester1");
 
     @BeforeEach
     void beforeTest() {
@@ -69,5 +69,14 @@ class ForceDiscardPhaseTest {
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
         assertFalse(forceDiscardPhase.discardIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.MORE_RESOURCES_DISCARDED_THAN_OWNED_ERROR.getCode());
+    }
+
+    @Test
+    void itHandlesUserCommandsTest() {
+        player.addResources(Resource.GRAIN, 8);
+        player.setMessageFromPlayer(" [{ \"grain\": 4 }]");
+        JsonArray jsonArray = forceDiscardPhase.getValidCommandFromUser(player);
+        forceDiscardPhase.discard(player, jsonArray);
+        assertEquals(4, player.countResources(Resource.GRAIN));
     }
 }
