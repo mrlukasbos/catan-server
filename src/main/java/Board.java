@@ -335,6 +335,17 @@ class Board {
         return structures;
     }
 
+    // get cities and villages from player
+    ArrayList<Node> getCitiesAndVillagesFromPlayer(Player player) {
+        ArrayList<Node> structures = new ArrayList<>();
+        for (Node node : nodes) {
+            boolean isVillageOrCity = node.getStructure() == Structure.CITY || node.getStructure() == Structure.VILLAGE;
+            if (node.hasStructure() && isVillageOrCity && node.hasPlayer() && node.getPlayer() == player) {
+                structures.add(node);
+            }
+        }
+        return structures;
+    }
 
     ArrayList<Node> getStructuresFromPlayer(Structure structureType, Player player) {
         ArrayList<Node> structures = new ArrayList<>();
@@ -467,6 +478,13 @@ class Board {
             if (edge != null && edge.isHarbour()) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    boolean playerHasHarbour(Player player, HarbourType harbourType) {
+        for (Node node : getCitiesAndVillagesFromPlayer(player)) {
+            if (getHarbourTypeForNode(node) == harbourType) return true;
         }
         return false;
     }
