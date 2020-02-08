@@ -114,4 +114,13 @@ public class TradePhaseTest {
         assertEquals(player.countResources(Resource.WOOD), 1);
     }
 
+    @Test
+    public void testTradeWithHarbours() {
+        game.setCurrentPlayer(player);
+
+
+
+    }
 }
+
+

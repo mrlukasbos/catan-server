@@ -482,6 +482,13 @@ class Board {
         return false;
     }
 
+    boolean playerHasHarbour(Player player) {
+        for (Node node : getCitiesAndVillagesFromPlayer(player)) {
+            if (nodeIsHarbour(node)) return true;
+        }
+        return false;
+    }
+
     boolean playerHasHarbour(Player player, HarbourType harbourType) {
         for (Node node : getCitiesAndVillagesFromPlayer(player)) {
             if (getHarbourTypeForNode(node) == harbourType) return true;
