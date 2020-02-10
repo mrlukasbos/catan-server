@@ -27,16 +27,68 @@ class CalculateScoreTest {
         game.startGame();
         Player player = new Player(game, 1, "test");
         game.addPlayer(player);
+        Player player2 = new Player(game, 2, "test2");
+        game.addPlayer(player2);
 
+        // initially no one has victorypoints
+        assertEquals(0, player.getVictoryPoints());
+        assertEquals(0, game.getRoadLength(player));
+        assertEquals(0, game.getRoadLength(player2));
+
+        // short roads
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([1,1],[1,2])"));
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([1,2],[2,1])"));
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,5],[4,5])")); // start cycle
+        assertEquals(2, game.getRoadLength(player));
+        assertEquals(1, game.getRoadLength(player2));
+
+        // no awards should be given.
+        game.assignLongestRoadAward();
+        assertEquals(0, player2.getVictoryPoints());
         assertEquals(0, player.getVictoryPoints());
 
-        // TODO longest road calculation
-        /*
-            1. Find circles
-                -> If a circle is found split it at both sides of the 3rd grade node
-                -> Continue searching for more circles recursively
-            2. For each resulting tree(s) calculate the distances between each leaf. (every 1st grade node is a leaf)
-         */
+        // player one does not have circle but has an 'easy' road
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([1,2],[2,2])"));
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([2,2],[2,3])"));
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([2,2],[3,3])"));
+
+        // let the road for player 2 go into a circle
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,4],[3,5])"));
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([2,4],[3,5])"));
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([2,5],[3,5])"));
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([2,6],[3,5])"));
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,5],[3,6])")); // end cycle
+
+        assertEquals(5, game.getRoadLength(player));
+        assertEquals(6, game.getRoadLength(player2));
+
+        game.assignLongestRoadAward();
+        assertEquals(2, player2.getVictoryPoints());
+        assertEquals(0, player.getVictoryPoints());
+
+        // player one gets an extra street, but he needs MORE to get the award
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([3,2],[3,3])"));
+        game.assignLongestRoadAward();
+        assertEquals(2, player2.getVictoryPoints());
+        assertEquals(0, player.getVictoryPoints());
+
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,6],[4,5])"));
+        game.getBoard().placeStreet(player2, game.getBoard().getEdge("([2,4],[2,5])"));
+        assertEquals(6, game.getRoadLength(player));
+        assertEquals(7, game.getRoadLength(player2));
+
+        game.assignLongestRoadAward();
+        assertEquals(2, player2.getVictoryPoints());
+        assertEquals(0, player.getVictoryPoints());
+
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([3,3],[4,3])"));
+        game.getBoard().placeStreet(player, game.getBoard().getEdge("([3,4],[4,3])"));
+        assertEquals(8, game.getRoadLength(player));
+        assertEquals(7, game.getRoadLength(player2));
+
+        game.assignLongestRoadAward();
+        assertEquals(0, player2.getVictoryPoints());
+        assertEquals(2, player.getVictoryPoints());
     }
 
     @Test

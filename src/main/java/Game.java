@@ -246,7 +246,61 @@ class Game extends Thread {
     }
 
     void assignLongestRoadAward() {
-        // TODO see test for description
+        int longestRoad = 0;
+        Player playerWithLongestRoad = null;
+        for (Player player : players) {
+            int roadLength = getRoadLength(player);
+            if (roadLength > longestRoad) {
+                longestRoad = roadLength;
+                playerWithLongestRoad = player;
+            }
+        }
+
+        if (longestRoad >= Constants.MINIMUM_AMOUNT_OF_ROADS_FOR_AWARD && longestRoad > longestRoadAward.getAmountOfRoads()) {
+            longestRoadAward.setPlayer(playerWithLongestRoad);
+            longestRoadAward.setAmountOfRoads(longestRoad);
+        }
+    }
+
+    int getRoadLength(Player player) {
+        ArrayList<Edge> streets = getBoard().getStreetsFromPlayer(player);
+
+        // iterate over every street
+        int max = 0;
+        for (Edge street : streets) {
+            ArrayList<EdgeTrace> edgeTraces = new ArrayList<>();
+            edgeTraces.add(new EdgeTrace(street, null, new ArrayList<>()));
+            max = Math.max(findNeighbours(player, 0, edgeTraces), max);
+        }
+        return max;
+    }
+
+    // get all nodes connected to player streets
+    // for all nodes find neighbour nodes and store visited nodes
+    int findNeighbours(Player player, int depth, ArrayList<EdgeTrace> stack) {
+        if (stack == null || stack.isEmpty()) return depth - 1;
+
+        ArrayList<EdgeTrace> neighbours = new ArrayList<>();
+        for (EdgeTrace neighbourEg : stack) {
+            Edge neighbour = neighbourEg.edge;
+            Edge prev = neighbourEg.prev;
+            ArrayList<Edge> trace = neighbourEg.trace;
+
+
+            if (neighbour != null && neighbour.isRoad() && (neighbour.hasPlayer() && neighbour.getPlayer() == player) && !trace.contains(neighbour)) {
+                for (Edge newEdge : getBoard().getSurroundingEdges(neighbour)) {
+
+                    // the surrounding edge must not be a surrounding edge of the previous edge
+                    if (prev == null || !getBoard().getSurroundingEdges(prev).contains(newEdge)) {
+                        ArrayList<Edge> t = new ArrayList<>(trace);
+                        t.add(neighbour);
+                        EdgeTrace newEdgeTrace = new EdgeTrace (newEdge, neighbour, t);
+                        neighbours.add(newEdgeTrace);
+                    }
+                }
+            }
+        }
+        return findNeighbours(player,depth+1, neighbours);
     }
 
     // Getters and Setters
@@ -289,6 +343,17 @@ class Game extends Thread {
 
     public LongestRoadAward getLongestRoadAward() {
         return longestRoadAward;
+    }
+}
+
+class EdgeTrace {
+    Edge edge;
+    Edge prev;
+    ArrayList<Edge> trace;
+    EdgeTrace(Edge edge, Edge prev, ArrayList<Edge> trace){
+        this.edge = edge;
+        this.trace = trace;
+        this.prev = prev;
     }
 }
 
