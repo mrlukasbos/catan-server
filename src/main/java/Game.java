@@ -249,27 +249,31 @@ class Game extends Thread {
         int longestRoad = 0;
         Player playerWithLongestRoad = null;
         for (Player player : players) {
-            ArrayList<Edge> streets = getBoard().getStreetsFromPlayer(player);
-
-            // iterate over every street
-            int max = 0;
-            for (Edge street : streets) {
-                ArrayList<EdgeTrace> edgeTraces = new ArrayList<>();
-                edgeTraces.add(new EdgeTrace(street, null, new ArrayList<>()));
-                max = Math.max(findNeighbours(player, 0, edgeTraces), max);
-            }
-            print("length for player " + player.getName() + " is: " + max);
-            if (max > longestRoad) {
-                longestRoad = max;
+            int roadLength = getRoadLength(player);
+            if (roadLength > longestRoad) {
+                longestRoad = roadLength;
                 playerWithLongestRoad = player;
             }
         }
-        // TODO only award when road is longer or equal than 7
-        // TODO fix problem with equal road lengths
-        // TODO check circles
-        longestRoadAward.setPlayer(playerWithLongestRoad);
+
+        if (longestRoad >= Constants.MINIMUM_AMOUNT_OF_ROADS_FOR_AWARD && longestRoad > longestRoadAward.getAmountOfRoads()) {
+            longestRoadAward.setPlayer(playerWithLongestRoad);
+            longestRoadAward.setAmountOfRoads(longestRoad);
+        }
     }
 
+    int getRoadLength(Player player) {
+        ArrayList<Edge> streets = getBoard().getStreetsFromPlayer(player);
+
+        // iterate over every street
+        int max = 0;
+        for (Edge street : streets) {
+            ArrayList<EdgeTrace> edgeTraces = new ArrayList<>();
+            edgeTraces.add(new EdgeTrace(street, null, new ArrayList<>()));
+            max = Math.max(findNeighbours(player, 0, edgeTraces), max);
+        }
+        return max;
+    }
 
     // get all nodes connected to player streets
     // for all nodes find neighbour nodes and store visited nodes
@@ -341,15 +345,6 @@ class Game extends Thread {
         return longestRoadAward;
     }
 }
-
-//class EdgeTrace {
-//    Node node;
-//    ArrayList<Node> trace;
-//    EdgeTrace(Node node,  ArrayList<Node> trace){
-//        this.node = node;
-//        this.trace = trace;
-//    }
-//}
 
 class EdgeTrace {
     Edge edge;
