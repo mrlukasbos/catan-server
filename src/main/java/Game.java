@@ -72,7 +72,7 @@ class Game extends Thread {
             // if player has disconnected
             // quit game
 
-            if (isRunning()) {
+            if (isRunning() && !getPlayers().isEmpty()) {
                 Phase nextPhase = currentPhase.execute();
                 print("Going to phase: " + nextPhase.toString());
                 currentPhase = getGamePhase(nextPhase);
@@ -301,6 +301,18 @@ class Game extends Thread {
             }
         }
         return findNeighbours(player,depth+1, neighbours);
+    }
+
+    int getRequiredAmountOfCardsToTrade(Player player, Resource resourceFrom) {
+        int requiredResourcesForBankTrade =  Constants.MINIMUM_CARDS_FOR_TRADE; // default (harbours change this)
+        if (getBoard().playerHasHarbour(player, HarbourType.HARBOUR_ALL)) {
+            requiredResourcesForBankTrade = 3;
+        } else if (getBoard().playerHasHarbour(player)) {
+            if (getBoard().playerHasHarbour(player, Constants.RESOURCES_HARBOURS.get(resourceFrom))) {
+                requiredResourcesForBankTrade = 2;
+            }
+        }
+        return requiredResourcesForBankTrade;
     }
 
     // Getters and Setters

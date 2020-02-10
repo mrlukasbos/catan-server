@@ -42,7 +42,7 @@ public class TradePhase implements GamePhase {
             resourceFrom = Enum.valueOf(Resource.class, object.get("from").getAsString().toUpperCase());
             resourceTo = Enum.valueOf(Resource.class, object.get("to").getAsString().toUpperCase());
 
-            int requiredResourcesForBankTrade = getRequiredAmountOfCardsToTrade(player, resourceFrom);
+            int requiredResourcesForBankTrade = game.getRequiredAmountOfCardsToTrade(player, resourceFrom);
 
             player.removeResources(resourceFrom, requiredResourcesForBankTrade);
             player.addResources(resourceTo, 1);
@@ -103,7 +103,7 @@ public class TradePhase implements GamePhase {
                 return false;
             }
 
-            int requiredResourcesForBankTrade = getRequiredAmountOfCardsToTrade(player, resourceFrom);
+            int requiredResourcesForBankTrade = game.getRequiredAmountOfCardsToTrade(player, resourceFrom);
 
             // add 4 to the corresponding resource and subtract the resource we get (so we need one less)
             resourcesNeeded.put(resourceFrom, resourcesNeeded.getOrDefault(resourceFrom, 0) + requiredResourcesForBankTrade);
@@ -123,15 +123,5 @@ public class TradePhase implements GamePhase {
         return true;
     }
 
-    int getRequiredAmountOfCardsToTrade(Player player, Resource resourceFrom) {
-        int requiredResourcesForBankTrade =  Constants.MINIMUM_CARDS_FOR_TRADE; // default (harbours change this)
-        if (game.getBoard().playerHasHarbour(player, HarbourType.HARBOUR_ALL)) {
-            requiredResourcesForBankTrade = 3;
-        } else if (game.getBoard().playerHasHarbour(player)) {
-            if (game.getBoard().playerHasHarbour(player, Constants.RESOURCES_HARBOURS.get(resourceFrom))) {
-                requiredResourcesForBankTrade = 2;
-            }
-        }
-        return requiredResourcesForBankTrade;
-    }
+
 }

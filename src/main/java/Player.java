@@ -156,9 +156,7 @@ class Player {
 
     boolean canTradeWithBank() {
         for (Map.Entry<Resource, Integer> resource : resources.entrySet()) {
-
-            // TODO this is a bug: harbours are not taken into account!
-            if (resource.getValue() >= Constants.MINIMUM_CARDS_FOR_TRADE) return true;
+            if (resource.getValue() >= game.getRequiredAmountOfCardsToTrade(this, resource.getKey())) return true;
         }
         return false;
     }

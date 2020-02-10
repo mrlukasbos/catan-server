@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class DiceThrowPhase implements GamePhase {
@@ -33,8 +34,8 @@ public class DiceThrowPhase implements GamePhase {
     // Give all the resources to the players for a given dicethrow
     private void distributeResourcesForDice(int diceThrow) {
 
-        // create a hashmap for each player (for the logging)
-        ArrayList<HashMap<Resource, Integer>> resourcesForPlayerId = new ArrayList<>();
+        // create a hashmap for each player (for the logging):
+        ArrayList<HashMap<Resource, Integer>> resourcesForPlayerId = new ArrayList<>(Collections.nCopies(game.getPlayers().size(), null));
         for (Player player : game.getPlayers()) {
             resourcesForPlayerId.add(player.getId(), new HashMap<>());
         }

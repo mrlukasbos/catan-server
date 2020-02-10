@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PlayerTest {
-    Player player = new Player(null,0, "tester");
+    Interface iface = new Interface(10007);
+    Game game = new Game(iface);
+    Player player = new Player(game,0, "tester");
 
     @Test
     void itAddsAndRemovesRecourcesTest() {
@@ -70,6 +72,7 @@ public class PlayerTest {
 
     @Test
     void canTradeTest() {
+        // the behaviour of this method with harbours is tested in the TradePhasesTest
         player.addResources(Constants.CITY_COSTS);
         player.addResources(Constants.VILLAGE_COSTS);
         assertFalse(player.canTradeWithBank());

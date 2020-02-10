@@ -173,10 +173,12 @@ public class TradePhaseTest {
 
         // the trade should initially not be legal
         assertFalse(tradePhase.tradeIsValid(player, jsonArray));
+        assertFalse(player.canTradeWithBank());
 
         // place a village on the harbour_all node. Now the same trade should be legal
         board.placeVillage(player, harbourStoneNode);
         assertTrue(tradePhase.tradeIsValid(player, jsonArray));
+        assertTrue(player.canTradeWithBank());
 
         // the actual transaction should work as well
         tradePhase.trade(player, jsonArray);
