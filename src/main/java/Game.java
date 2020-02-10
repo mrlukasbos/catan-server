@@ -254,7 +254,9 @@ class Game extends Thread {
             // iterate over every street
             int max = 0;
             for (Edge street : streets) {
-                max = Math.max(findNeighbours(player, 0, getBoard().getSurroundingEdges(street), new ArrayList<Edge>()), max);
+                ArrayList<EdgeTrace> edgeTraces = new ArrayList<>();
+                edgeTraces.add(new EdgeTrace(street, new ArrayList<>()));
+                max = Math.max(findNeighbours(player, 0, edgeTraces), max);
             }
             print("length for player " + player.getName() + " is: " + max);
             if (max > longestRoad) {
@@ -268,18 +270,59 @@ class Game extends Thread {
         longestRoadAward.setPlayer(playerWithLongestRoad);
     }
 
-    int findNeighbours(Player player, int depth, ArrayList<Edge> stack, ArrayList<Edge> visitedEdges) {
-        if (stack == null || stack.isEmpty()) return depth;
-        ArrayList<Edge> neighbours = new ArrayList<>();
-        for (Edge neighbour : stack) {
-            if (neighbour != null && neighbour.isRoad() && (neighbour.hasPlayer() && neighbour.getPlayer() == player) && !visitedEdges.contains(neighbour)) {
+
+    // get all nodes connected to player streets
+    // for all nodes find neighbour nodes and store visited nodes
+
+    int findNeighbours(Player player, int depth, ArrayList<EdgeTrace> stack) {
+        if (stack == null || stack.isEmpty()) return depth - 1;
+//
+//        ArrayList<EdgeTrace> neighbourNodes = new ArrayList<>();
+//        for (EdgeTrace et : stack) {
+//            Node node = et.node;
+//            ArrayList<Node> trace = et.trace;
+//
+//            ArrayList<Edge> neighbours = new ArrayList<>();
+//            for (Edge surroundingEdge : getBoard().getSurroundingEdges(node)) {
+//                if (surroundingEdge != null && surroundingEdge.isRoad() && (surroundingEdge.hasPlayer() && surroundingEdge.getPlayer() == player)) { // the edge belongs to the player
+//                    neighbours.add(surroundingEdge);
+//                }
+//            }
+//
+//            for (Edge neighbour : neighbours) {
+//                for (Node surroundingNode : getBoard().getSurroundingNodes(neighbour)) {
+//                    if (surroundingNode != node && !trace.contains(node)) {
+//                        ArrayList<Node> t = new ArrayList<>(trace);
+//                        t.add(node);
+//                        EdgeTrace newEdgeTrace = new EdgeTrace(surroundingNode, t);
+//                        neighbourNodes.add(newEdgeTrace);
+//
+//                        System.out.println("from " + node.getKey() + " over " + neighbour.getKey() + " to " + newEdgeTrace.node.getKey() + " to depth " + depth);
+//                    } else if (trace.contains(node)) {
+//                        return depth;
+//                    }
+//                }
+//            }
+//        }
+//        return findNeighbours(player, depth + 1, neighbourNodes);
+//    }
+
+
+        ArrayList<EdgeTrace> neighbours = new ArrayList<>();
+        for (EdgeTrace neighbourEg : stack) {
+            Edge neighbour = neighbourEg.edge;
+            ArrayList<Edge> trace = neighbourEg.trace;
+
+            if (neighbour != null && neighbour.isRoad() && (neighbour.hasPlayer() && neighbour.getPlayer() == player) && !trace.contains(neighbour)) {
                 for (Edge newEdge : getBoard().getSurroundingEdges(neighbour)) {
-                    neighbours.add(newEdge);
+                    ArrayList<Edge> t = new ArrayList<>(trace);
+                    t.add(neighbour);
+                    EdgeTrace newEdgeTrace = new EdgeTrace (newEdge, t);
+                    neighbours.add(newEdgeTrace);
                 }
-                visitedEdges.add(neighbour);
             }
         }
-        return findNeighbours(player,depth+1, neighbours, visitedEdges);
+        return findNeighbours(player,depth+1, neighbours);
     }
 
     // Getters and Setters
@@ -325,9 +368,22 @@ class Game extends Thread {
     }
 }
 
+//class EdgeTrace {
+//    Node node;
+//    ArrayList<Node> trace;
+//    EdgeTrace(Node node,  ArrayList<Node> trace){
+//        this.node = node;
+//        this.trace = trace;
+//    }
+//}
+
 class EdgeTrace {
     Edge edge;
     ArrayList<Edge> trace;
+    EdgeTrace(Edge edge,  ArrayList<Edge> trace){
+        this.edge = edge;
+        this.trace = trace;
+    }
 }
 
 enum Phase {
