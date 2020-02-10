@@ -114,19 +114,4 @@ class DiceThrowPhaseTest {
     }
 }
 
-class DiceStub extends Dice {
-    private int value = 8;
 
-    DiceStub() {
-        super(2);
-    }
-
-    @Override
-    int throwDice() {
-        return value;
-    }
-
-    void shouldThrow(int value) {
-        this.value = value;
-    }
-}

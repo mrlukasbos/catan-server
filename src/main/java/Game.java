@@ -54,11 +54,11 @@ class Game extends Thread {
         lastResponse = null;
 
         diceThrowPhase = new DiceThrowPhase(this, new Dice(2));
-        setupPhase = new SetupPhase(this);
+        setupPhase = new SetupPhase(this, new Dice(2));
         initialBuildPhase = new InitialBuildPhase(this);
         normalBuildPhase = new BuildPhase(this);
         tradePhase = new TradePhase(this);
-        currentPhase = new SetupPhase(this);
+        currentPhase = setupPhase;
         moveBanditPhase = new MoveBanditPhase(this);
         forceDiscardPhase = new ForceDiscardPhase(this);
     }

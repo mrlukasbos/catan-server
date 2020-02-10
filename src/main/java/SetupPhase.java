@@ -1,8 +1,10 @@
 public class SetupPhase implements GamePhase {
     Game game;
+    Dice dice;
 
-    SetupPhase(Game game){
+    SetupPhase(Game game, Dice dice) {
         this.game = game;
+        this.dice = dice;
     }
 
     public Phase getPhaseType() {
@@ -18,8 +20,7 @@ public class SetupPhase implements GamePhase {
     }
 
     // throw the dice, the highest throw can start
-    private Player determineFirstPlayer() {
-        Dice dice = new Dice(1);
+    Player determineFirstPlayer() {
         int highestDiceThrow = 0;
         Player firstPlayer = game.getPlayers().get(0);
 

@@ -437,40 +437,16 @@ class Board {
         return tile.getNodes();
     }
 
-    public void setTiles(List<Tile> tiles) {
-        this.tiles = tiles;
-    }
-
     public List<Edge> getEdges() {
         return edges;
-    }
-
-    public void setEdges(List<Edge> edges) {
-        this.edges = edges;
-    }
-
-    List<Node> getNodes() {
-        return nodes;
-    }
-
-    public void setNodes(List<Node> nodes) {
-        this.nodes = nodes;
     }
 
     Node getNode(String key) {
         return nodeMap.get(key);
     }
 
-    boolean hasNode(String key) {
-        return nodeMap.containsKey(key);
-    }
-
     Edge getEdge(String key) {
         return edgeMap.get(key);
-    }
-
-    boolean hasEdge(String key) {
-        return edgeMap.containsKey(key);
     }
 
     Tile getTile(String key) {
