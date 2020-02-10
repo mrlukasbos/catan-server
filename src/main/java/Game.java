@@ -255,7 +255,7 @@ class Game extends Thread {
             int max = 0;
             for (Edge street : streets) {
                 ArrayList<EdgeTrace> edgeTraces = new ArrayList<>();
-                edgeTraces.add(new EdgeTrace(street, new ArrayList<>()));
+                edgeTraces.add(new EdgeTrace(street, null, new ArrayList<>()));
                 max = Math.max(findNeighbours(player, 0, edgeTraces), max);
             }
             print("length for player " + player.getName() + " is: " + max);
@@ -311,14 +311,20 @@ class Game extends Thread {
         ArrayList<EdgeTrace> neighbours = new ArrayList<>();
         for (EdgeTrace neighbourEg : stack) {
             Edge neighbour = neighbourEg.edge;
+            Edge prev = neighbourEg.prev;
             ArrayList<Edge> trace = neighbourEg.trace;
+
 
             if (neighbour != null && neighbour.isRoad() && (neighbour.hasPlayer() && neighbour.getPlayer() == player) && !trace.contains(neighbour)) {
                 for (Edge newEdge : getBoard().getSurroundingEdges(neighbour)) {
-                    ArrayList<Edge> t = new ArrayList<>(trace);
-                    t.add(neighbour);
-                    EdgeTrace newEdgeTrace = new EdgeTrace (newEdge, t);
-                    neighbours.add(newEdgeTrace);
+
+                    // the surrounding edge must not be a surrounding edge of the previous edge
+                    if (prev == null || !getBoard().getSurroundingEdges(prev).contains(newEdge)) {
+                        ArrayList<Edge> t = new ArrayList<>(trace);
+                        t.add(neighbour);
+                        EdgeTrace newEdgeTrace = new EdgeTrace (newEdge, neighbour, t);
+                        neighbours.add(newEdgeTrace);
+                    }
                 }
             }
         }
@@ -379,10 +385,12 @@ class Game extends Thread {
 
 class EdgeTrace {
     Edge edge;
+    Edge prev;
     ArrayList<Edge> trace;
-    EdgeTrace(Edge edge,  ArrayList<Edge> trace){
+    EdgeTrace(Edge edge, Edge prev, ArrayList<Edge> trace){
         this.edge = edge;
         this.trace = trace;
+        this.prev = prev;
     }
 }
 
