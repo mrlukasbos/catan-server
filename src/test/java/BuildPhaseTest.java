@@ -10,12 +10,13 @@ class BuildPhaseTest {
     private Interface iface = new Interface(10007);
     private Game game = new Game(iface);
     private BuildPhase buildPhase = new BuildPhase(game);
-    private  Player player = new Player(game,0, "tester");
-    private  Player player2 = new Player(game,1, "tester1");
+    private  PlayerStub player = new PlayerStub(game,0, "tester");
+    private  PlayerStub player2 = new PlayerStub(game,1, "tester1");
 
     @BeforeEach
     void beforeTest() {
         game.addPlayer(player);
+        game.addPlayer(player2);
         game.setCurrentPlayer(player);
         game.init();
     }
@@ -279,6 +280,37 @@ class BuildPhaseTest {
 
         // the player should be out of resources
         assertEquals(player.countResources(), 0);
+    }
 
+    @Test
+    void itExecutes() {
+        String message = "[{ \"structure\": \"street\", \"location\": \"([3,1],[3,2])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
+        player.setMessageFromPlayer(message);
+        assertEquals(player, game.getCurrentPlayer());
+        Phase phase = buildPhase.execute();
+        assertEquals(player2, game.getCurrentPlayer());
+        assertEquals(Phase.THROW_DICE, phase);
+    }
+
+    @Test
+    void itContinuesIfPlayerCantBuild() {
+        String incorrectMessage = "";
+        player.setMessageFromPlayer(incorrectMessage);
+        assertEquals(player, game.getCurrentPlayer());
+        Phase phase = buildPhase.execute();
+        assertEquals(player2, game.getCurrentPlayer());
+        assertEquals(Phase.THROW_DICE, phase);
+    }
+
+    @Test
+    void itContinuesIfPlayerKeepsSendingWrongResponse() {
+        player.addResources(Constants.STREET_COSTS);
+        String incorrectMessage = "[{ \"structure\": \"straat\", \"location\": \"([3,1],[3,2])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
+        player.setMessageFromPlayer(incorrectMessage);
+        assertEquals(player, game.getCurrentPlayer());
+        buildPhase.execute();
+
+        // it should trigger to 'too_much_failure' response
+        assertEquals(Constants.TOO_MUCH_FAILURES.getCode(), game.getLastResponse().getCode());
     }
 }

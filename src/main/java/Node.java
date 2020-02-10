@@ -2,9 +2,7 @@
 A node is a junction between tiles. It can support settlements and cities in the game
  */
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 
 public class Node {
     private Tile t;
@@ -50,8 +48,7 @@ public class Node {
     }
 
     Tile[] getTiles() {
-        Tile[] tiles = {t, l, r};
-        return tiles;
+        return new Tile[]{t, l, r};
     }
 
     Tile[] getSortedNeighboursTiles() {

@@ -191,6 +191,19 @@ public class TradePhaseTest {
         JsonArray jsonArray = tradePhase.getValidCommandFromUser(player);
         assertTrue(tradePhase.tradeIsValid(player, jsonArray));
     }
+
+    @Test
+    void itExecutes() {
+        player.setMessageFromPlayer("[{ \"from\": \"stone\", \"to\": \"wood\" }]");
+        player.addResources(Resource.STONE, 4);
+        game.setCurrentPlayer(player);
+        Phase phase = tradePhase.execute();
+        assertEquals(Phase.BUILDING, phase);
+
+        // the last response should be ok.
+        assertEquals(Constants.OK.getCode(), game.getLastResponse().getCode());
+
+    }
 }
 
 

@@ -20,12 +20,13 @@ public class TradePhase implements GamePhase {
 
     @Override
     public Phase execute() {
-        if (game.getCurrentPlayer().canTradeWithBank()) {
-            JsonArray jsonArray = getValidCommandFromUser(game.getCurrentPlayer());
-            trade(game.getCurrentPlayer(), jsonArray);
+        Player player = game.getCurrentPlayer();
+        if (player.canTradeWithBank()) {
+            JsonArray jsonArray = getValidCommandFromUser(player);
+            trade(player, jsonArray);
             game.signalGameChange();
         } else {
-            game.addEvent(new Event(game, EventType.GENERAL, game.getCurrentPlayer()).withGeneralMessage(" can't trade"));
+            game.addEvent(new Event(game, EventType.GENERAL, player).withGeneralMessage(" can't trade"));
         }
         return Phase.BUILDING;
     }
@@ -52,6 +53,7 @@ public class TradePhase implements GamePhase {
 
             game.addEvent(new Event(game, EventType.TRADE, player).withResources(resourcesMap));
         }
+        game.sendResponse(Constants.OK.withAdditionalInfo("Trade was successful!"));
     }
 
 
