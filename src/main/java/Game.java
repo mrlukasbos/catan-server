@@ -273,40 +273,8 @@ class Game extends Thread {
 
     // get all nodes connected to player streets
     // for all nodes find neighbour nodes and store visited nodes
-
     int findNeighbours(Player player, int depth, ArrayList<EdgeTrace> stack) {
         if (stack == null || stack.isEmpty()) return depth - 1;
-//
-//        ArrayList<EdgeTrace> neighbourNodes = new ArrayList<>();
-//        for (EdgeTrace et : stack) {
-//            Node node = et.node;
-//            ArrayList<Node> trace = et.trace;
-//
-//            ArrayList<Edge> neighbours = new ArrayList<>();
-//            for (Edge surroundingEdge : getBoard().getSurroundingEdges(node)) {
-//                if (surroundingEdge != null && surroundingEdge.isRoad() && (surroundingEdge.hasPlayer() && surroundingEdge.getPlayer() == player)) { // the edge belongs to the player
-//                    neighbours.add(surroundingEdge);
-//                }
-//            }
-//
-//            for (Edge neighbour : neighbours) {
-//                for (Node surroundingNode : getBoard().getSurroundingNodes(neighbour)) {
-//                    if (surroundingNode != node && !trace.contains(node)) {
-//                        ArrayList<Node> t = new ArrayList<>(trace);
-//                        t.add(node);
-//                        EdgeTrace newEdgeTrace = new EdgeTrace(surroundingNode, t);
-//                        neighbourNodes.add(newEdgeTrace);
-//
-//                        System.out.println("from " + node.getKey() + " over " + neighbour.getKey() + " to " + newEdgeTrace.node.getKey() + " to depth " + depth);
-//                    } else if (trace.contains(node)) {
-//                        return depth;
-//                    }
-//                }
-//            }
-//        }
-//        return findNeighbours(player, depth + 1, neighbourNodes);
-//    }
-
 
         ArrayList<EdgeTrace> neighbours = new ArrayList<>();
         for (EdgeTrace neighbourEg : stack) {
