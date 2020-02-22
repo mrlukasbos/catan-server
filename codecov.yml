@@ -1,3 +1,4 @@
 ignore:
   - "src/main/java/Server.java"  # ignore folders and all its contents
   - "src/main/java/Interface.java"  # ignore folders and all its contents
+  - "src/main/java/Main.java"  # ignore folders and all its contents
