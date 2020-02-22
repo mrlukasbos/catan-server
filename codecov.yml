@@ -1,0 +1,4 @@
+ignore:
+  - "src/main/java/Server.java"
+  - "src/main/java/Interface.java"
+  - "src/main/java/Main.java"
