@@ -17,3 +17,6 @@ jobs:
       run: mvn clean package
     - name: Codecov
       uses: codecov/codecov-action@v1.0.5
+       with:
+          # Repository upload token - get it from codecov.io
+          token: ab3d3156-43e1-4456-8d6b-eb4d0ceb32a9
