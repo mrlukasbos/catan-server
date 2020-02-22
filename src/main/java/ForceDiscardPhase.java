@@ -1,4 +1,5 @@
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
@@ -30,11 +31,12 @@ public class ForceDiscardPhase implements GamePhase {
     }
 
     void discard(Player player, JsonArray jsonArray) {
-        JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
-
-        for (Resource resource : Constants.ALL_RESOURCES) {
-            if (jsonObject.has(resource.name().toLowerCase())) {
-                player.removeResources(resource, jsonObject.get(resource.name().toLowerCase()).getAsInt());
+        for (JsonElement obj : jsonArray) {
+            JsonObject object = obj.getAsJsonObject();
+            for (Resource resource : Constants.ALL_RESOURCES) {
+                if (object.get("type").getAsString().toLowerCase().equals(resource.name().toLowerCase())) {
+                    player.removeResources(resource, object.get("value").getAsInt());
+                }
             }
         }
 
@@ -64,21 +66,21 @@ public class ForceDiscardPhase implements GamePhase {
     boolean discardIsValid(Player player, JsonArray jsonArray) {
         if (jsonArray.size() == 0) return false;
 
-        JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
-
         int totalDiscarded = 0;
-        for (Resource resource : Constants.ALL_RESOURCES) {
-            int amount = 0;
-            if (jsonObject.has(resource.name().toLowerCase())) {
-                amount = jsonObject.get(resource.name().toLowerCase()).getAsInt();
-                totalDiscarded += amount;
-            }
-
-            if (player.countResources(resource) < amount) {
-                game.sendResponse(player, Constants.MORE_RESOURCES_DISCARDED_THAN_OWNED_ERROR.withAdditionalInfo("you tried to discard " + amount + " " + resource.name().toLowerCase() + " but only have " + player.countResources(resource)));
-                return false;
+        for (JsonElement obj : jsonArray) {
+            JsonObject object = obj.getAsJsonObject();
+            for (Resource resource : Constants.ALL_RESOURCES) {
+                if (object.get("type").getAsString().toLowerCase().equals(resource.name().toLowerCase())) {
+                    int amount = object.get("value").getAsInt();
+                    if (player.countResources(resource) < amount) {
+                        game.sendResponse(player, Constants.MORE_RESOURCES_DISCARDED_THAN_OWNED_ERROR.withAdditionalInfo("you tried to discard " + amount + " " + resource.name().toLowerCase() + " but only have " + player.countResources(resource)));
+                        return false;
+                    }
+                    totalDiscarded += amount;
+                }
             }
         }
+
 
         int amountToDiscard = (int) Math.floor(player.countResources()/2);
         if (totalDiscarded < amountToDiscard) {

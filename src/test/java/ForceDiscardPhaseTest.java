@@ -34,7 +34,7 @@ class ForceDiscardPhaseTest {
     void playerCanDiscardResourcesTest() {
         player.addResources(Resource.GRAIN, 8);
 
-        String message = " [{ \"grain\": 4 }]";
+        String message = " [{\"type\":\"grain\", \"value\": 4}]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
         forceDiscardPhase.discard(player, jsonArray);
 
@@ -45,12 +45,12 @@ class ForceDiscardPhaseTest {
     void playersMustDiscardHalfTheirResourcesTest() {
         player.addResources(Resource.GRAIN, 8);
 
-        String message = " [{ \"grain\": 3 }]";
+        String message = " [{\"type\":\"grain\", \"value\": 3}]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
         assertFalse(forceDiscardPhase.discardIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.NOT_ENOUGH_RESOURCES_DISCARDED_ERROR.getCode());
 
-        message = " [{ \"grain\": 4 }]";
+        message = " [{\"type\":\"grain\", \"value\": 4}]";
         jsonArray = new jsonValidator().getJsonIfValid(player, message);
         assertTrue(forceDiscardPhase.discardIsValid(player, jsonArray));
     }
@@ -65,18 +65,23 @@ class ForceDiscardPhaseTest {
     void playerCanOnlyDiscardCardsAlreadyInHand() {
         player.addResources(Resource.GRAIN, 8);
 
-        String message = " [{ \"grain\": 9 }]";
+        String message = " [{\"type\":\"grain\", \"value\": 9}]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
         assertFalse(forceDiscardPhase.discardIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.MORE_RESOURCES_DISCARDED_THAN_OWNED_ERROR.getCode());
     }
 
+
     @Test
     void itHandlesUserCommandsTest() {
         player.addResources(Resource.GRAIN, 8);
-        player.setMessageFromPlayer(" [{ \"grain\": 4 }]");
+        player.addResources(Resource.ORE, 6);
+
+        player.setMessageFromPlayer(" [{\"type\":\"grain\", \"value\": 4}, {\"type\":\"ore\", \"value\": 4}]");
         JsonArray jsonArray = forceDiscardPhase.getValidCommandFromUser(player);
         forceDiscardPhase.discard(player, jsonArray);
         assertEquals(4, player.countResources(Resource.GRAIN));
+        assertEquals(2, player.countResources(Resource.ORE));
+
     }
 }

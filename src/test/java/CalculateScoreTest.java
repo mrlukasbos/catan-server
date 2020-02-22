@@ -32,15 +32,15 @@ class CalculateScoreTest {
 
         // initially no one has victorypoints
         assertEquals(0, player.getVictoryPoints());
-        assertEquals(0, game.getRoadLength(player));
-        assertEquals(0, game.getRoadLength(player2));
+        assertEquals(0, game.getMaxRoadLength(player));
+        assertEquals(0, game.getMaxRoadLength(player2));
 
         // short roads
         game.getBoard().placeStreet(player, game.getBoard().getEdge("([1,1],[1,2])"));
         game.getBoard().placeStreet(player, game.getBoard().getEdge("([1,2],[2,1])"));
         game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,5],[4,5])")); // start cycle
-        assertEquals(2, game.getRoadLength(player));
-        assertEquals(1, game.getRoadLength(player2));
+        assertEquals(2, game.getMaxRoadLength(player));
+        assertEquals(1, game.getMaxRoadLength(player2));
 
         // no awards should be given.
         game.assignLongestRoadAward();
@@ -59,8 +59,8 @@ class CalculateScoreTest {
         game.getBoard().placeStreet(player2, game.getBoard().getEdge("([2,6],[3,5])"));
         game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,5],[3,6])")); // end cycle
 
-        assertEquals(5, game.getRoadLength(player));
-        assertEquals(6, game.getRoadLength(player2));
+        assertEquals(5, game.getMaxRoadLength(player));
+        assertEquals(6, game.getMaxRoadLength(player2));
 
         game.assignLongestRoadAward();
         assertEquals(2, player2.getVictoryPoints());
@@ -74,8 +74,8 @@ class CalculateScoreTest {
 
         game.getBoard().placeStreet(player2, game.getBoard().getEdge("([3,6],[4,5])"));
         game.getBoard().placeStreet(player2, game.getBoard().getEdge("([2,4],[2,5])"));
-        assertEquals(6, game.getRoadLength(player));
-        assertEquals(7, game.getRoadLength(player2));
+        assertEquals(6, game.getMaxRoadLength(player));
+        assertEquals(7, game.getMaxRoadLength(player2));
 
         game.assignLongestRoadAward();
         assertEquals(2, player2.getVictoryPoints());
@@ -83,8 +83,8 @@ class CalculateScoreTest {
 
         game.getBoard().placeStreet(player, game.getBoard().getEdge("([3,3],[4,3])"));
         game.getBoard().placeStreet(player, game.getBoard().getEdge("([3,4],[4,3])"));
-        assertEquals(8, game.getRoadLength(player));
-        assertEquals(7, game.getRoadLength(player2));
+        assertEquals(8, game.getMaxRoadLength(player));
+        assertEquals(7, game.getMaxRoadLength(player2));
 
         game.assignLongestRoadAward();
         assertEquals(0, player2.getVictoryPoints());
