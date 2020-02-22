@@ -157,8 +157,7 @@ Other examples
 
 #### Discarding cards
 ```
-[{ "wool": 1, "ore": 1, "wood": 1, "grain": 1, "stone": 1 }]
-[{ "ore": 1, "wood": 1 }]
+[{ "type": wool", "value": 1 }, {"type": "ore", "value": 1}, {"type": "wood", "value": 1}, {"type": "grain", "value": 1},{"type": "stone", "value": 1} }]
 ```
 
 #### Moving the bandit
