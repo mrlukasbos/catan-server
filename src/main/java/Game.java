@@ -249,7 +249,7 @@ class Game extends Thread {
         int longestRoad = 0;
         Player playerWithLongestRoad = null;
         for (Player player : players) {
-            int roadLength = getRoadLength(player);
+            int roadLength = getMaxRoadLength(player);
             if (roadLength > longestRoad) {
                 longestRoad = roadLength;
                 playerWithLongestRoad = player;
@@ -262,7 +262,7 @@ class Game extends Thread {
         }
     }
 
-    int getRoadLength(Player player) {
+    int getMaxRoadLength(Player player) {
         ArrayList<Edge> streets = getBoard().getStreetsFromPlayer(player);
 
         // iterate over every street

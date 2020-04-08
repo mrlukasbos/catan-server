@@ -36,4 +36,13 @@ public class Helpers {
         }
         return output;
     }
+
+    static Resource getResourceByName(String name) {
+        for (Resource resource : Constants.ALL_RESOURCES) {
+            if (name.toLowerCase().equals(resource.name().toLowerCase())) {
+                return resource;
+            }
+        }
+        return Resource.NONE;
+    }
 }
