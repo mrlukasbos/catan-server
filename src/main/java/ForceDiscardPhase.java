@@ -2,8 +2,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.util.HashMap;
-
 public class ForceDiscardPhase implements GamePhase {
     Game game;
     Response request = Constants.DISCARD_RESOURCES_REQUEST;
@@ -45,7 +43,7 @@ public class ForceDiscardPhase implements GamePhase {
 
     // keep running this function until we get valid output from the user
     JsonArray getValidCommandFromUser(Player player) {
-        player.send(request.withAdditionalInfo(Double.toString(Math.floor(player.countResources()/2))).toString());
+        player.send(request.withAdditionalInfo(Double.toString(Math.floor(player.countResources()/2.0))).toString());
         boolean discardSucceeded = false;
         JsonArray jsonArray = null;
 
@@ -57,7 +55,7 @@ public class ForceDiscardPhase implements GamePhase {
             discardSucceeded = jsonArray != null && discardIsValid(player, jsonArray);
 
             if (!discardSucceeded) {
-                player.send(request.withAdditionalInfo(Double.toString(Math.floor(player.countResources()/2))).toString());
+                player.send(request.withAdditionalInfo(Double.toString(Math.floor(player.countResources()/2.0))).toString());
             }
         }
         return jsonArray;
@@ -82,7 +80,7 @@ public class ForceDiscardPhase implements GamePhase {
             }
         }
 
-        int amountToDiscard = (int) Math.floor(player.countResources()/2);
+        int amountToDiscard = (int) Math.floor(player.countResources()/2.0);
         if (totalDiscarded < amountToDiscard) {
             game.sendResponse(player, Constants.NOT_ENOUGH_RESOURCES_DISCARDED_ERROR.withAdditionalInfo("you only discarded " + totalDiscarded + " of the " + amountToDiscard + " resources you need to discard"));
             return false;

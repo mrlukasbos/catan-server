@@ -43,7 +43,7 @@ public class MoveBanditPhase implements GamePhase {
             game.print("Received message from player " + currentPlayer.getName() + ": " + message);
             jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);
             if (jsonArray == null) game.sendResponse(currentPlayer, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
-            moveSucceeded = jsonArray != null && moveIsValid(currentPlayer, jsonArray);
+            moveSucceeded = jsonArray != null && moveIsValid(jsonArray);
 
             if (!moveSucceeded) {
                 currentPlayer.send(request.toString());
@@ -52,7 +52,7 @@ public class MoveBanditPhase implements GamePhase {
         return jsonArray;
     }
 
-    boolean moveIsValid(Player player, JsonArray jsonArray) {
+    boolean moveIsValid(JsonArray jsonArray) {
         if (jsonArray.size() == 0) return false;
 
         JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
