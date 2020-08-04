@@ -86,8 +86,8 @@ button:hover {
 }
 
 .GRAIN {
-    fill: yellow;
-    background-color: yellow;
+    fill: khaki;
+    background-color: khaki;
     color: black;
 }
 
@@ -143,4 +143,32 @@ button:hover {
     font-weight: 600;
     margin-right: 4px;
     font-size: .7rem;
+}
+
+.node {
+    stroke: #000;
+}
+
+.node--empty {
+    fill: #fff;
+    stroke: #fff;
+    opacity: .4;
+    transition: opacity .5s;
+    transition: stroke-width .25s;
+}
+
+.node--empty:hover {
+    opacity: .75;
+    cursor: pointer;
+    stroke-width: 5px;
+}
+
+.tile {
+    opacity: 1;
+    transition: opacity .5s;
+}
+
+.tile:hover {
+    cursor: pointer;
+    opacity: .5;
 }
