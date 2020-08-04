@@ -15,28 +15,28 @@ import static org.junit.jupiter.api.Assertions.*;
 public class HelpersTest {
 
     @Test
-    void toJSONArrayEmptyTest() {
+    void toJSONArrayEmptyTest() throws JSONException {
         ArrayList<String> list = new ArrayList<String>();
-        assertEquals("[]", Helpers.toJSONArray(list, false));
-        assertEquals("[]", Helpers.toJSONArray(list, true));
+        JSONAssert.assertEquals("[]", Helpers.toJSONArray(list, false), true);
+        JSONAssert.assertEquals("[]", Helpers.toJSONArray(list, true), true);
     }
 
     @Test
-    void toJSONArrayEscapeStringTest() {
+    void toJSONArrayEscapeStringTest() throws JSONException {
         ArrayList<String> list = new ArrayList<String>();
         list.add("test");
         list.add("test2");
-        assertEquals("[test, test2]", Helpers.toJSONArray(list, false));
-        assertEquals("[\"test\", \"test2\"]", Helpers.toJSONArray(list, true));
+        JSONAssert.assertEquals("[test, test2]", Helpers.toJSONArray(list, false), true);
+        JSONAssert.assertEquals("[\"test\", \"test2\"]", Helpers.toJSONArray(list, true), true);
     }
 
     @Test
-    void toJSONArrayEscapeIntTest() {
+    void toJSONArrayEscapeIntTest() throws JSONException {
         ArrayList<Integer> list = new ArrayList<>();
         list.add(1);
         list.add(2);
-        assertEquals("[1, 2]", Helpers.toJSONArray(list, false));
-        assertEquals("[\"1\", \"2\"]", Helpers.toJSONArray(list, true));
+        JSONAssert.assertEquals("[1, 2]", Helpers.toJSONArray(list, false), true);
+        JSONAssert.assertEquals("[\"1\", \"2\"]", Helpers.toJSONArray(list, true), true);
     }
 
     @Test
