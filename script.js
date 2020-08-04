@@ -2,8 +2,10 @@ var lang = 'EN';
 
 // lowercase translation
 function t(key) {
-    if (lang == 'NL') { return t_NL[key];}
-    else{ return t_EN[key];}
+    var result;
+    if (lang == 'NL') { result = t_NL[key];}
+    else { result =  t_EN[key];}
+    return (result === undefined) ? "" : result;
 }
 
 // uppercase translation
