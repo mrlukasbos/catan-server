@@ -31,7 +31,6 @@ button {
 button:hover {
     background-color: lightsteelblue;
     transition: background-color .12s;
-
 }
 
 .resource {
@@ -56,11 +55,6 @@ button:hover {
 .hexagon {
     fill: white;
     pointer-events: all;
-}
-
-.hexagon path {
-    -webkit-transition: fill 250ms linear;
-    transition: fill 250ms linear;
 }
 
 .hexagon .DESERT {
@@ -113,12 +107,27 @@ button:hover {
 .mesh {
     fill: none;
     pointer-events: none;
+    display: none;
 }
 
 .border {
-    fill: none;
-    stroke-width: 4px;
-    pointer-events: none;
+    stroke-width: 7px;
+    pointer-events: visible;
+    cursor: pointer;
+    transition: opacity .3s, stroke-width .3s;
+    stroke-linecap: round;
+}
+
+.border:hover {
+    stroke-width: 12px;
+}
+
+.border--empty {
+    opacity: .5;
+}
+
+.border--empty:hover {
+    opacity: .75;
 }
 
 .harbour-edge {
@@ -153,8 +162,8 @@ button:hover {
     fill: #fff;
     stroke: #fff;
     opacity: .4;
-    transition: opacity .5s;
-    transition: stroke-width .25s;
+    transition: opacity .3s;
+    transition: stroke-width .3s;
 }
 
 .node--empty:hover {
@@ -165,7 +174,7 @@ button:hover {
 
 .tile {
     opacity: 1;
-    transition: opacity .5s;
+    transition: opacity .3s;
 }
 
 .tile:hover {
@@ -211,7 +220,6 @@ button:hover {
     transition: all .5s;
     color: blueviolet;
 }
-
 
 .color-squares {
     display: inline-flex;
