@@ -12,9 +12,9 @@
         <div class="modal-body"> 
             <h2> Join the game </h2>
         
-                <input class="fancy-input" type="text" id="fname" placeholder="Your name" name="fname"><br><br>
+                <input class="fancy-input" type="text" id="fname" placeholder="Your name" name="fname" v-model=player.name>
                 <div class="color-squares" v-for="color in colors"> 
-                    <div class="color-square" :style="{ 'background-color': color.code, 'border-color': selectedColorCode == color.code ? 'steelblue' : color.code }" v-on:click="selectColor($event, color)">
+                    <div class="color-square" :style="{ 'background-color': color.code, 'border-color': player.color == color.code ? 'steelblue' : color.code }" v-on:click="selectColor($event, color)">
                     </div>
                 </div>
                 <button v-on:click="hideJoinModal"> Cancel </button>

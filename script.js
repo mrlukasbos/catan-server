@@ -329,8 +329,11 @@ var app = new Vue({
                 code: "#0000ff"
             },
         ],
-        selectedColorCode: "#ffd218",
         joinModalVisible: false,
+        player: {
+            name: "",
+            color: "#ffd218"
+        },
     },
     methods: {
         connect: function (event) {
@@ -404,7 +407,6 @@ var app = new Vue({
             return evts.map(function(evt) {
 
                 var player_id = evt.attributes.player;
-
                 var complete_player = self.players.filter(function (player) {
                     return player.attributes.id == player_id;
                 })[0];
@@ -414,7 +416,7 @@ var app = new Vue({
             });
         },
         selectColor: function(evt, color) {
-            this.selectedColorCode = color.code;
+            this.player.color = color.code;
         }, 
 
         showJoinModal: function() {
@@ -423,9 +425,8 @@ var app = new Vue({
         hideJoinModal: function() {
             this.joinModalVisible = false;
         },
-
         joinGame: function() {
-
+            console.log("registering new player: " + this.player.name + " with color " + this.player.color);
         }
     },
     mounted: function() {
