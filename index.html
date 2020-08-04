@@ -7,21 +7,6 @@
 
 <body>
 <div id="app" style="display: flex">
-
-    <div class="modal" v-bind:class="{visible: joinModalVisible}" v-on:click.self="hideJoinModal"> 
-        <div class="modal-body"> 
-            <h2> Join the game </h2>
-        
-                <input class="fancy-input" type="text" id="fname" placeholder="Your name" name="fname"><br><br>
-                <div class="color-squares" v-for="color in colors"> 
-                    <div class="color-square" :style="{ 'background-color': color.code, 'border-color': selectedColorCode == color.code ? 'steelblue' : color.code }" v-on:click="selectColor($event, color)">
-                    </div>
-                </div>
-                <button v-on:click="hideJoinModal"> Cancel </button>
-                <button v-on:click="joinGame"> Join </button> 
-        </div>
-    </div>
-
     <div class="info" style="display: flex; flex-direction: column">
         <div class="title" style="padding: 18px; display: flex">
             <span style="margin-right: 12px; font-size: 1.8rem; font-weight: 600"> Catan </span>
@@ -34,7 +19,7 @@
             </div>
 
             <div style="display: flex; align-items: center; color: gray">
-                {{T(status)}}
+                {{status}}
             </div>
         </div>
 
@@ -85,8 +70,6 @@
             <div v-else>
                 <strong> No players connected </strong>
             </div>
-
-           
         </div>
 
         <div id="events" class="events"
@@ -154,18 +137,14 @@
             </div>
 
             <div v-if="status==='GAME_RUNNING'" style="display: flex; width: 100%">
-                <button v-on:click="endGame" style="justify-content: center; width: 100%;">Stop game
+                <button v-on:click="endGame" style="display: flex; justify-content: center; width: 100%;">Stop game
                 </button>
             </div>
             <div v-else-if="status==='WAITING_FOR_TAKEOFF'" style=" width: 100%">
-                <button v-on:click="showJoinModal" style="justify-content: center; width: 100%; "> Join game </button>
-                <button v-on:click="startGame" style="justify-content: center; width: 100%; ">Start game </button>
+                <button v-on:click="startGame" style="display: flex; justify-content: center; width: 100%; ">Start
+                    game
+                </button>
             </div>
-            <div v-else="status==='WAITING_FOR_TAKEOFF'" style=" width: 100%">
-                <button v-on:click="showJoinModal" style="justify-content: center; width: 100%; "> Join game </button>
-            </div>
-             
-
 
         </div>
     </div>
@@ -174,7 +153,6 @@
     </div>
 </div>
 </body>
-<script src="translations.js"></script>
 <script src="script.js"></script>
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
