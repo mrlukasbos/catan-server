@@ -138,7 +138,7 @@ var borders = svg.append("g")
     .enter().append("path")
     .attr("stroke", function (d) {
         if (d.attributes.road) {
-            return players[d.attributes.player].attributes.color;
+            return d.attributes.player_color;
         } else {
             return "#fff";
         }
@@ -160,7 +160,8 @@ var borders = svg.append("g")
             }
             return false;
         }))
-    });
+    })
+    .on("click", function(d) { app.clickEdge(d.attributes) });
 
 svg.append("g")
     .attr("class", "nodes")
@@ -397,11 +398,15 @@ var app = new Vue({
         },
         clickNode: function(data) {
             console.log({"clicked-node":data});
-            alert("Node clicked");
+            alert("Node clicked: " + JSON.stringify(data));
         },
         clickTile: function(data) {
             console.log({"clicked-tile":data});
-            alert("Tile clicked");
+            alert("Tile clicked: " + JSON.stringify(data));
+        },
+        clickEdge: function(data) {
+            console.log({"clicked-edge":data});
+            alert("Edge clicked: " + JSON.stringify(data));
         },
 
         formattedEvents: function(evts) {
