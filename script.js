@@ -33,8 +33,9 @@ svg.append("g")
         return path(topojson.feature(topology, d));
     })
     .attr("class", function (d) {
-        return d.tile.attributes.resource_type;
-    });
+        return "tile " + d.tile.attributes.resource_type;
+    })
+    .on("click", function(d) { app.clickTile(d.tile.attributes) });
 
 svg.append("g")
     .attr("class", "numbers")
@@ -91,7 +92,6 @@ svg.append("g")
         }
         return str;
     })
-
     .attr("text-anchor", "middle");
 
 svg.append("path")
@@ -119,7 +119,7 @@ for (var i = 0; i < players.length; i++) {
     }
 
     var border = svg.append("path")
-        .attr("class", "border")
+        .attr("class", "borders")
         .attr("stroke", player.attributes.color)
         .call(redraw);
 
@@ -161,11 +161,21 @@ svg.append("g")
             return "M0 -10 L10 -2 L10 10 L-10 10 L-10 -2 L0 -10 Z"
         } else if (d.structure == "CITY") {
             return "M-12 -2 L1 -2 L1 -10 L6 -12 L11 -10 L11 12 L-12 12 L-12 -2 Z"
+        } else {
+            return "m -7.5, 0 a 7.5,7.5 0 1,0 15,0 a 7.5,7.5 0 1,0 -15,0"
         }
     }).attr('fill', function (d) {
         return d.player_color;
-    }).attr('stroke', '#000000');
-
+    }).attr("class", function(d) {
+        if (d.structure == "VILLAGE") {
+            return "node node--village"
+        } else if (d.structure == "CITY") {
+            return "node node--city"
+        } else {
+            return "node node--empty"
+        }
+    })
+    .on("click", function(d) { app.clickNode(d) });
 
 svg.append("g")
     .attr("class", "bandits")
@@ -316,7 +326,7 @@ var app = new Vue({
                 this.moveCount = json.attributes.move_count;
 
                 if (json.attributes.board) {
-                 draw();
+                    draw();
                 }
             }
         },
@@ -335,6 +345,14 @@ var app = new Vue({
                 this.socket.close();
                 delete this.socket;
             }
+        },
+        clickNode: function(data) {
+            console.log({"clicked-node":data});
+            alert("Node clicked");
+        },
+        clickTile: function(data) {
+            console.log({"clicked-tile":data});
+            alert("Tile clicked");
         },
 
         formattedEvents: function(evts) {

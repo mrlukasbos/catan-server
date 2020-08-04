@@ -25,6 +25,7 @@ hs_err_pid*
 
 # Intelij files
 .idea/*
+*.iml
 
 # output files
 target/*
