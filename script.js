@@ -1,3 +1,17 @@
+var lang = 'EN';
+
+// lowercase translation
+function t(key) {
+    if (lang == 'NL') { return t_NL[key];}
+    else{ return t_EN[key];}
+}
+
+// uppercase translation
+function T(key) {
+    var str = t(key);
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 var json = null;
 
 function draw() {
@@ -84,7 +98,7 @@ svg.append("g")
         var str = "";
         if (d.tile.attributes.resource_type === "SEA") {
             if (d.tile.attributes.harbour_type !== "HARBOUR_NONE") {
-                str = d.tile.attributes.harbour_type.toLowerCase();
+                str = t(d.tile.attributes.harbour_type);
             }
         } else {
             str = d.tile.attributes.resource_type.toLowerCase();
@@ -262,6 +276,14 @@ function hexProjection(radius) {
 }
 
 
+
+Vue.mixin({
+    methods: {
+      t: str => t(str),
+      T: str => T(str)
+    }
+  })
+
 var app = new Vue({
     el: '#app',
     data: {
@@ -276,7 +298,27 @@ var app = new Vue({
         lastDiceThrow: 0,
         currentPlayerId: null,
         events: [],
-        moveCount: 0
+        moveCount: 0,
+        colors: [
+            {
+                name: "yellow", 
+                code: "#ffd218"
+            }, 
+            {
+                name: "red", 
+                code: "#ff0000"
+            }, 
+            {
+                name: "green", 
+                code: "#00ff00"
+            }, 
+            {
+                name: "blue", 
+                code: "#0000ff"
+            },
+        ],
+        selectedColorCode: "#ffd218",
+        joinModalVisible: false,
     },
     methods: {
         connect: function (event) {
@@ -350,8 +392,21 @@ var app = new Vue({
                 evt.attributes.player_full = complete_player;
                 return evt;
             });
-        }
+        },
+        selectColor: function(evt, color) {
+            this.selectedColorCode = color.code;
+        }, 
 
+        showJoinModal: function() {
+            this.joinModalVisible = true;
+        },
+        hideJoinModal: function() {
+            this.joinModalVisible = false;
+        },
+
+        joinGame: function() {
+
+        }
     },
     mounted: function() {
         if (localStorage.ip) {
@@ -364,3 +419,5 @@ var app = new Vue({
 
     }
 });
+
+
