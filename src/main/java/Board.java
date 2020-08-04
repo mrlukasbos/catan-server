@@ -180,7 +180,7 @@ class Board {
     }
 
     ArrayList<Node> getSurroundingNodes(Node n) {
-        ArrayList<Node> surroundingNodes = new ArrayList<Node>();
+        ArrayList<Node> surroundingNodes = new ArrayList<>();
         for (Node node : nodes) {
             int tilesInCommon = 0;
 
@@ -201,7 +201,7 @@ class Board {
 
     // get nodes surrounding an edge, there should usually be two of them
     ArrayList<Node> getSurroundingNodes(Edge edge) {
-        ArrayList<Node> surroundingNodes = new ArrayList<Node>();
+        ArrayList<Node> surroundingNodes = new ArrayList<>();
         for (Node node : nodes) {
             int tilesInCommon = 0;
             for (Tile t : node.getTiles()) {
@@ -292,7 +292,7 @@ class Board {
         String edgeKey2 = "(" + tiles[0].getKey() + "," + tiles[2].getKey() + ")";
         String edgeKey3 = "(" + tiles[1].getKey() + "," + tiles[2].getKey() + ")";
 
-        ArrayList<Edge> surroundingEdges = new ArrayList<Edge>();
+        ArrayList<Edge> surroundingEdges = new ArrayList<>();
         surroundingEdges.add(getEdge(edgeKey1));
         surroundingEdges.add(getEdge(edgeKey2));
         surroundingEdges.add(getEdge(edgeKey3));
