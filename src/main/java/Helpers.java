@@ -3,7 +3,8 @@ import java.util.List;
 
 public class Helpers {
 
-    // TODO needs a test
+    // Convert a List to a readable string
+    // If escape == true, then the objects in the list are put between quotation marks ("")
     static <T> String toJSONArray(List<T> list, boolean escape) {
         if (list.size() == 0) {
             return  "[]";
@@ -22,7 +23,9 @@ public class Helpers {
         return output;
     }
 
-    // TODO needs a test
+    // Convert a hashmap to a json object
+    // The keyname variable is the name of the 'key' in the json (for example "type" or "key")
+    // The valueName variable is the name of the 'variable' in the json (for example "value")
     static <T> String getJSONArrayFromHashMap(HashMap<T, Integer> map, String keyName, String valueName) {
         String output = "[";
         if (map.size() == 0) {
