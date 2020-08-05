@@ -427,6 +427,8 @@ var app = new Vue({
         },
         joinGame: function() {
             console.log("registering new player: " + this.player.name + " with color " + this.player.color);
+            console.log(this.player);
+            this.socket.send(JSON.stringify(this.player));
         }
     },
     mounted: function() {

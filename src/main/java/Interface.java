@@ -84,6 +84,8 @@ public class Interface extends WebSocketServer {
         } else if (message.contains("STOP")) {
             print("Received STOP signal");
             game.quit();
+        } else {
+            print(message);
         }
     }
 
