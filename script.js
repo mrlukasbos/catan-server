@@ -117,45 +117,51 @@ svg.append("path")
     .attr("stroke-width", 1)
     .attr("d", path);
 
-for (var i = 0; i < players.length; i++) {
-    var player = players[i];
+var harbourBorder = svg.append("path")
+    .attr("class", "harbour-edge")
+    .attr("stroke", "#247aff")
+    .call(redrawHarbour);
 
-    var harbourBorder = svg.append("path")
-        .attr("class", "harbour-edge")
-        .attr("stroke", "#247aff")
-        .call(redrawHarbour);
-
-    function redrawHarbour(harbourBorder) {
-        harbourBorder.attr("d", path(topojson.mesh(topology, topology.objects.hexagons, function (a, b) {
-            var edge1 = getEdge(a.tile.attributes.key, b.tile.attributes.key);
-            var edge2 = getEdge(b.tile.attributes.key, a.tile.attributes.key);
-            if (edge1) console.log(edge1);
-            return (edge1 && edge1.attributes.harbour) || (edge2 && edge2.attributes.harbour);
-        })));
-    }
-
-    var border = svg.append("path")
-        .attr("class", "borders")
-        .attr("stroke", player.attributes.color)
-        .call(redraw);
-
-    function redraw(border) {
-        border.attr("d", path(topojson.mesh(topology, topology.objects.hexagons, function (a, b) {
-            var edge1 = getEdge(a.tile.attributes.key, b.tile.attributes.key);
-            var edge2 = getEdge(b.tile.attributes.key, a.tile.attributes.key);
-
-            if (edge1 && edge1.attributes.player == player.attributes.id) {
-                return edge1.attributes.road;
-            } else if (edge2 && edge2.attributes.player == player.attributes.id) {
-                return edge2.attributes.road;
-            }
-            return false;
-        })));
-    }
+function redrawHarbour(harbourBorder) {
+    harbourBorder.attr("d", path(topojson.mesh(topology, topology.objects.hexagons, function (a, b) {
+        var edge1 = getEdge(a.tile.attributes.key, b.tile.attributes.key);
+        var edge2 = getEdge(b.tile.attributes.key, a.tile.attributes.key);
+        if (edge1) console.log(edge1);
+        return (edge1 && edge1.attributes.harbour) || (edge2 && edge2.attributes.harbour);
+    })));
 }
 
+var borders = svg.append("g")
+    .attr("class", "borders")
+    .selectAll("path")
+    .data(edges)
+    .enter().append("path")
+    .attr("stroke", function (d) {
+        if (d.attributes.road) {
+            return d.attributes.player_color;
+        } else {
+            return "#fff";
+        }
+    })
+    .attr("class", function (d) {
+        if (d.attributes.road) {
+            return "border border--road"
+        } else {
+            return "border border--empty"
+        }
+    })
+    .attr("d", function (d) {
+        return path(topojson.mesh(topology, topology.objects.hexagons, function (a, b) {
+            var edge1 = getEdge(a.tile.attributes.key, b.tile.attributes.key);
+            var edge2 = getEdge(b.tile.attributes.key, a.tile.attributes.key);
 
-
+            if (edge1 == d || edge2 == d) {
+                return true;
+            }
+            return false;
+        }))
+    })
+    .on("click", function(d) { app.clickEdge(d.attributes) });
 
 svg.append("g")
     .attr("class", "nodes")
@@ -395,11 +401,15 @@ var app = new Vue({
         },
         clickNode: function(data) {
             console.log({"clicked-node":data});
-            alert("Node clicked");
+            alert("Node clicked: " + JSON.stringify(data));
         },
         clickTile: function(data) {
             console.log({"clicked-tile":data});
-            alert("Tile clicked");
+            alert("Tile clicked: " + JSON.stringify(data));
+        },
+        clickEdge: function(data) {
+            console.log({"clicked-edge":data});
+            alert("Edge clicked: " + JSON.stringify(data));
         },
 
         formattedEvents: function(evts) {
