@@ -8,7 +8,7 @@ The goal of this project is to create a Catan game:
 - AI vs AI
 
 **Other repositories:**  
-Catan web (Javascript): https://github.com/mrlukasbos/catan-web
+Catan web (Javascript): https://github.com/mrlukasbos/catan-web  
 Catan server (Java): https://github.com/mrlukasbos/catan-server  
 Catan AI client (Rust): https://github.com/mrlukasbos/catan-client  
 
