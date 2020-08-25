@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-abstract class Player {
+class Player {
     private String name;
     private int id;
     private HashMap<Resource, Integer> resources = new HashMap<>();
@@ -15,8 +15,8 @@ abstract class Player {
     private String color;
     protected Game game;
 
-    abstract void send(String str);
-    abstract String listen();
+    void send(String str) { }
+    String listen()  { return ""; }
 
     Player(Game game, int id, String name) {
         this.id = id;
