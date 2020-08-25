@@ -2,7 +2,7 @@ import org.java_websocket.WebSocket;
 
 public class PlayerHuman extends Player {
     WebSocket connection;
-    String bufferedReply;
+    String bufferedReply = "";
 
     synchronized void setBufferedReply(String bufferedReply) {
         this.bufferedReply = bufferedReply;
