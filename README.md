@@ -1,12 +1,16 @@
 [![Build Status](https://travis-ci.com/mrlukasbos/Catan.svg?branch=master)](https://travis-ci.com/mrlukasbos/Catan)
 [![codecov](https://codecov.io/gh/mrlukasbos/Catan/branch/master/graph/badge.svg)](https://codecov.io/gh/mrlukasbos/Catan)
 
-# Catan challenge
+# Catan
+The goal of this project is to create a Catan game:
+- Human vs Human
+- Human vs AI
+- AI vs AI
 
-The goal of this challenge is to build a digital version of the catan boardgame, make a visualization for it, and then compete against each other by building a player ai.
-
-![Screenshot of the interface](./doc/img/screenshot-interface.png)
-
+**Other repositories:**  
+Catan web (Javascript): https://github.com/mrlukasbos/catan-web  
+Catan server (Java): https://github.com/mrlukasbos/catan-server  
+Catan AI client (Rust): https://github.com/mrlukasbos/catan-client  
 
 ## Getting started
 
@@ -44,7 +48,7 @@ For the build phase a command is a JSON array which consists of all the building
 
 > Note: For the initial building phase this array should contain a street and a village only.
 
-> Note: when sending multiple build commands the order is not important, the server is able to find a legal combination, if any.
+> Note: when sending multiple build commands the order is not important, the socketServer is able to find a legal combination, if any.
 
 ### Rules
 

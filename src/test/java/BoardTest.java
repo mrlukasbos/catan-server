@@ -1,12 +1,9 @@
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
-    private Interface iface = new Interface(10007);
+    private InterfaceServer iface = new InterfaceServer(10007);
     private Game game = new Game(iface);
     private BuildPhase buildPhase = new BuildPhase(game);
     private  Player player = new Player(game,0, "tester");

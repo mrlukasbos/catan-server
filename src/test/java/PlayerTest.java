@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PlayerTest {
-    Interface iface = new Interface(10007);
+    InterfaceServer iface = new InterfaceServer(10007);
     Game game = new Game(iface);
     Player player = new Player(game,0, "tester");
 
