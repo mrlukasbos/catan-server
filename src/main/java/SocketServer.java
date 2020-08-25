@@ -65,13 +65,9 @@ public class SocketServer extends Thread {
 
         if (!game.isRunning()) {
             game.addPlayer(newPlayer);
-            iface.broadcast(game.toString());
-
             Response idAcknowledgement = Constants.ID_ACK.withAdditionalInfo("" + newPlayer.getId());
             newPlayer.send(idAcknowledgement.toString());
         }
-        // hack to immediatly start for testing purposses
-        // game.startGame();
     }
 
     ArrayList<Player> getConnections() {

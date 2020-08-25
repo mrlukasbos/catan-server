@@ -89,8 +89,15 @@ public class InterfaceServer extends WebSocketServer {
     void registerPlayer(WebSocket conn, String name) {
         PlayerHuman newPlayer = new PlayerHuman(game, game.getPlayers().size(), name);
         newPlayer.setConnection(conn);
-        print("Registering new interface player: " + name);
-        game.addPlayer(newPlayer);
+
+        if (!game.isRunning()) {
+            print("Registering new interface player: " + name);
+            game.addPlayer(newPlayer);
+            Response idAcknowledgement = Constants.ID_ACK.withAdditionalInfo("" + newPlayer.getId());
+            newPlayer.send(idAcknowledgement.toString());
+        } else {
+            print("warning! we must maybe reply with an error here");
+        }
     }
 
     // Receive messages from the interface
