@@ -321,6 +321,7 @@ class Game extends Thread {
 
     void addPlayer (Player p) {
         players.add(p);
+        signalGameChange();
     }
 
     ArrayList<Player> getPlayers() { return players; }
