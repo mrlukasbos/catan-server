@@ -38,6 +38,7 @@ public class InterfaceServer extends WebSocketServer {
         setConnectionLostTimeout(10);
     }
 
+
     // When a new connection is opened we have to transmit the game data to it
     @Override
     public void onOpen( WebSocket conn, ClientHandshake handshake ) {
@@ -117,9 +118,9 @@ public class InterfaceServer extends WebSocketServer {
         }
     }
 
-    // On close we don't have to do anything
     @Override
-    public void onClose( WebSocket conn, int code, String reason, boolean remote ) { }
+    public void onClose( WebSocket conn, int code, String reason, boolean remote ) {
+    }
 
     private void print(String msg) {
         System.out.println("[Iface] \t" + msg);

@@ -74,6 +74,10 @@ public class SocketServer extends Thread {
         return connections;
     }
 
+    void clearConnections() {
+        connections.clear();
+    }
+
     private void print(String msg) {
         System.out.println("[Server] \t" + msg);
     }

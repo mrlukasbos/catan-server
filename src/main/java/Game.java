@@ -38,7 +38,7 @@ class Game extends Thread {
         init();
         print("Starting game");
         addEvent(new Event(this, EventType.GENERAL).withGeneralMessage("Starting the game"));
-
+        signalGameChange();
         if (!isAlive()) start();
     }
 
@@ -104,6 +104,7 @@ class Game extends Thread {
         for(Player player : players) {
             player.stop();
         }
+
         print("Stopped game");
     }
 
@@ -146,7 +147,7 @@ class Game extends Thread {
                     "\"events\": " + Helpers.toJSONArray(events, false) + ", " +
                     "\"lastDiceThrow\": " + getLastDiceThrow() + ", " +
                     "\"phase\": \"" + currentPhase.getPhaseType().toString() + "\"," +
-                    "\"currentPlayer\": " + getCurrentPlayer().getId() +
+                    "\"currentPlayer\": " + (getCurrentPlayer() != null ? getCurrentPlayer().getId() : "-1") +
                     "}" +
                     '}';
         } else {
