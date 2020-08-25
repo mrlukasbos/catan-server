@@ -2,6 +2,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -13,6 +14,8 @@ import org.java_websocket.server.WebSocketServer;
 public class InterfaceServer extends WebSocketServer {
     private GameManager gameManager;
     private SocketServer socketServer;
+
+    ArrayList<PlayerHuman> registeredPlayers = new ArrayList<>();
 
     // Create an interface for a specific port
     InterfaceServer(int port) {
@@ -65,6 +68,13 @@ public class InterfaceServer extends WebSocketServer {
                 handleControl(attrs.get("command").getAsString());
                 break;
             }
+            case "client-response": {
+                for (PlayerHuman player : registeredPlayers) {
+                    if (player.getConnection().equals(conn)) {
+                        player.setBufferedReply(message);
+                    }
+                }
+            }
             default: break;
         }
     }
@@ -94,8 +104,10 @@ public class InterfaceServer extends WebSocketServer {
         if (!gameManager.getCurrentGame().isRunning()) {
             print("Registering new interface player: " + name);
             gameManager.getCurrentGame().addPlayer(newPlayer);
+            registeredPlayers.add(newPlayer);
             Response idAcknowledgement = Constants.ID_ACK.withAdditionalInfo("" + newPlayer.getId());
             newPlayer.send(idAcknowledgement.toString());
+
         } else {
             print("warning! we must maybe reply with an error here");
         }
@@ -107,6 +119,8 @@ public class InterfaceServer extends WebSocketServer {
     public void onMessage( WebSocket conn, ByteBuffer message ) {
         broadcast( message.array() );
         print(conn + ": " + message );
+
+
     }
 
     // When there is a problem with the connection print it
