@@ -1,14 +1,12 @@
-import com.google.gson.JsonArray;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DiceThrowPhaseTest {
-    private Interface iface = new Interface(10007);
+    private InterfaceServer iface = new InterfaceServer(10007);
     private Game game = new Game(iface);
     private DiceStub diceStub = new DiceStub();
     private DiceThrowPhase diceThrowPhase = new DiceThrowPhase(game, diceStub);

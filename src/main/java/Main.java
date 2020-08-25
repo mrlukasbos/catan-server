@@ -1,11 +1,11 @@
 public class Main {
 
     public static void main(String[] args) {
-        Server server = new Server(10006);
-        Interface iface = new Interface( 10007);
+        SocketServer socketServer = new SocketServer(10006);
+        InterfaceServer iface = new InterfaceServer( 10007);
         Game game = new Game(iface);
 
-        server.start(iface, game);
-        iface.start(server, game); // the interface starts/ends the game
+        socketServer.start(iface, game);
+        iface.start(socketServer, game); // the interface starts/ends the game
     }
 }

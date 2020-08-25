@@ -48,7 +48,7 @@ For the build phase a command is a JSON array which consists of all the building
 
 > Note: For the initial building phase this array should contain a street and a village only.
 
-> Note: when sending multiple build commands the order is not important, the server is able to find a legal combination, if any.
+> Note: when sending multiple build commands the order is not important, the socketServer is able to find a legal combination, if any.
 
 ### Rules
 

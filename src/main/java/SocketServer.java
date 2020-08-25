@@ -1,5 +1,5 @@
 /*
-The Server maintains a TCP connection with the players
+    Server that maintains connections with players
  */
 
 import java.io.*;
@@ -9,15 +9,15 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
-public class Server extends Thread {
+public class SocketServer extends Thread {
 
     private ServerSocket serverSocket;
     private Game game;
     private ArrayList<Player> connections = new ArrayList<Player>();
-    private Interface iface;
+    private InterfaceServer iface;
 
     // start a server on this device
-    Server(int port) {
+    SocketServer(int port) {
         try {
             serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(0);
@@ -28,7 +28,7 @@ public class Server extends Thread {
     }
 
     // Start the server thread for a given game
-    void start(Interface iface, Game game) {
+    void start(InterfaceServer iface, Game game) {
         this.game = game;
         this.iface = iface;
         start();
@@ -50,18 +50,6 @@ public class Server extends Thread {
         }
     }
 
-    // Closes the socket connection with the players
-    void shutDown() {
-        for (Player p : game.getPlayers()) {
-            try {
-                p.getSocket().close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                break;
-            }
-        }
-    }
-
     // Ensures connections with the players
     // A player has to connect and return a string immediately (the string will be the name of the player in-game)
     private void ensureConnections() throws IOException {
@@ -70,7 +58,7 @@ public class Server extends Thread {
         BufferedReader reader = new BufferedReader(new InputStreamReader(newConnection.getInputStream()));
         String line = reader.readLine();
 
-        Player newPlayer = new Player(game, game.getPlayers().size(), line);
+        PlayerSocket newPlayer = new PlayerSocket(game, game.getPlayers().size(), line);
         newPlayer.setSocket(newConnection);
         connections.add(newPlayer);
         print("Just connected to " + line + " on address: " + newConnection.getRemoteSocketAddress());
@@ -82,10 +70,8 @@ public class Server extends Thread {
             Response idAcknowledgement = Constants.ID_ACK.withAdditionalInfo("" + newPlayer.getId());
             newPlayer.send(idAcknowledgement.toString());
         }
-
         // hack to immediatly start for testing purposses
-    //    game.startGame();
-
+        // game.startGame();
     }
 
     ArrayList<Player> getConnections() {

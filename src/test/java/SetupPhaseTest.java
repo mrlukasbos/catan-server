@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 
 public class SetupPhaseTest {
-    private Interface iface = new Interface(10007);
+    private InterfaceServer iface = new InterfaceServer(10007);
     private Game game = new Game(iface);
     private DiceStub diceStub = new DiceStub();
     private SetupPhase setupPhase = new SetupPhase(game, diceStub);
