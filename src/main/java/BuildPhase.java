@@ -40,7 +40,7 @@ class BuildPhase implements GamePhase {
                 return;
             }
             amountOfFailures++;
-        } while (jsonArray == null || !commandIsValid(currentPlayer, jsonArray));
+        } while (game.isRunning() && (jsonArray == null || !commandIsValid(currentPlayer, jsonArray)));
 
 
         // build the structures

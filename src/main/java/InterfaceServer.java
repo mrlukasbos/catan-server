@@ -11,7 +11,7 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 public class InterfaceServer extends WebSocketServer {
-    private Game game;
+    private GameManager gameManager;
     private SocketServer socketServer;
 
     // Create an interface for a specific port
@@ -21,8 +21,8 @@ public class InterfaceServer extends WebSocketServer {
     }
 
     // Start the interface thread
-    void start(SocketServer socketServer, Game game) {
-        this.game = game;
+    void start(SocketServer socketServer, GameManager gameManager) {
+        this.gameManager = gameManager;
         this.socketServer = socketServer;
         start();
     }
@@ -38,10 +38,11 @@ public class InterfaceServer extends WebSocketServer {
         setConnectionLostTimeout(10);
     }
 
+
     // When a new connection is opened we have to transmit the game data to it
     @Override
     public void onOpen( WebSocket conn, ClientHandshake handshake ) {
-        broadcast(game.toString());
+        broadcast(gameManager.getCurrentGame().toString());
     }
 
     // Receive messages from the interface
@@ -73,26 +74,26 @@ public class InterfaceServer extends WebSocketServer {
             print("Received START signal");
 
             print("THIS METHOD NEEDS TO BE CHANGED");
-            if (socketServer.getConnections().size() >= Constants.MINIMUM_AMOUNT_OF_PLAYERS && !game.isRunning()) {
-                game.startGame();
+            if (socketServer.getConnections().size() >= Constants.MINIMUM_AMOUNT_OF_PLAYERS && !gameManager.getCurrentGame().isRunning()) {
+                gameManager.startGame();
             } else {
                 print("not enough players to start with");
             }
         } else if (command.contains("STOP")) {
             print("Received STOP signal");
-            game.quit();
+            gameManager.stopGame();
         } else {
             print(command);
         }
     }
 
     void registerPlayer(WebSocket conn, String name) {
-        PlayerHuman newPlayer = new PlayerHuman(game, game.getPlayers().size(), name);
+        PlayerHuman newPlayer = new PlayerHuman(gameManager.getCurrentGame(), gameManager.getCurrentGame().getPlayers().size(), name);
         newPlayer.setConnection(conn);
 
-        if (!game.isRunning()) {
+        if (!gameManager.getCurrentGame().isRunning()) {
             print("Registering new interface player: " + name);
-            game.addPlayer(newPlayer);
+            gameManager.getCurrentGame().addPlayer(newPlayer);
             Response idAcknowledgement = Constants.ID_ACK.withAdditionalInfo("" + newPlayer.getId());
             newPlayer.send(idAcknowledgement.toString());
         } else {
@@ -117,9 +118,9 @@ public class InterfaceServer extends WebSocketServer {
         }
     }
 
-    // On close we don't have to do anything
     @Override
-    public void onClose( WebSocket conn, int code, String reason, boolean remote ) { }
+    public void onClose( WebSocket conn, int code, String reason, boolean remote ) {
+    }
 
     private void print(String msg) {
         System.out.println("[Iface] \t" + msg);

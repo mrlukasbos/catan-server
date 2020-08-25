@@ -38,7 +38,7 @@ class Game extends Thread {
         init();
         print("Starting game");
         addEvent(new Event(this, EventType.GENERAL).withGeneralMessage("Starting the game"));
-
+        signalGameChange();
         if (!isAlive()) start();
     }
 
@@ -66,22 +66,15 @@ class Game extends Thread {
     // Execute the current Phase and traverse to the next state
     // After every state change we signal a change, which transmits the new data to all connections
     public void run() {
-        while (true) {
 
-            // if player has disconnected
-            // quit game
-
-            if (isRunning() && !getPlayers().isEmpty()) {
+        try {
+            while (isAlive() && isRunning() && !getPlayers().isEmpty()) {
                 Phase nextPhase = currentPhase.execute();
                 print("Going to phase: " + nextPhase.toString());
                 currentPhase = getGamePhase(nextPhase);
-            } else {
-               try {
-                   Thread.sleep(200);
-               } catch (Exception e) {
-                   e.printStackTrace();
-               }
             }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -95,19 +88,24 @@ class Game extends Thread {
 
 
     // Stop the game and reset all values such that we can eventually restart it
-    synchronized void quit() {
-        this.board = new Board();;
-        this.players = new ArrayList<>();
-        this.running = false;
+    void quit() {
         print("Stopping game");
-//
-//        try {
-//            join();
-//            print("Stopped game");
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        this.running = false;
+
+        print("Joining thread");
+
+        try {
+            join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        print("closing sockets");
+        for(Player player : players) {
+            player.stop();
+        }
+
+        print("Stopped game");
     }
 
     // Convert PhaseType to GamePhase
@@ -149,7 +147,7 @@ class Game extends Thread {
                     "\"events\": " + Helpers.toJSONArray(events, false) + ", " +
                     "\"lastDiceThrow\": " + getLastDiceThrow() + ", " +
                     "\"phase\": \"" + currentPhase.getPhaseType().toString() + "\"," +
-                    "\"currentPlayer\": " + getCurrentPlayer().getId() +
+                    "\"currentPlayer\": " + (getCurrentPlayer() != null ? getCurrentPlayer().getId() : "-1") +
                     "}" +
                     '}';
         } else {

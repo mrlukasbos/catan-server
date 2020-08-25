@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class SocketServer extends Thread {
 
     private ServerSocket serverSocket;
-    private Game game;
+    private GameManager gameManager;
     private ArrayList<Player> connections = new ArrayList<Player>();
     private InterfaceServer iface;
 
@@ -28,8 +28,8 @@ public class SocketServer extends Thread {
     }
 
     // Start the server thread for a given game
-    void start(InterfaceServer iface, Game game) {
-        this.game = game;
+    void start(InterfaceServer iface, GameManager gameManager) {
+        this.gameManager = gameManager;
         this.iface = iface;
         start();
     }
@@ -58,13 +58,13 @@ public class SocketServer extends Thread {
         BufferedReader reader = new BufferedReader(new InputStreamReader(newConnection.getInputStream()));
         String line = reader.readLine();
 
-        PlayerSocket newPlayer = new PlayerSocket(game, game.getPlayers().size(), line);
+        PlayerSocket newPlayer = new PlayerSocket(gameManager.getCurrentGame(), gameManager.getCurrentGame().getPlayers().size(), line);
         newPlayer.setSocket(newConnection);
         connections.add(newPlayer);
         print("Just connected to " + line + " on address: " + newConnection.getRemoteSocketAddress());
 
-        if (!game.isRunning()) {
-            game.addPlayer(newPlayer);
+        if (!gameManager.getCurrentGame().isRunning()) {
+            gameManager.getCurrentGame().addPlayer(newPlayer);
             Response idAcknowledgement = Constants.ID_ACK.withAdditionalInfo("" + newPlayer.getId());
             newPlayer.send(idAcknowledgement.toString());
         }
@@ -72,6 +72,10 @@ public class SocketServer extends Thread {
 
     ArrayList<Player> getConnections() {
         return connections;
+    }
+
+    void clearConnections() {
+        connections.clear();
     }
 
     private void print(String msg) {

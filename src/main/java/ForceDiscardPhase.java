@@ -47,7 +47,7 @@ public class ForceDiscardPhase implements GamePhase {
         boolean discardSucceeded = false;
         JsonArray jsonArray = null;
 
-        while (!discardSucceeded) {
+        while (game.isAlive() && game.isRunning() && !discardSucceeded) {
             String message = player.listen();
             game.print("Received message from player " + player.getName() + ": " + message);
             jsonArray = new jsonValidator().getJsonIfValid(player, message);

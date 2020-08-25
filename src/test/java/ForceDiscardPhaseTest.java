@@ -16,7 +16,7 @@ class ForceDiscardPhaseTest {
         game.addPlayer(player);
         game.addPlayer(player2);
         game.setCurrentPlayer(player);
-        game.init();
+        game.startGame();
     }
 
     @Test

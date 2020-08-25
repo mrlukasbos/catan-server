@@ -38,7 +38,7 @@ public class MoveBanditPhase implements GamePhase {
         boolean moveSucceeded = false;
         JsonArray jsonArray = null;
 
-        while (!moveSucceeded) {
+        while (game.isRunning() && !moveSucceeded) {
             String message = currentPlayer.listen();
             game.print("Received message from player " + currentPlayer.getName() + ": " + message);
             jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);

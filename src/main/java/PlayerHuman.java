@@ -9,6 +9,11 @@ public class PlayerHuman extends Player {
     }
 
     @Override
+    void stop() {
+        connection.close();
+    }
+
+    @Override
     String listen() { return null; };
 
     PlayerHuman(Game game, int id, String name) {
