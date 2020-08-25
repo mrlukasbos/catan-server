@@ -6,6 +6,7 @@ public class PlayerHuman extends Player {
 
     synchronized void setBufferedReply(String bufferedReply) {
         this.bufferedReply = bufferedReply;
+        notify();
     }
 
     @Override
@@ -20,7 +21,11 @@ public class PlayerHuman extends Player {
 
     @Override
     String listen() {
-        while (bufferedReply.equals("")) {}  // block until there is a reply
+        while (bufferedReply.equals("")) {
+            try {
+                wait();
+            } catch (Exception e) {}
+        }  // block until there is a reply
 
         String reply = bufferedReply;
         bufferedReply = "";
