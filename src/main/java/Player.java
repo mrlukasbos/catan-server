@@ -17,6 +17,7 @@ class Player {
 
     void send(String str) { }
     String listen()  { return ""; }
+    void stop() { }
 
     Player(Game game, int id, String name) {
         this.id = id;

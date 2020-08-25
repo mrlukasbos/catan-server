@@ -17,8 +17,17 @@ public class PlayerSocket extends Player {
         return socket;
     }
 
+    @Override
+    void stop() {
+        try {
+            socket.close();
+        } catch(IOException ignored) {
+
+        }
+    }
+
     synchronized void send(String str) {
-        if (getSocket() != null) {
+        if (getSocket() != null && !getSocket().isClosed()) {
             try {
                 str += "\r\n";
                 BufferedOutputStream bos = new BufferedOutputStream(getSocket().getOutputStream());
@@ -26,7 +35,7 @@ public class PlayerSocket extends Player {
                 bos.flush();
             } catch (IOException e) {
                 // we just quit the game whenever something goes wrong so we can reconnect
-                game.quit();
+               //  game.quit();
                 // e.printStackTrace();
             }
         }
@@ -34,7 +43,7 @@ public class PlayerSocket extends Player {
 
     // blocking implementation of reading
     synchronized String listen() {
-        if (getSocket() != null) {
+        if (getSocket() != null && !getSocket().isClosed()) {
             try {
                 BufferedInputStream bf = new BufferedInputStream(getSocket().getInputStream());
                 BufferedReader r = new BufferedReader(new InputStreamReader(bf, StandardCharsets.UTF_8));
@@ -43,12 +52,12 @@ public class PlayerSocket extends Player {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         return null;
     }
