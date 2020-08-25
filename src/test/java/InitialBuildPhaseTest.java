@@ -16,7 +16,7 @@ class InitialBuildPhaseTest {
     void beforeTest() {
         game.addPlayer(player);
         game.setCurrentPlayer(player);
-        game.init();
+        game.startGame();
     }
 
     @Test

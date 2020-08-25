@@ -7,9 +7,9 @@ class CalculateScoreTest {
 
     @Test
     void getPlayerScore() {
-        game.startGame();
         Player player = new Player(game, 1, "test");
         game.addPlayer(player);
+        game.startGame();
 
         assertEquals(0, player.getVictoryPoints());
 
@@ -24,11 +24,11 @@ class CalculateScoreTest {
 
     @Test
     void assignLongestRoadScore() {
-        game.startGame();
         Player player = new Player(game, 1, "test");
         game.addPlayer(player);
         Player player2 = new Player(game, 2, "test2");
         game.addPlayer(player2);
+        game.startGame();
 
         // initially no one has victorypoints
         assertEquals(0, player.getVictoryPoints());
@@ -93,11 +93,11 @@ class CalculateScoreTest {
 
     @Test
     void assignLargestArmyScore() {
-        game.startGame();
         Player player = new Player(game, 1, "test");
         game.addPlayer(player);
         Player player2 = new Player(game, 2, "test2");
         game.addPlayer(player2);
+        game.startGame();
 
         assertEquals(0, player.getVictoryPoints());
 
@@ -137,9 +137,9 @@ class CalculateScoreTest {
 
     @Test
     void calculateVillagesScore() {
-        game.startGame();
         Player player = new Player(game, 1, "test");
         game.addPlayer(player);
+        game.startGame();
 
         assertEquals(0, player.getVictoryPoints());
 
@@ -151,9 +151,9 @@ class CalculateScoreTest {
 
     @Test
     void calculateCitiesScore() {
-        game.startGame();
         Player player = new Player(game, 1, "test");
         game.addPlayer(player);
+        game.startGame();
 
         assertEquals(0, player.getVictoryPoints());
 
@@ -165,9 +165,9 @@ class CalculateScoreTest {
 
     @Test
     void calculateDevelopmentcardsScore() {
-        game.startGame();
         Player player = new Player(game, 1, "test");
         game.addPlayer(player);
+        game.startGame();
 
         assertEquals(0, player.getVictoryPoints());
 
@@ -179,9 +179,9 @@ class CalculateScoreTest {
 
     @Test
     void getsWinner() {
-        game.startGame();
         Player player = new Player(game, 1, "test");
         game.addPlayer(player);
+        game.startGame();
 
         assertNull(game.getWinner());
 

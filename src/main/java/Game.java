@@ -28,8 +28,7 @@ class Game extends Thread {
     private MoveBanditPhase moveBanditPhase;
     private ForceDiscardPhase forceDiscardPhase;
 
-    Game(InterfaceServer iface)
-    {
+    Game(InterfaceServer iface) {
         this.board = new Board();
         this.iface = iface;
     }
