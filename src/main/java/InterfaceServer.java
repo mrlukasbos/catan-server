@@ -16,7 +16,7 @@ public class InterfaceServer extends WebSocketServer {
     private GameManager gameManager;
     private SocketServer socketServer;
 
-    ArrayList<PlayerHuman> registeredPlayers = new ArrayList<>();
+    ArrayList<InterfacePlayer> registeredPlayers = new ArrayList<>();
 
     // Create an interface for a specific port
     InterfaceServer(int port) {
@@ -71,7 +71,7 @@ public class InterfaceServer extends WebSocketServer {
                 break;
             }
             case "client-response": {
-                for (PlayerHuman player : registeredPlayers) {
+                for (InterfacePlayer player : registeredPlayers) {
                     if (player.getConnection().equals(conn)) {
                         JsonArray arr = obj.get("attributes").getAsJsonArray();
                         String buildRequest = arr.toString();
