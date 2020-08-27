@@ -1,6 +1,6 @@
 import org.java_websocket.WebSocket;
 
-public class PlayerHuman extends Player {
+public class InterfacePlayer extends Player {
     WebSocket connection;
 
     @Override
@@ -16,7 +16,7 @@ public class PlayerHuman extends Player {
     @Override
     String listen() { return null; };
 
-    PlayerHuman(Game game, int id, String name) {
+    InterfacePlayer(Game game, int id, String name) {
         super(game, id, name);
     }
     void setConnection(WebSocket connection) {

@@ -2,10 +2,10 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-public class PlayerSocket extends Player {
+public class SocketPlayer extends Player {
     private Socket socket;
 
-    PlayerSocket(Game game, int id, String name) {
+    SocketPlayer(Game game, int id, String name) {
         super(game, id, name);
     }
 

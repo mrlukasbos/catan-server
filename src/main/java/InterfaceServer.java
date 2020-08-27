@@ -88,7 +88,7 @@ public class InterfaceServer extends WebSocketServer {
     }
 
     void registerPlayer(WebSocket conn, String name) {
-        PlayerHuman newPlayer = new PlayerHuman(gameManager.getCurrentGame(), gameManager.getCurrentGame().getPlayers().size(), name);
+        InterfacePlayer newPlayer = new InterfacePlayer(gameManager.getCurrentGame(), gameManager.getCurrentGame().getPlayers().size(), name);
         newPlayer.setConnection(conn);
 
         if (!gameManager.getCurrentGame().isRunning()) {
