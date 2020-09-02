@@ -1,6 +1,6 @@
 import org.java_websocket.WebSocket;
 
-public class PlayerHuman extends Player {
+public class InterfacePlayer extends Player {
     WebSocket connection;
     String bufferedReply = "";
 
@@ -11,7 +11,11 @@ public class PlayerHuman extends Player {
 
     @Override
     void send(String str) {
-        connection.send(str);
+        if (connection.isOpen()) {
+            connection.send(str);
+        } else {
+            System.out.println("cannot send to player: " + getName() + ", the socket is closed");
+        }
     }
 
     @Override
@@ -32,7 +36,7 @@ public class PlayerHuman extends Player {
         return reply;
     }
 
-    PlayerHuman(Game game, int id, String name) {
+    InterfacePlayer(Game game, int id, String name) {
         super(game, id, name);
     }
     void setConnection(WebSocket connection) {

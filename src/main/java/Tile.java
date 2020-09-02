@@ -29,10 +29,21 @@ class Tile implements Comparable<Tile> {
     // to get the distance between two tiles we need to convert to the cube system and then do the calculation
     // see: https://www.redblobgames.com/grids/hexagons/#distances
     int getDistance(Tile otherTile) {
-        Cube a = new Cube(this);
-        Cube b = new Cube(otherTile);
-        return a.getDistance(b);
+        return getDistance(this, otherTile);
     }
+
+    int getDistance(Tile tile1, Tile tile2) {
+        int x1 = tile1.getX() - (tile1.getY() + (Math.abs(tile1.getY())%2))/2;
+        int z1 = tile1.getY();
+        int y1 = -x1 - z1;
+
+        int x2 = tile2.getX() - (tile2.getY() + (Math.abs(tile2.getY())%2))/2;
+        int z2 = tile2.getY();
+        int y2 = -x2 - z2;
+
+        return (Math.abs(x1 - x2) + Math.abs(y1 - y2) + Math.abs(z1 - z2)) / 2;
+    }
+
 
     // this also contains nodes that are not the same as in the board.getNodes().
     // because there the duplicates are filtered out.

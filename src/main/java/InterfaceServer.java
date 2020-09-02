@@ -3,6 +3,7 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -16,7 +17,7 @@ public class InterfaceServer extends WebSocketServer {
     private GameManager gameManager;
     private SocketServer socketServer;
 
-    ArrayList<PlayerHuman> registeredPlayers = new ArrayList<>();
+    HashMap<InterfacePlayer, Boolean> registeredPlayers = new HashMap<>();
 
     // Create an interface for a specific port
     InterfaceServer(int port) {
@@ -62,7 +63,45 @@ public class InterfaceServer extends WebSocketServer {
         switch(model) {
             case "join": {
                 JsonObject attrs = obj.get("attributes").getAsJsonObject();
-                registerPlayer(conn, attrs.get("name").getAsString());
+                int connectionId = attrs.get("id").getAsInt();
+                boolean reconnection = false;
+                InterfacePlayer player = null;
+                for (InterfacePlayer p : registeredPlayers.keySet()) {
+                    if (connectionId == p.getId()) {
+
+                        print("reconnecting player: " + p.getName() + " using id: " + p.getId());
+                        p.setConnection(conn); // apparently a reconnect: renew the connection
+
+                        // if the player was not joined in the game it must be added again
+                        if (!registeredPlayers.get(p)) {
+                            gameManager.getCurrentGame().addPlayer(p);
+                        }
+                        registeredPlayers.replace(p, true);
+
+                        reconnection = true;
+                        player = p;
+                        break;
+                    }
+                }
+
+                if (!reconnection || !registeredPlayers.getOrDefault(player, true)) {
+                    registerPlayer(conn, attrs.get("name").getAsString());
+                }
+                gameManager.getCurrentGame().signalGameChange();
+                break;
+
+            }
+            case "leave": {
+                JsonObject attrs = obj.get("attributes").getAsJsonObject();
+                int connectionId = attrs.get("id").getAsInt();
+                for (InterfacePlayer p : registeredPlayers.keySet()) {
+                    if (connectionId == p.getId()) {
+                        print("removing player: " + p.getName() + " using id: " + p.getId());
+                        gameManager.getCurrentGame().removePlayer(p);
+                        gameManager.getCurrentGame().signalGameChange();
+                        registeredPlayers.replace(p, false);
+                    }
+                }
                 break;
             }
             case "control": {
@@ -71,7 +110,7 @@ public class InterfaceServer extends WebSocketServer {
                 break;
             }
             case "client-response": {
-                for (PlayerHuman player : registeredPlayers) {
+                for (InterfacePlayer player : registeredPlayers.keySet()) {
                     if (player.getConnection().equals(conn)) {
                         JsonArray arr = obj.get("attributes").getAsJsonArray();
                         String buildRequest = arr.toString();
@@ -86,9 +125,7 @@ public class InterfaceServer extends WebSocketServer {
     void handleControl(String command) {
         if (command.contains("START")) {
             print("Received START signal");
-
-            print("THIS METHOD NEEDS TO BE CHANGED");
-            if (socketServer.getConnections().size() >= Constants.MINIMUM_AMOUNT_OF_PLAYERS && !gameManager.getCurrentGame().isRunning()) {
+            if (gameManager.getCurrentGame().getPlayers().size() >= Constants.MINIMUM_AMOUNT_OF_PLAYERS && !gameManager.getCurrentGame().isRunning()) {
                 gameManager.startGame();
             } else {
                 print("not enough players to start with");
@@ -102,13 +139,13 @@ public class InterfaceServer extends WebSocketServer {
     }
 
     void registerPlayer(WebSocket conn, String name) {
-        PlayerHuman newPlayer = new PlayerHuman(gameManager.getCurrentGame(), gameManager.getCurrentGame().getPlayers().size(), name);
+        InterfacePlayer newPlayer = new InterfacePlayer(gameManager.getCurrentGame(), gameManager.getCurrentGame().getPlayers().size(), name);
         newPlayer.setConnection(conn);
 
         if (!gameManager.getCurrentGame().isRunning()) {
             print("Registering new interface player: " + name);
             gameManager.getCurrentGame().addPlayer(newPlayer);
-            registeredPlayers.add(newPlayer);
+            registeredPlayers.put(newPlayer, true);
             Response idAcknowledgement = Constants.ID_ACK.withAdditionalInfo("" + newPlayer.getId());
             newPlayer.send(idAcknowledgement.toString());
 
@@ -138,6 +175,11 @@ public class InterfaceServer extends WebSocketServer {
 
     @Override
     public void onClose( WebSocket conn, int code, String reason, boolean remote ) {
+        for (InterfacePlayer player : registeredPlayers.keySet()) {
+            if (player.getConnection().equals(conn)) {
+                print("lost connection with player: " + player.getName() + " using id: " + player.getId());
+            }
+        }
     }
 
     private void print(String msg) {
