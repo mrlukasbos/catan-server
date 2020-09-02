@@ -68,10 +68,17 @@ public class InterfaceServer extends WebSocketServer {
                 InterfacePlayer player = null;
                 for (InterfacePlayer p : registeredPlayers.keySet()) {
                     if (connectionId == p.getId()) {
+
                         print("reconnecting player: " + p.getName() + " using id: " + p.getId());
                         p.setConnection(conn); // apparently a reconnect: renew the connection
-                        reconnection = true;
+
+                        // if the player was not joined in the game it must be added again
+                        if (!registeredPlayers.get(p)) {
+                            gameManager.getCurrentGame().addPlayer(p);
+                        }
                         registeredPlayers.replace(p, true);
+
+                        reconnection = true;
                         player = p;
                         break;
                     }
