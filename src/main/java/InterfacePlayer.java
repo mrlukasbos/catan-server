@@ -11,7 +11,11 @@ public class InterfacePlayer extends Player {
 
     @Override
     void send(String str) {
-        connection.send(str);
+        if (connection.isOpen()) {
+            connection.send(str);
+        } else {
+            System.out.println("cannot send to player: " + getName() + ", the socket is closed");
+        }
     }
 
     @Override

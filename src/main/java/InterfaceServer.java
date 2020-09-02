@@ -71,7 +71,7 @@ public class InterfaceServer extends WebSocketServer {
                         print("reconnecting player: " + p.getName() + " using id: " + p.getId());
                         p.setConnection(conn); // apparently a reconnect: renew the connection
                         reconnection = true;
-                        registeredPlayers.put(p, true);
+                        registeredPlayers.replace(p, true);
                         player = p;
                         break;
                     }
@@ -138,7 +138,7 @@ public class InterfaceServer extends WebSocketServer {
         if (!gameManager.getCurrentGame().isRunning()) {
             print("Registering new interface player: " + name);
             gameManager.getCurrentGame().addPlayer(newPlayer);
-            registeredPlayers.replace(newPlayer, true);
+            registeredPlayers.put(newPlayer, true);
             Response idAcknowledgement = Constants.ID_ACK.withAdditionalInfo("" + newPlayer.getId());
             newPlayer.send(idAcknowledgement.toString());
 
