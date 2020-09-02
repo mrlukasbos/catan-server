@@ -354,6 +354,10 @@ class Game extends Thread {
     public LongestRoadAward getLongestRoadAward() {
         return longestRoadAward;
     }
+
+    public void removePlayer(Player p) {
+        this.players.remove(p);
+    }
 }
 
 class EdgeTrace {
