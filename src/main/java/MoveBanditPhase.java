@@ -54,15 +54,12 @@ public class MoveBanditPhase implements GamePhase {
 
     boolean moveIsValid(JsonArray jsonArray) {
         if (jsonArray.size() == 0) return false;
-
         JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
-
-        JsonElement locationElement = jsonObject.get("location");
-        if (locationElement == null) {
+        if (!jsonObject.has("location") || jsonObject.get("location") == null ) {
             game.sendResponse(Constants.INVALID_BANDIT_MOVE_ERROR);
             return false;
         }
-
+        JsonElement locationElement = jsonObject.get("location");
         Tile tile;
         try {
             tile = game.getBoard().getTile(locationElement.getAsString());

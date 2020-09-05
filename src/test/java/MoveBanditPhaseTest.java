@@ -42,6 +42,14 @@ class MoveBanditPhaseTest {
     }
 
     @Test
+    void requiresAPoperLocationKeuTest() {
+        String message = "[{loc: \"\"}]";
+        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        assertFalse(moveBanditPhase.moveIsValid(jsonArray));
+        assertEquals(game.getLastResponse().getCode(), Constants.INVALID_BANDIT_MOVE_ERROR.getCode());
+    }
+
+    @Test
     void requiresAValidLocationValueTest() {
         String message = "[{ \"location\": {} }]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
