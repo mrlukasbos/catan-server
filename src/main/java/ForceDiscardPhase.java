@@ -1,6 +1,7 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class ForceDiscardPhase implements GamePhase {
     Game game;
@@ -68,7 +69,8 @@ public class ForceDiscardPhase implements GamePhase {
         for (JsonElement obj : jsonArray) {
             JsonObject object = obj.getAsJsonObject();
 
-            String resourceName = object.get("type").getAsString();
+            if (!object.has("type") || !object.has("value")) return false;
+            String resourceName = object.get("type").toString();
             Resource resource = Helpers.getResourceByName(resourceName);
             if (resource != Resource.NONE) {
                 int amount = object.get("value").getAsInt();

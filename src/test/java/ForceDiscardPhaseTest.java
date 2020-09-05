@@ -30,6 +30,26 @@ class ForceDiscardPhaseTest {
         assertEquals(Phase.MOVE_BANDIT, nextPhase);
     }
 
+
+    @Test
+    void ResponseMustBeValidTest() {
+        String message = " [{}]";
+        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        assertFalse(forceDiscardPhase.discardIsValid(player, jsonArray));
+
+        message = " [{\"type\": {}}]";
+        jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        assertFalse(forceDiscardPhase.discardIsValid(player, jsonArray));
+
+        message = " [{\"typ\": {}}]";
+        jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        assertFalse(forceDiscardPhase.discardIsValid(player, jsonArray));
+
+        message = " [{\"type\": \"grain\", \"value\": {}}]";
+        jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        assertFalse(forceDiscardPhase.discardIsValid(player, jsonArray));
+    }
+
     @Test
     void playerCanDiscardResourcesTest() {
         player.addResources(Resource.GRAIN, 8);
