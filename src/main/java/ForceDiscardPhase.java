@@ -7,6 +7,12 @@ public class ForceDiscardPhase implements GamePhase {
     Game game;
     Response request = Constants.DISCARD_RESOURCES_REQUEST;
 
+    // The received messages of players must conform to these specs
+    HashMap<String, ValidationType> props = new HashMap<>() {{
+        put("type", ValidationType.RESOURCE);
+        put("value", ValidationType.NUMBER);
+    }};
+
     ForceDiscardPhase(Game game) {
         this.game = game;
     }
@@ -51,10 +57,9 @@ public class ForceDiscardPhase implements GamePhase {
         while (game.isAlive() && game.isRunning() && !discardSucceeded) {
             String message = player.listen();
             game.print("Received message from player " + player.getName() + ": " + message);
-            jsonArray = new jsonValidator().getJsonIfValid(player, message);
+            jsonArray = jsonValidator.getJsonObjectIfCorrect(message, props);
             if (jsonArray == null) game.sendResponse(player, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
             discardSucceeded = jsonArray != null && discardIsValid(player, jsonArray);
-
             if (!discardSucceeded) {
                 player.send(request.withAdditionalInfo(Double.toString(Math.floor(player.countResources()/2.0))).toString());
             }
@@ -64,15 +69,6 @@ public class ForceDiscardPhase implements GamePhase {
 
     boolean discardIsValid(Player player, JsonArray jsonArray) {
         if (jsonArray.size() == 0) return false;
-
-        HashMap<String, ValidationType> props = new HashMap<>() {{
-            put("type", ValidationType.STRING);
-            put("value", ValidationType.NUMBER);
-        }};
-        if (!jsonValidator.childrenHaveProperties(jsonArray, props)) {
-            game.sendResponse(Constants.MALFORMED_JSON_ERROR);
-            return false;
-        }
 
         int totalDiscarded = 0;
         for (JsonElement obj : jsonArray) {

@@ -6,6 +6,11 @@ class BuildPhase implements GamePhase {
     Game game;
     Response request;
 
+    HashMap<String, ValidationType> props = new HashMap<>() {{
+        put("structure", ValidationType.STRUCTURE);
+        put("location", ValidationType.STRING);
+    }};
+
     BuildPhase(Game game) {
         this.game = game;
         request = Constants.BUILD_REQUEST;
@@ -129,12 +134,6 @@ class BuildPhase implements GamePhase {
             game.sendResponse(Constants.MALFORMED_JSON_ERROR.withAdditionalInfo("jsonArray is null"));
             return false;
         }
-
-        HashMap<String, ValidationType> props = new HashMap<>() {{
-            put("structure", ValidationType.STRING);
-            put("location", ValidationType.STRING);
-        }};
-        if (!jsonValidator.childrenHaveProperties(jsonArray, props)) return false;
 
         ArrayList<BuildCommand> developmentCardRequests = getCommandsFromInput(currentPlayer, jsonArray, Structure.DEVELOPMENT_CARD);
         ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
@@ -299,7 +298,7 @@ class BuildPhase implements GamePhase {
 
         String message = currentPlayer.listen();
         game.print("Received message from player " + currentPlayer.getName() + ": " + message);
-        jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);
+        jsonArray = jsonValidator.getJsonObjectIfCorrect(message, props);
         if (jsonArray == null) {
             game.sendResponse(currentPlayer, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
             return null;

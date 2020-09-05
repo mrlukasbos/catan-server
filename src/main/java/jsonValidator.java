@@ -14,11 +14,13 @@ enum ValidationType {
     OBJECT,
     NULL,
     ARRAY,
+    RESOURCE,
+    STRUCTURE,
 }
 
 public class jsonValidator {
 
-    JsonArray getJsonIfValid(Player player, String message) {
+    static JsonArray getAsJsonObject(String message) {
         if (message == null) return null;
 
         try {
@@ -30,6 +32,10 @@ public class jsonValidator {
         }
     }
 
+    static JsonArray getJsonObjectIfCorrect(String message, Map<String, ValidationType> props) {
+        JsonArray jsonArray = getAsJsonObject(message);
+        return childrenHaveProperties(jsonArray, props) ? jsonArray : null;
+    }
 
     // determine whether the key and types are as expected
     static boolean objectHasProperties(JsonObject object, Map<String, ValidationType> props) {
@@ -57,6 +63,14 @@ public class jsonValidator {
             case OBJECT: return primitive.isJsonObject();
             case NULL: return primitive.isJsonNull();
             case ARRAY: return primitive.isJsonArray();
+            case RESOURCE: {
+                if (!primitive.isString()) return false;
+                return Helpers.getResourceByName(primitive.getAsString()) != Resource.NONE;
+            }
+            case STRUCTURE: {
+                if (!primitive.isString()) return false;
+                return Helpers.getStructureByName(primitive.getAsString()) != Structure.NONE;
+            }
         }
         return false;
     }

@@ -8,6 +8,10 @@ import java.util.Map;
 public class TradePhase implements GamePhase {
     Game game;
     Response request = Constants.TRADE_REQUEST;
+    HashMap<String, ValidationType> props = new HashMap<>() {{
+        put("from", ValidationType.RESOURCE);
+        put("to", ValidationType.RESOURCE);
+    }};
 
     TradePhase(Game game) {
         this.game = game;
@@ -66,7 +70,7 @@ public class TradePhase implements GamePhase {
         while (!tradeSucceeded) {
             String message = currentPlayer.listen();
             game.print("Received message from player " + currentPlayer.getName() + ": " + message);
-            jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);
+            jsonArray = jsonValidator.getJsonObjectIfCorrect(message, props);
             if (jsonArray == null) game.sendResponse(currentPlayer, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
             tradeSucceeded = jsonArray != null && tradeIsValid(currentPlayer, jsonArray);
 
@@ -79,17 +83,6 @@ public class TradePhase implements GamePhase {
 
 
     boolean tradeIsValid(Player player, JsonArray jsonArray) {
-
-
-        HashMap<String, ValidationType> props = new HashMap<>() {{
-            put("from", ValidationType.STRING);
-            put("to", ValidationType.STRING);
-        }};
-        if (!jsonValidator.childrenHaveProperties(jsonArray, props)) {
-            game.sendResponse(Constants.MALFORMED_JSON_ERROR);
-            return false;
-        }
-
         // keep track of all the resources we need
         Map<Resource, Integer> resourcesNeeded = new HashMap<>();
 
