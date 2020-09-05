@@ -2,6 +2,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+
 public class MoveBanditPhase implements GamePhase {
     Game game;
     Response request = Constants.MOVE_BANDIT_REQUEST;
@@ -54,11 +56,16 @@ public class MoveBanditPhase implements GamePhase {
 
     boolean moveIsValid(JsonArray jsonArray) {
         if (jsonArray.size() == 0) return false;
-        JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
-        if (!jsonObject.has("location") || jsonObject.get("location") == null ) {
-            game.sendResponse(Constants.INVALID_BANDIT_MOVE_ERROR);
+
+        HashMap<String, ValidationType> props = new HashMap<>() {{
+            put("location", ValidationType.STRING);
+        }};
+        if (!jsonValidator.childrenHaveProperties(jsonArray, props)) {
+            game.sendResponse(Constants.MALFORMED_JSON_ERROR);
             return false;
         }
+
+        JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
         JsonElement locationElement = jsonObject.get("location");
         Tile tile;
         try {

@@ -38,7 +38,7 @@ class MoveBanditPhaseTest {
         String message = "[{}]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
         assertFalse(moveBanditPhase.moveIsValid(jsonArray));
-        assertEquals(game.getLastResponse().getCode(), Constants.INVALID_BANDIT_MOVE_ERROR.getCode());
+        assertEquals(game.getLastResponse().getCode(), Constants.MALFORMED_JSON_ERROR.getCode());
     }
 
     @Test
@@ -46,7 +46,7 @@ class MoveBanditPhaseTest {
         String message = "[{loc: \"\"}]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
         assertFalse(moveBanditPhase.moveIsValid(jsonArray));
-        assertEquals(game.getLastResponse().getCode(), Constants.INVALID_BANDIT_MOVE_ERROR.getCode());
+        assertEquals(game.getLastResponse().getCode(), Constants.MALFORMED_JSON_ERROR.getCode());
     }
 
     @Test
@@ -54,7 +54,7 @@ class MoveBanditPhaseTest {
         String message = "[{ \"location\": {} }]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
         assertFalse(moveBanditPhase.moveIsValid(jsonArray));
-        assertEquals(game.getLastResponse().getCode(), Constants.INVALID_BANDIT_MOVE_ERROR.getCode());
+        assertEquals(game.getLastResponse().getCode(), Constants.MALFORMED_JSON_ERROR.getCode());
 
         message = "[{ \"location\": \"foo\" }]";
         jsonArray = new jsonValidator().getJsonIfValid(player, message);

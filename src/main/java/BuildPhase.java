@@ -1,5 +1,6 @@
 import com.google.gson.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 class BuildPhase implements GamePhase {
     Game game;
@@ -128,6 +129,12 @@ class BuildPhase implements GamePhase {
             game.sendResponse(Constants.MALFORMED_JSON_ERROR.withAdditionalInfo("jsonArray is null"));
             return false;
         }
+
+        HashMap<String, ValidationType> props = new HashMap<>() {{
+            put("structure", ValidationType.STRING);
+            put("location", ValidationType.STRING);
+        }};
+        if (!jsonValidator.childrenHaveProperties(jsonArray, props)) return false;
 
         ArrayList<BuildCommand> developmentCardRequests = getCommandsFromInput(currentPlayer, jsonArray, Structure.DEVELOPMENT_CARD);
         ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);

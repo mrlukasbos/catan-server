@@ -80,6 +80,16 @@ public class TradePhase implements GamePhase {
 
     boolean tradeIsValid(Player player, JsonArray jsonArray) {
 
+
+        HashMap<String, ValidationType> props = new HashMap<>() {{
+            put("from", ValidationType.STRING);
+            put("to", ValidationType.STRING);
+        }};
+        if (!jsonValidator.childrenHaveProperties(jsonArray, props)) {
+            game.sendResponse(Constants.MALFORMED_JSON_ERROR);
+            return false;
+        }
+
         // keep track of all the resources we need
         Map<Resource, Integer> resourcesNeeded = new HashMap<>();
 
@@ -122,6 +132,4 @@ public class TradePhase implements GamePhase {
         }
         return true;
     }
-
-
 }

@@ -65,10 +65,14 @@ public class ForceDiscardPhase implements GamePhase {
     boolean discardIsValid(Player player, JsonArray jsonArray) {
         if (jsonArray.size() == 0) return false;
 
-        HashMap<String, ValidationType> props = new HashMap<>();
-        props.put("type", ValidationType.STRING);
-        props.put("value", ValidationType.NUMBER);
-        if (!jsonValidator.childrenHaveProperties(jsonArray, props)) return false;
+        HashMap<String, ValidationType> props = new HashMap<>() {{
+            put("type", ValidationType.STRING);
+            put("value", ValidationType.NUMBER);
+        }};
+        if (!jsonValidator.childrenHaveProperties(jsonArray, props)) {
+            game.sendResponse(Constants.MALFORMED_JSON_ERROR);
+            return false;
+        }
 
         int totalDiscarded = 0;
         for (JsonElement obj : jsonArray) {

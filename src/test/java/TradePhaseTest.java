@@ -96,7 +96,7 @@ public class TradePhaseTest {
         String message = "[{ \"form\": \"lore\", \"to\": \"wood\" }]";
         JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
         assertFalse(tradePhase.tradeIsValid(player, jsonArray));
-        assertEquals(game.getLastResponse().getCode(), Constants.INVALID_TRADE_ERROR.getCode());
+        assertEquals(game.getLastResponse().getCode(), Constants.MALFORMED_JSON_ERROR.getCode());
     }
 
     @Test
