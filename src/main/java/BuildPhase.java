@@ -90,8 +90,10 @@ class BuildPhase implements GamePhase {
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
 
-            String structureString = object.get("structure").getAsString();
+            // check if the proper elements are present
+            if (!object.has("structure") || !object.has("location")) return null;
 
+            String structureString = object.get("structure").getAsString();
             Structure structure;
             try {
                 structure = Enum.valueOf(Structure.class, structureString.toUpperCase());

@@ -62,6 +62,20 @@ class BuildPhaseTest {
     }
 
     @Test
+    void wrongJSONObjectTest() {
+        String message = "[{}]";
+        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        assertFalse(buildPhase.commandIsValid(player, jsonArray));
+    }
+
+    @Test
+    void wrongJSONObjectBecauseNoLocationTest() {
+        String message = "[{ \"structure\": \"street\"}]";
+        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        assertFalse(buildPhase.commandIsValid(player, jsonArray));
+    }
+
+    @Test
     void streetMustBeConnectedTest() {
         game.getBoard().placeStreet(player2, game.getBoard().getEdge("([2,2],[3,2])"));
 
