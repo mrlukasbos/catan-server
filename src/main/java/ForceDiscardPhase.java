@@ -73,7 +73,7 @@ public class ForceDiscardPhase implements GamePhase {
         int totalDiscarded = 0;
         for (JsonElement obj : jsonArray) {
             JsonObject object = obj.getAsJsonObject();
-            String resourceName = object.get("type").toString();
+            String resourceName = object.get("type").getAsString();
             Resource resource = Helpers.getResourceByName(resourceName);
             if (resource != Resource.NONE) {
                 int amount = object.get("value").getAsInt();
