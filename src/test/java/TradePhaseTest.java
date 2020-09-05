@@ -12,7 +12,7 @@ public class TradePhaseTest {
     @Test
     public void testTradingNothing() {
         String message = "[]";
-        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertTrue(tradePhase.tradeIsValid(player, jsonArray));
     }
 
@@ -22,7 +22,7 @@ public class TradePhaseTest {
         player.addResources(Resource.ORE, 4);
 
         String message = "[{ \"from\": \"ore\", \"to\": \"wood\" }]";
-        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertTrue(tradePhase.tradeIsValid(player, jsonArray));
     }
 
@@ -39,7 +39,7 @@ public class TradePhaseTest {
         player.addResources(Resource.ORE, 3);
 
         String message = "[{ \"from\": \"ore\", \"to\": \"stone\" }, { \"from\": \"grain\", \"to\": \"ore\" }]";
-        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertTrue(tradePhase.tradeIsValid(player, jsonArray));
     }
 
@@ -50,7 +50,7 @@ public class TradePhaseTest {
         player.addResources(Resource.ORE, 3);
 
         String message = "[{ \"from\": \"ore\", \"to\": \"stone\" }, { \"from\": \"grain\", \"to\": \"ore\" }]";
-        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(tradePhase.tradeIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.INSUFFICIENT_RESOURCES_ERROR.getCode());
     }
@@ -61,7 +61,7 @@ public class TradePhaseTest {
         player.addResources(Resource.ORE, 3);
 
         String message = "[{ \"from\": \"ore\", \"to\": \"wood\" }]";
-        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(tradePhase.tradeIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.INSUFFICIENT_RESOURCES_ERROR.getCode());
     }
@@ -72,7 +72,7 @@ public class TradePhaseTest {
         player.addResources(Resource.GRAIN, 7);
 
         String message = "[{ \"from\": \"grain\", \"to\": \"wood\" }, { \"from\": \"grain\", \"to\": \"ore\" }]";
-        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(tradePhase.tradeIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.INSUFFICIENT_RESOURCES_ERROR.getCode());
     }
@@ -83,7 +83,7 @@ public class TradePhaseTest {
         player.addResources(Resource.ORE, 4);
 
         String message = "[{ \"from\": \"lore\", \"to\": \"wood\" }]";
-        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(tradePhase.tradeIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.INVALID_TRADE_ERROR.getCode());
     }
@@ -105,7 +105,7 @@ public class TradePhaseTest {
         player.addResources(Resource.ORE, 4);
 
         String message = "[{ \"from\": \"ore\", \"to\": \"wood\" }]";
-        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
 
         tradePhase.trade(player, jsonArray);
 
@@ -133,7 +133,7 @@ public class TradePhaseTest {
         // set up a trade of 3 ore to wood
         player.addResources(Resource.ORE, 3);
         String message = "[{ \"from\": \"ore\", \"to\": \"wood\" }]";
-        JsonArray jsonArray = new jsonValidator().getAsJsonObject(message);
+        JsonArray jsonArray = new jsonValidator().getAsJsonArray(message);
 
         // the trade should initially not be legal
         assertFalse(tradePhase.tradeIsValid(player, jsonArray));
@@ -169,7 +169,7 @@ public class TradePhaseTest {
         // set up a trade of 2 stone to wood
         player.addResources(Resource.STONE, 2);
         String message = "[{ \"from\": \"stone\", \"to\": \"wood\" }]";
-        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
 
         // the trade should initially not be legal
         assertFalse(tradePhase.tradeIsValid(player, jsonArray));

@@ -20,7 +20,7 @@ enum ValidationType {
 
 public class jsonValidator {
 
-    static JsonArray getAsJsonObject(String message) {
+    static JsonArray getAsJsonArray(String message) {
         if (message == null) return null;
 
         try {
@@ -33,7 +33,7 @@ public class jsonValidator {
     }
 
     static JsonArray getJsonObjectIfCorrect(String message, Map<String, ValidationType> props) {
-        JsonArray jsonArray = getAsJsonObject(message);
+        JsonArray jsonArray = getAsJsonArray(message);
         return childrenHaveProperties(jsonArray, props) ? jsonArray : null;
     }
 
@@ -48,7 +48,8 @@ public class jsonValidator {
     }
 
     static boolean childrenHaveProperties(JsonArray jsonArray, Map<String, ValidationType> props) {
-        for (JsonElement elem: jsonArray) {
+        if (jsonArray == null) return false;
+        for (JsonElement elem : jsonArray) {
             if (!objectHasProperties(elem.getAsJsonObject(), props)) return false;
         }
         return true;

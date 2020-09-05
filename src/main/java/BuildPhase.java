@@ -6,11 +6,6 @@ class BuildPhase implements GamePhase {
     Game game;
     Response request;
 
-    HashMap<String, ValidationType> props = new HashMap<>() {{
-        put("structure", ValidationType.STRUCTURE);
-        put("location", ValidationType.STRING);
-    }};
-
     BuildPhase(Game game) {
         this.game = game;
         request = Constants.BUILD_REQUEST;
@@ -27,7 +22,6 @@ class BuildPhase implements GamePhase {
             game.addEvent(new Event(game, EventType.GENERAL, game.getCurrentPlayer()).withGeneralMessage(" can't build"));
         }
         game.goToNextPlayer();
-
         game.signalGameChange();
         return Phase.THROW_DICE;
     }
@@ -48,10 +42,17 @@ class BuildPhase implements GamePhase {
             amountOfFailures++;
         } while (game.isRunning() && (jsonArray == null || !commandIsValid(currentPlayer, jsonArray)));
 
-
         // build the structures
         buildStructures(currentPlayer, jsonArray);
         game.sendResponse(currentPlayer, Constants.OK.withAdditionalInfo("Message processed succesfully!"));
+    }
+
+    JsonArray getJsonIfValid(String message) {
+        HashMap<String, ValidationType> props = new HashMap<>() {{
+            put("structure", ValidationType.STRUCTURE);
+            put("location", ValidationType.STRING);
+        }};
+        return jsonValidator.getJsonObjectIfCorrect(message, props);
     }
 
     // build the structures if the command is valid
@@ -95,18 +96,7 @@ class BuildPhase implements GamePhase {
 
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
-
-            // check if the proper elements are present
-            if (!object.has("structure") || !object.has("location")) return null;
-
-            String structureString = object.get("structure").getAsString();
-            Structure structure;
-            try {
-                structure = Enum.valueOf(Structure.class, structureString.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                game.sendResponse(Constants.INVALID_STRUCTURE_ERROR);
-                return null;
-            }
+            Structure structure = Helpers.getStructureByName(object.get("structure").getAsString());
 
             // validate if data is formatted properly and corresponding objects exist
             if (structure == structuresToReturn) {
@@ -123,18 +113,12 @@ class BuildPhase implements GamePhase {
                  }
             }
         }
-
         return commands;
     }
 
 
     // check for the whole command if the command is valid.
     boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
-        if (jsonArray == null) {
-            game.sendResponse(Constants.MALFORMED_JSON_ERROR.withAdditionalInfo("jsonArray is null"));
-            return false;
-        }
-
         ArrayList<BuildCommand> developmentCardRequests = getCommandsFromInput(currentPlayer, jsonArray, Structure.DEVELOPMENT_CARD);
         ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
         ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.VILLAGE);
@@ -298,7 +282,7 @@ class BuildPhase implements GamePhase {
 
         String message = currentPlayer.listen();
         game.print("Received message from player " + currentPlayer.getName() + ": " + message);
-        jsonArray = jsonValidator.getJsonObjectIfCorrect(message, props);
+        jsonArray = getJsonIfValid(message);
         if (jsonArray == null) {
             game.sendResponse(currentPlayer, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
             return null;

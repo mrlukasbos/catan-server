@@ -55,7 +55,7 @@ class ForceDiscardPhaseTest {
         player.addResources(Resource.GRAIN, 8);
 
         String message = " [{\"type\":\"grain\", \"value\": 4}]";
-        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         forceDiscardPhase.discard(player, jsonArray);
 
         assertEquals(4, player.countResources(Resource.GRAIN));
@@ -66,12 +66,12 @@ class ForceDiscardPhaseTest {
         player.addResources(Resource.GRAIN, 8);
 
         String message = " [{\"type\":\"grain\", \"value\": 3}]";
-        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(forceDiscardPhase.discardIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.NOT_ENOUGH_RESOURCES_DISCARDED_ERROR.getCode());
 
         message = " [{\"type\":\"grain\", \"value\": 4}]";
-        jsonArray = jsonValidator.getAsJsonObject(message);
+        jsonArray = jsonValidator.getAsJsonArray(message);
         assertTrue(forceDiscardPhase.discardIsValid(player, jsonArray));
     }
 
@@ -86,7 +86,7 @@ class ForceDiscardPhaseTest {
         player.addResources(Resource.GRAIN, 8);
 
         String message = " [{\"type\":\"grain\", \"value\": 9}]";
-        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(forceDiscardPhase.discardIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.MORE_RESOURCES_DISCARDED_THAN_OWNED_ERROR.getCode());
     }

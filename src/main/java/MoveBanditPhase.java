@@ -8,11 +8,6 @@ public class MoveBanditPhase implements GamePhase {
     Game game;
     Response request = Constants.MOVE_BANDIT_REQUEST;
 
-    // we expect a location with a string value as inputs
-    HashMap<String, ValidationType> props = new HashMap<>() {{
-        put("location", ValidationType.STRING);
-    }};
-
     MoveBanditPhase(Game game) {
         this.game = game;
     }
@@ -48,7 +43,7 @@ public class MoveBanditPhase implements GamePhase {
         while (game.isRunning() && !moveSucceeded) {
             String message = currentPlayer.listen();
             game.print("Received message from player " + currentPlayer.getName() + ": " + message);
-            jsonArray = jsonValidator.getJsonObjectIfCorrect(message, props);
+            jsonArray = getJsonIfValid(message);
             if (jsonArray == null) game.sendResponse(currentPlayer, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
             moveSucceeded = jsonArray != null && moveIsValid(jsonArray);
 
@@ -57,6 +52,14 @@ public class MoveBanditPhase implements GamePhase {
             }
         }
         return jsonArray;
+    }
+
+    JsonArray getJsonIfValid(String message) {
+        // we expect a location with a string value as inputs
+        HashMap<String, ValidationType> props = new HashMap<>() {{
+            put("location", ValidationType.STRING);
+        }};
+        return jsonValidator.getJsonObjectIfCorrect(message, props);
     }
 
     boolean moveIsValid(JsonArray jsonArray) {

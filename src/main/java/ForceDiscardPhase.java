@@ -7,12 +7,6 @@ public class ForceDiscardPhase implements GamePhase {
     Game game;
     Response request = Constants.DISCARD_RESOURCES_REQUEST;
 
-    // The received messages of players must conform to these specs
-    HashMap<String, ValidationType> props = new HashMap<>() {{
-        put("type", ValidationType.RESOURCE);
-        put("value", ValidationType.NUMBER);
-    }};
-
     ForceDiscardPhase(Game game) {
         this.game = game;
     }
@@ -24,13 +18,10 @@ public class ForceDiscardPhase implements GamePhase {
     public Phase execute() {
         for (Player player: game.getPlayers()) {
             if (player.countResources() <= 7) continue;
-
             JsonArray jsonArray = getValidCommandFromUser(player);
             discard(player, jsonArray);
-
             game.addEvent(new Event(game, EventType.CARDS_DISCARDED, player).withGeneralMessage(" discarded their cards"));
         }
-
         game.signalGameChange();
         return Phase.MOVE_BANDIT;
     }
@@ -44,7 +35,6 @@ public class ForceDiscardPhase implements GamePhase {
                 player.removeResources(resource, object.get("value").getAsInt());
             }
         }
-
         game.sendResponse(player, Constants.OK.withAdditionalInfo("Discard processed succesfully!"));
     }
 
@@ -57,7 +47,7 @@ public class ForceDiscardPhase implements GamePhase {
         while (game.isAlive() && game.isRunning() && !discardSucceeded) {
             String message = player.listen();
             game.print("Received message from player " + player.getName() + ": " + message);
-            jsonArray = jsonValidator.getJsonObjectIfCorrect(message, props);
+            jsonArray = getJsonIfValid(message);
             if (jsonArray == null) game.sendResponse(player, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
             discardSucceeded = jsonArray != null && discardIsValid(player, jsonArray);
             if (!discardSucceeded) {
@@ -65,6 +55,14 @@ public class ForceDiscardPhase implements GamePhase {
             }
         }
         return jsonArray;
+    }
+
+    JsonArray getJsonIfValid(String message) {
+        HashMap<String, ValidationType> props = new HashMap<>() {{
+            put("type", ValidationType.RESOURCE);
+            put("value", ValidationType.NUMBER);
+        }};
+        return jsonValidator.getJsonObjectIfCorrect(message, props);
     }
 
     boolean discardIsValid(Player player, JsonArray jsonArray) {
