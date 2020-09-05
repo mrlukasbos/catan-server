@@ -1,7 +1,7 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import java.util.HashMap;
 
 public class ForceDiscardPhase implements GamePhase {
     Game game;
@@ -65,11 +65,14 @@ public class ForceDiscardPhase implements GamePhase {
     boolean discardIsValid(Player player, JsonArray jsonArray) {
         if (jsonArray.size() == 0) return false;
 
+        HashMap<String, ValidationType> props = new HashMap<>();
+        props.put("type", ValidationType.STRING);
+        props.put("value", ValidationType.NUMBER);
+        if (!jsonValidator.childrenHaveProperties(jsonArray, props)) return false;
+
         int totalDiscarded = 0;
         for (JsonElement obj : jsonArray) {
             JsonObject object = obj.getAsJsonObject();
-
-            if (!object.has("type") || !object.has("value")) return false;
             String resourceName = object.get("type").toString();
             Resource resource = Helpers.getResourceByName(resourceName);
             if (resource != Resource.NONE) {
