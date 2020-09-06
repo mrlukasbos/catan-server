@@ -60,6 +60,7 @@ public class JsonValidatorTest {
         assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
     }
 
+    @Test
     public void testEdgeNodeTileKeyValidations() {
         Board board = new Board();
         String message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": \"street\", \"location\": \"([2,2],[3,1])\" }]\n";
@@ -69,7 +70,7 @@ public class JsonValidatorTest {
         }};
         assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
 
-        message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": \"stret\", \"location\": \"([2,2],[3,1])\" }]\n";
+        message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": \"street\", \"location\": \"([2,2],[3,1])\" }]\n";
         props = new HashMap<>() {{
             put("structure", ValidationType.STRUCTURE);
             put("location", ValidationType.EDGE_OR_NODE_KEYS);
@@ -88,5 +89,9 @@ public class JsonValidatorTest {
             put("location", ValidationType.NODE_KEYS);
         }};
         assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+
+        // node that does not exist
+        message = "[{ \"structure\": \"city\", \"location\": \"([0,2],[2,1],[7,2])\" }]\n";
+        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
     }
 }
