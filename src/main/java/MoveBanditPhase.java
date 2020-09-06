@@ -59,7 +59,7 @@ public class MoveBanditPhase implements GamePhase {
     }
 
     JsonArray getJsonIfValid(String message) {
-        return jsonValidator.getJsonObjectIfCorrect(message, props);
+        return jsonValidator.getJsonObjectIfCorrect(message, props, game.getBoard());
     }
 
     boolean moveIsValid(JsonArray jsonArray) {

@@ -63,7 +63,7 @@ public class ForceDiscardPhase implements GamePhase {
 
     JsonArray getJsonIfValid(String message) {
 
-        return jsonValidator.getJsonObjectIfCorrect(message, props);
+        return jsonValidator.getJsonObjectIfCorrect(message, props, game.getBoard());
     }
 
     boolean discardIsValid(Player player, JsonArray jsonArray) {
