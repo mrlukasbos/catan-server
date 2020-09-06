@@ -2,9 +2,7 @@ import com.google.gson.JsonArray;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BuildPhaseTest {
     private InterfaceServer iface = new InterfaceServer(10007);
@@ -48,31 +46,6 @@ class BuildPhaseTest {
         String message = "[{ \"structure\": \"street\", \"location\": \"([2,2],[3,2])\" }]";
         JsonArray jsonArray = new jsonValidator().getAsJsonArray(message);
         assertTrue(buildPhase.commandIsValid(player, jsonArray));
-    }
-
-    @Test
-    void wrongJSONKeyTest() {
-        game.getBoard().placeStreet(player, game.getBoard().getEdge("([3,2],[3,3])"));
-
-        player.addResources(Constants.STREET_COSTS);
-
-        String message = "[{ \"structure\": \"stret\", \"location\": \"([2,2],[3,2])\" }]";
-        JsonArray jsonArray = buildPhase.getJsonIfValid(message);
-        assertFalse(buildPhase.commandIsValid(player, jsonArray));
-    }
-
-    @Test
-    void wrongJSONObjectTest() {
-        String message = "[{}]";
-        JsonArray jsonArray = buildPhase.getJsonIfValid(message);
-        assertFalse(buildPhase.commandIsValid(player, jsonArray));
-    }
-
-    @Test
-    void wrongJSONObjectBecauseNoLocationTest() {
-        String message = "[{ \"structure\": \"street\"}]";
-        JsonArray jsonArray = buildPhase.getJsonIfValid(message);
-        assertFalse(buildPhase.commandIsValid(player, jsonArray));
     }
 
     @Test
