@@ -6,6 +6,10 @@ import java.util.HashMap;
 public class ForceDiscardPhase implements GamePhase {
     Game game;
     Response request = Constants.DISCARD_RESOURCES_REQUEST;
+    HashMap<String, ValidationType> props = new HashMap<>() {{
+        put("type", ValidationType.RESOURCE);
+        put("value", ValidationType.NUMBER);
+    }};
 
     ForceDiscardPhase(Game game) {
         this.game = game;
@@ -58,10 +62,7 @@ public class ForceDiscardPhase implements GamePhase {
     }
 
     JsonArray getJsonIfValid(String message) {
-        HashMap<String, ValidationType> props = new HashMap<>() {{
-            put("type", ValidationType.RESOURCE);
-            put("value", ValidationType.NUMBER);
-        }};
+
         return jsonValidator.getJsonObjectIfCorrect(message, props);
     }
 
