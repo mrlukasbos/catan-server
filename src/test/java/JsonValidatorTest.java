@@ -59,4 +59,34 @@ public class JsonValidatorTest {
         message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": null}]\n";
         assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
     }
+
+    public void testEdgeNodeTileKeyValidations() {
+        Board board = new Board();
+        String message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": \"street\", \"location\": \"([2,2],[3,1])\" }]\n";
+        HashMap<String, ValidationType> props = new HashMap<>() {{
+            put("structure", ValidationType.STRUCTURE);
+            put("location", ValidationType.ALL_KEYS);
+        }};
+        assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+
+        message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": \"stret\", \"location\": \"([2,2],[3,1])\" }]\n";
+        props = new HashMap<>() {{
+            put("structure", ValidationType.STRUCTURE);
+            put("location", ValidationType.EDGE_OR_NODE_KEYS);
+        }};
+        assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+
+        message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }]\n";
+        props = new HashMap<>() {{
+            put("structure", ValidationType.STRUCTURE);
+            put("location", ValidationType.EDGE_KEYS);
+        }};
+        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+
+        props = new HashMap<>() {{
+            put("structure", ValidationType.STRUCTURE);
+            put("location", ValidationType.NODE_KEYS);
+        }};
+        assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+    }
 }

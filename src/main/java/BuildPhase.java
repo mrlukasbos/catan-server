@@ -9,7 +9,7 @@ class BuildPhase implements GamePhase {
     // structure of the messages
     HashMap<String, ValidationType> props = new HashMap<>() {{
         put("structure", ValidationType.STRUCTURE);
-        put("location", ValidationType.STRING);
+        put("location", ValidationType.EDGE_OR_NODE_KEYS);
     }};
 
     BuildPhase(Game game) {
@@ -104,20 +104,17 @@ class BuildPhase implements GamePhase {
             if (structure == structuresToReturn) {
                  if (structuresToReturn == Structure.STREET) {
                      String key = object.get("location").getAsString();
-                     if (!edgeExists(game.getBoard().getEdge(key), key)) return null;
                      commands.add(new BuildCommand(currentPlayer, structure, key));
                  } else if (structuresToReturn == Structure.DEVELOPMENT_CARD) {
                      commands.add(new BuildCommand(currentPlayer, structure, null));
                  } else {
                      String key = object.get("location").getAsString();
-                     if (!nodeExists(game.getBoard().getNode(key), key)) return null;
                      commands.add(new BuildCommand(currentPlayer, structure, key));
                  }
             }
         }
         return commands;
     }
-
 
     // check for the whole command if the command is valid.
     boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
@@ -189,22 +186,6 @@ class BuildPhase implements GamePhase {
     private boolean edgeIsFree(ArrayList<Edge> otherEdgesInSameCmd, Edge edge) {
         if (edge.isRoad() || otherEdgesInSameCmd.contains(edge)) {
             game.sendResponse(game.getCurrentPlayer(), Constants.STRUCTURE_ALREADY_EXISTS_ERROR.withAdditionalInfo(edge.getKey()));
-            return false;
-        }
-        return true;
-    }
-
-    private boolean edgeExists(Edge edge, String key) {
-        if (edge == null) {
-            game.sendResponse(Constants.EDGE_DOES_NOT_EXIST_ERROR.withAdditionalInfo(key));
-            return false;
-        }
-        return true;
-    }
-
-    private boolean nodeExists(Node node, String key) {
-        if (node == null) {
-            game.sendResponse(Constants.NODE_DOES_NOT_EXIST_ERROR.withAdditionalInfo(key));
             return false;
         }
         return true;
