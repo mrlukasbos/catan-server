@@ -7,6 +7,10 @@ import java.util.HashMap;
 public class MoveBanditPhase implements GamePhase {
     Game game;
     Response request = Constants.MOVE_BANDIT_REQUEST;
+    // we expect a location with a string value as inputs
+    HashMap<String, ValidationType> props = new HashMap<>() {{
+        put("location", ValidationType.STRING);
+    }};
 
     MoveBanditPhase(Game game) {
         this.game = game;
@@ -55,10 +59,6 @@ public class MoveBanditPhase implements GamePhase {
     }
 
     JsonArray getJsonIfValid(String message) {
-        // we expect a location with a string value as inputs
-        HashMap<String, ValidationType> props = new HashMap<>() {{
-            put("location", ValidationType.STRING);
-        }};
         return jsonValidator.getJsonObjectIfCorrect(message, props);
     }
 

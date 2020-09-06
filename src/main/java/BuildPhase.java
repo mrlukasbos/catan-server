@@ -6,6 +6,12 @@ class BuildPhase implements GamePhase {
     Game game;
     Response request;
 
+    // structure of the messages
+    HashMap<String, ValidationType> props = new HashMap<>() {{
+        put("structure", ValidationType.STRUCTURE);
+        put("location", ValidationType.STRING);
+    }};
+
     BuildPhase(Game game) {
         this.game = game;
         request = Constants.BUILD_REQUEST;
@@ -48,10 +54,6 @@ class BuildPhase implements GamePhase {
     }
 
     JsonArray getJsonIfValid(String message) {
-        HashMap<String, ValidationType> props = new HashMap<>() {{
-            put("structure", ValidationType.STRUCTURE);
-            put("location", ValidationType.STRING);
-        }};
         return jsonValidator.getJsonObjectIfCorrect(message, props);
     }
 

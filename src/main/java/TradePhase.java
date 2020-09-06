@@ -70,7 +70,7 @@ public class TradePhase implements GamePhase {
         while (!tradeSucceeded) {
             String message = currentPlayer.listen();
             game.print("Received message from player " + currentPlayer.getName() + ": " + message);
-            jsonArray = jsonValidator.getJsonObjectIfCorrect(message, props);
+            jsonArray = getValidJson(message);
             if (jsonArray == null) game.sendResponse(currentPlayer, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
             tradeSucceeded = jsonArray != null && tradeIsValid(currentPlayer, jsonArray);
 
@@ -79,6 +79,10 @@ public class TradePhase implements GamePhase {
             }
         }
         return jsonArray;
+    }
+
+    JsonArray getValidJson(String message) {
+        return jsonValidator.getJsonObjectIfCorrect(message, props);
     }
 
 

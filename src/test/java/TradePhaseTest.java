@@ -133,7 +133,7 @@ public class TradePhaseTest {
         // set up a trade of 3 ore to wood
         player.addResources(Resource.ORE, 3);
         String message = "[{ \"from\": \"ore\", \"to\": \"wood\" }]";
-        JsonArray jsonArray = new jsonValidator().getAsJsonArray(message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
 
         // the trade should initially not be legal
         assertFalse(tradePhase.tradeIsValid(player, jsonArray));
