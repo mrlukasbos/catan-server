@@ -19,12 +19,6 @@ class BuildPhaseTest {
         game.init();
     }
 
-//    @Test
-//    void itShouldReturnFalseIfEmptyInputTest() {
-//        assertFalse(buildPhase.commandIsValid(player, null));
-//        assertEquals(game.getLastResponse().getCode(), Constants.MALFORMED_JSON_ERROR.getCode());
-//    }
-
     @Test
     void phaseNameShouldBeCorrectTest() {
         assertEquals(buildPhase.getPhaseType(), Phase.BUILDING);
