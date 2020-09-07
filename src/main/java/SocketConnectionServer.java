@@ -133,7 +133,6 @@ public class SocketConnectionServer extends Thread {
 
     // Ensures connections with the players
     // A player has to connect and return a string immediately (the string will be the name of the player in-game)
-    // this function will only block if the game has not started yet
     private void ensureConnections() {
         try {
             if (acceptCon.isDone() && !gameManager.getCurrentGame().isRunning()) {
