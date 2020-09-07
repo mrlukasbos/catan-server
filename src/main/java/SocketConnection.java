@@ -4,7 +4,6 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.charset.StandardCharsets;
 
 public class SocketConnection extends Connection {
-    ConnectionType type = ConnectionType.SOCKET;
     AsynchronousSocketChannel socket;
 
     SocketConnection(AsynchronousSocketChannel socket) {
