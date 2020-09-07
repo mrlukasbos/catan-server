@@ -19,14 +19,12 @@ public class SocketServerTest {
         assertEquals(socketServer.getConnections().size(), 0);
 
         Socket s = null;
-
+        DataOutputStream dout = null;
         try {
             s = new Socket("localhost", 10006);
-            DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+            dout = new DataOutputStream(s.getOutputStream());
             dout.writeUTF("Hello");
             dout.flush();
-           // dout.close();
-           // s.close();
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -39,6 +37,7 @@ public class SocketServerTest {
             if (i > 20) fail();
         }
 
+        i = 0;
         while (socketServer.getConnectedPlayers().size() != 1) {
             Thread.sleep(50);
             i++;
@@ -46,7 +45,22 @@ public class SocketServerTest {
         }
        // assertEquals("Hello", socketServer.getConnectedPlayers().get(0).getName());
 
+        assert s != null;
+        assert dout != null;
+
         BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
         assertNotEquals("", in.readLine());
+
+        dout.close();
+        s.close();
+
+
+        // give the server a second to process and respond
+        i = 0;
+        while (socketServer.getConnections().size() != 0) {
+            Thread.sleep(50);
+            i++;
+            if (i > 20) fail();
+        }
     }
 }

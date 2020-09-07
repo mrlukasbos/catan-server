@@ -18,6 +18,7 @@ public class SocketConnectionServer extends Thread {
     private GameManager gameManager;
     private ArrayList<Player> connectedPlayers = new ArrayList<>();
     private ArrayList<ConnectionElement> connections = new ArrayList<>();
+    Future<AsynchronousSocketChannel> acceptCon;
 
     // start a server on this device
     SocketConnectionServer(int port) {
@@ -25,6 +26,7 @@ public class SocketConnectionServer extends Thread {
             server = AsynchronousServerSocketChannel.open();
             server.bind(new InetSocketAddress(port));
             print("Players can connect to port: " + port + "...");
+            acceptCon = server.accept(); // set acceptCon
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,13 +99,15 @@ public class SocketConnectionServer extends Thread {
     If a connection has a message, it is set to be the bufferedReply of that player
      */
     private void listen() {
+        ConnectionElement toRemove = null;
         for (ConnectionElement connection : connections) {
             if (connection.channel != null && connection.channel.isOpen()) {
                 if (connection.result.isDone()) {
                     try {
                         connection.result.get();
                     } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
+                        toRemove = connection;
+                        connection.result.cancel(true);
                     }
 
                     // execute the messages line by line
@@ -118,9 +122,12 @@ public class SocketConnectionServer extends Thread {
                 }
             } else {
                 connection.result.cancel(true);
-                connections.remove(connection);
-                this.onClose(connection.channel);
+                toRemove = connection;
             }
+        }
+        if (toRemove != null) {
+            this.onClose(toRemove.channel);
+            connections.remove(toRemove);
         }
     }
 
@@ -129,16 +136,9 @@ public class SocketConnectionServer extends Thread {
     // this function will only block if the game has not started yet
     private void ensureConnections() {
         try {
-            Future<AsynchronousSocketChannel> acceptCon = server.accept();
-            // try to get a response. if the game is started we must cancel the new player.
-            while(!acceptCon.isDone() && !gameManager.getCurrentGame().isRunning()) {
-                Thread.sleep(300);
-            }
-
-            if (gameManager.getCurrentGame().isRunning()) {
-                acceptCon.cancel(true);
-            } else {
+            if (acceptCon.isDone() && !gameManager.getCurrentGame().isRunning()) {
                 AsynchronousSocketChannel client = acceptCon.get();
+                acceptCon = server.accept(); // reset acceptCon
 
                 if ((client != null) && (client.isOpen())) {
                     ConnectionElement elem = new ConnectionElement();
