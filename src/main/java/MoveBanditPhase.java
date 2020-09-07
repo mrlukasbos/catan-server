@@ -9,7 +9,7 @@ public class MoveBanditPhase implements GamePhase {
     Response request = Constants.MOVE_BANDIT_REQUEST;
     // we expect a location with a string value as inputs
     HashMap<String, ValidationType> props = new HashMap<>() {{
-        put("location", ValidationType.STRING);
+        put("location", ValidationType.TILE_KEYS);
     }};
 
     MoveBanditPhase(Game game) {
@@ -64,20 +64,9 @@ public class MoveBanditPhase implements GamePhase {
 
     boolean moveIsValid(JsonArray jsonArray) {
         if (jsonArray.size() == 0) return false;
-
         JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
         JsonElement locationElement = jsonObject.get("location");
-        Tile tile;
-        try {
-            tile = game.getBoard().getTile(locationElement.getAsString());
-        } catch (Exception e) {
-            game.sendResponse(Constants.INVALID_BANDIT_MOVE_ERROR);
-            return false;
-        }
-        if (tile == null) {
-            game.sendResponse(Constants.INVALID_BANDIT_MOVE_ERROR);
-            return false;
-        }
+        Tile tile = game.getBoard().getTile(locationElement.getAsString());
 
         if (game.getBoard().getBandit().getTile() == tile) {
             game.sendResponse(Constants.CAN_NOT_PLACE_BANDIT_ON_SAME_TILE_ERROR);
@@ -87,7 +76,6 @@ public class MoveBanditPhase implements GamePhase {
             game.sendResponse(Constants.CAN_NOT_PLACE_BANDIT_ON_SEA_TILE_ERROR);
             return false;
         }
-
         return true;
     }
 }

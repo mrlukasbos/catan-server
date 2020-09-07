@@ -89,7 +89,6 @@ public class ForceDiscardPhase implements GamePhase {
             game.sendResponse(player, Constants.NOT_ENOUGH_RESOURCES_DISCARDED_ERROR.withAdditionalInfo("you only discarded " + totalDiscarded + " of the " + amountToDiscard + " resources you need to discard"));
             return false;
         }
-
         return true;
     }
 }
