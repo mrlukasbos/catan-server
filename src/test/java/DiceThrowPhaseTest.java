@@ -10,8 +10,8 @@ class DiceThrowPhaseTest {
     private Game game = new Game(iface);
     private DiceStub diceStub = new DiceStub();
     private DiceThrowPhase diceThrowPhase = new DiceThrowPhase(game, diceStub);
-    private  Player player = new Player(game,0, "tester");
-    private  Player player2 = new Player(game,1, "tester1");
+    private PlayerStub player = new PlayerStub(game,0, "tester");
+    private PlayerStub player2 = new PlayerStub(game,1, "tester1");
 
     @BeforeEach
     void beforeTest() {

@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PlayerTest {
     WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     Game game = new Game(iface);
-    Player player = new Player(game,0, "tester");
+    Player player = new PlayerStub(game,0, "tester");
 
     @Test
     void itAddsAndRemovesRecourcesTest() {

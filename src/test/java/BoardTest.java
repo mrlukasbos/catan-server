@@ -6,8 +6,8 @@ class BoardTest {
     private WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     private Game game = new Game(iface);
     private BuildPhase buildPhase = new BuildPhase(game);
-    private  Player player = new Player(game,0, "tester");
-    private  Player player2 = new Player(game,1, "tester1");
+    private  Player player = new PlayerStub(game,0, "tester");
+    private  Player player2 = new PlayerStub(game,1, "tester1");
 
     @Test
     void getDistanceTest() {

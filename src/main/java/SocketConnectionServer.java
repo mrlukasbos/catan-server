@@ -4,8 +4,11 @@
 
 import java.io.*;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
+import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class SocketConnectionServer extends Thread {
@@ -39,6 +42,7 @@ public class SocketConnectionServer extends Thread {
         while (true) {
             try {
                 ensureConnections();
+                listen();
             } catch (SocketTimeoutException s) {
                 print("Socket timed out");
                 break;
@@ -49,9 +53,32 @@ public class SocketConnectionServer extends Thread {
         }
     }
 
+    private void listen() {
+        for (Player connectedPlayer : connections) {
+            Connection connection = connectedPlayer.getConnection();
+
+            if (connection.getSocket() != null && connection.isOpen()) {
+                try {
+                    if (connection.getSocket().getInputStream().available() > 2) {
+                        BufferedInputStream bf = new BufferedInputStream(connection.getSocket().getInputStream());
+                        BufferedReader r = new BufferedReader(new InputStreamReader(bf, StandardCharsets.UTF_8));
+                        r.readLine();
+                        connectedPlayer.setBufferedReply(r.readLine());
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    }
+
     // Ensures connections with the players
     // A player has to connect and return a string immediately (the string will be the name of the player in-game)
     private void ensureConnections() throws IOException {
+
+
         SocketConnection connection = new SocketConnection(serverSocket.accept());
         Player newPlayer = new Player(connection, gameManager.getCurrentGame(), gameManager.getCurrentGame().getPlayers().size(), "playername");
         connections.add(newPlayer);

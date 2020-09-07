@@ -73,7 +73,7 @@ class MoveBanditPhaseTest {
     @Test
     void itHandlesUserCommandsTest() {
         String message = "[{ \"location\": \"" + game.getBoard().getTilesForDiceNumber(8).get(0).getKey() + "\" }]";
-        player.setMessageFromPlayer(message);
+        player.setBufferedReply(message);
         JsonArray jsonArray = moveBanditPhase.getValidCommandFromUser(player);
         assertTrue(moveBanditPhase.moveIsValid(jsonArray));
         moveBanditPhase.move(player, jsonArray);

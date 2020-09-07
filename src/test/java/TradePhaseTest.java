@@ -188,7 +188,7 @@ public class TradePhaseTest {
 
     @Test
     void itHandlesUserCommandsTest() {
-        player.setMessageFromPlayer("[{ \"from\": \"stone\", \"to\": \"wood\" }]");
+        player.setBufferedReply("[{ \"from\": \"stone\", \"to\": \"wood\" }]");
         player.addResources(Resource.STONE, 4);
         JsonArray jsonArray = tradePhase.getValidCommandFromUser(player);
         assertTrue(tradePhase.tradeIsValid(player, jsonArray));
@@ -196,7 +196,7 @@ public class TradePhaseTest {
 
     @Test
     void itExecutes() {
-        player.setMessageFromPlayer("[{ \"from\": \"stone\", \"to\": \"wood\" }]");
+        player.setBufferedReply("[{ \"from\": \"stone\", \"to\": \"wood\" }]");
         player.addResources(Resource.STONE, 4);
         game.setCurrentPlayer(player);
         Phase phase = tradePhase.execute();
