@@ -14,7 +14,7 @@ class ConnectionElement {
 }
 
 public class SocketConnectionServer extends Thread {
-    AsynchronousServerSocketChannel server ;
+    AsynchronousServerSocketChannel server;
     private GameManager gameManager;
     private ArrayList<Player> connectedPlayers = new ArrayList<>();
     private ArrayList<ConnectionElement> connections = new ArrayList<>();
@@ -24,7 +24,7 @@ public class SocketConnectionServer extends Thread {
         try {
             server = AsynchronousServerSocketChannel.open();
             server.bind(new InetSocketAddress(port));
-            print("Players can connect to: " + server.getLocalAddress() + "...");
+            print("Players can connect to port: " + port + "...");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,7 +69,6 @@ public class SocketConnectionServer extends Thread {
      * Called whenever a message is received on a connection
      */
     private void onMessage(AsynchronousSocketChannel conn, String message) {
-
         for (Player connectedPlayer : connectedPlayers) {
             if (connectedPlayer.getConnection().getSocket() == conn) {
                 print("got message from player " + connectedPlayer.getName() + ": " + message);
@@ -82,11 +81,12 @@ public class SocketConnectionServer extends Thread {
     // The server thread will constantly run this: ensuring connections with the players
     public void run() {
         while (true) {
+            listen();
+            ensureConnections();
+
             try {
-                listen();
-                ensureConnections();
                 Thread.sleep(100);
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -105,9 +105,11 @@ public class SocketConnectionServer extends Thread {
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
+
+                    // execute the messages line by line
                     String receivedMessage = new String(connection.buffer.array()).trim();
                     for (String msg : receivedMessage.split("\r\n")) {
-                        this.onMessage(connection.channel, receivedMessage);
+                        this.onMessage(connection.channel, msg);
                     }
 
                     // set up the connection element for the next message
@@ -128,7 +130,6 @@ public class SocketConnectionServer extends Thread {
     private void ensureConnections() {
         try {
             Future<AsynchronousSocketChannel> acceptCon = server.accept();
-
             // try to get a response. if the game is started we must cancel the new player.
             while(!acceptCon.isDone() && !gameManager.getCurrentGame().isRunning()) {
                 Thread.sleep(300);
@@ -138,8 +139,8 @@ public class SocketConnectionServer extends Thread {
                 acceptCon.cancel(true);
             } else {
                 AsynchronousSocketChannel client = acceptCon.get();
-                if ((client != null) && (client.isOpen())) {
 
+                if ((client != null) && (client.isOpen())) {
                     ConnectionElement elem = new ConnectionElement();
                     elem.channel = client;
                     elem.buffer = ByteBuffer.allocate(2048);
@@ -160,6 +161,14 @@ public class SocketConnectionServer extends Thread {
 
     private void print(String msg) {
         System.out.println("[Server] \t" + msg);
+    }
+
+    public ArrayList<Player> getConnectedPlayers() {
+        return connectedPlayers;
+    }
+
+    public ArrayList<ConnectionElement> getConnections() {
+        return connections;
     }
 }
 
