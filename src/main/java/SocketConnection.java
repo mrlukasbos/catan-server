@@ -25,16 +25,6 @@ public class SocketConnection extends Connection {
             }
         }
     }
-//                    readval.get();
-//                    buffer.flip();
-//                    String str= "I'm fine. Thank you!";
-//                    Future<Integer> writeVal = client.write(
-//                            ByteBuffer.wrap(str.getBytes()));
-//                    System.out.println("Writing back to client: "
-//                            +str);
-//                    writeVal.get();
-//                    buffer.clear();
-
 
     void close() {
         try {
