@@ -1,7 +1,5 @@
 import org.java_websocket.WebSocket;
 
-import java.net.Socket;
-
 public class WebSocketConnection extends Connection {
     ConnectionType type = ConnectionType.WEBSOCKET;
     WebSocket webSocket;
