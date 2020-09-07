@@ -13,13 +13,41 @@ class Player {
     private HashMap<DevelopmentCard, Integer> developmentCards = new HashMap<>();
     private HashMap<DevelopmentCard, Integer> usedDevelopmentCards = new HashMap<>();
     private String color;
-    protected Game game;
+    private Game game;
+    private Connection connection;
+    private String bufferedReply = "";
 
-    void send(String str) { }
-    String listen()  { return ""; }
-    void stop() { }
+    synchronized void setBufferedReply(String bufferedReply) {
+        this.bufferedReply = bufferedReply;
+        notify();
+    }
 
-    Player(Game game, int id, String name) {
+    void send(String str) {
+        connection.send(str);
+    }
+
+    String listen() {
+        while (bufferedReply.equals("")) {
+            try {
+                wait();
+            } catch (Exception e) {}
+        }  // block until there is a reply
+
+        String reply = bufferedReply;
+        bufferedReply = "";
+        return reply;
+    }
+
+    void stop() {
+        connection.close();
+    }
+
+    Connection getConnection() {
+        return connection;
+    }
+
+    Player(Connection connection, Game game, int id, String name) {
+        this.connection = connection;
         this.id = id;
         this.name = name;
         this.game = game;

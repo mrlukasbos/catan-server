@@ -1,9 +1,9 @@
 public class GameManager {
     Game game;
-    SocketServer server;
-    InterfaceServer iface;
+    SocketConnectionServer server;
+    WebSocketConnectionServer iface;
 
-    GameManager(SocketServer server, InterfaceServer iface) {
+    GameManager(SocketConnectionServer server, WebSocketConnectionServer iface) {
         this.server = server;
         this.iface = iface;
         game = new Game(iface);

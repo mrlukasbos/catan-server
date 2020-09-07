@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DiceThrowPhaseTest {
-    private InterfaceServer iface = new InterfaceServer(10007);
+    private WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     private Game game = new Game(iface);
     private DiceStub diceStub = new DiceStub();
     private DiceThrowPhase diceThrowPhase = new DiceThrowPhase(game, diceStub);

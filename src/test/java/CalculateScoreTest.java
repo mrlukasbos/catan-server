@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CalculateScoreTest {
-    private Game game = new Game(new InterfaceServer(8888));
+    private Game game = new Game(new WebSocketConnectionServer(8888));
 
     @Test
     void getPlayerScore() {

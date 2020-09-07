@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ForceDiscardPhaseTest {
-    private InterfaceServer iface = new InterfaceServer(10007);
+    private WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     private Game game = new Game(iface);
     private ForceDiscardPhase forceDiscardPhase = new ForceDiscardPhase(game);
     private  PlayerStub player = new PlayerStub(game,0, "tester");

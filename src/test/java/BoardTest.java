@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
-    private InterfaceServer iface = new InterfaceServer(10007);
+    private WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     private Game game = new Game(iface);
     private BuildPhase buildPhase = new BuildPhase(game);
     private  Player player = new Player(game,0, "tester");

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TradePhaseTest {
-    InterfaceServer iface = new InterfaceServer(10007);
+    WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     Game game = new Game(iface);
     TradePhase tradePhase = new TradePhase(game);
     PlayerStub player = new PlayerStub(game,0, "tester");

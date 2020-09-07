@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InitialBuildPhaseTest {
-    private InterfaceServer iface = new InterfaceServer(10007);
+    private WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     private Game game = new Game(iface);
     private InitialBuildPhase buildPhase = new InitialBuildPhase(game);
     private  PlayerStub player = new PlayerStub(game,0, "tester");

@@ -5,19 +5,18 @@
 import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
-public class SocketServer extends Thread {
+public class SocketConnectionServer extends Thread {
 
     private ServerSocket serverSocket;
     private GameManager gameManager;
     private ArrayList<Player> connections = new ArrayList<Player>();
-    private InterfaceServer iface;
+    private WebSocketConnectionServer iface;
 
     // start a server on this device
-    SocketServer(int port) {
+    SocketConnectionServer(int port) {
         try {
             serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(0);
@@ -28,7 +27,7 @@ public class SocketServer extends Thread {
     }
 
     // Start the server thread for a given game
-    void start(InterfaceServer iface, GameManager gameManager) {
+    void start(WebSocketConnectionServer iface, GameManager gameManager) {
         this.gameManager = gameManager;
         this.iface = iface;
         start();
@@ -53,15 +52,9 @@ public class SocketServer extends Thread {
     // Ensures connections with the players
     // A player has to connect and return a string immediately (the string will be the name of the player in-game)
     private void ensureConnections() throws IOException {
-        // the sockets we get from the server need to be assigned to players
-        Socket newConnection = serverSocket.accept();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(newConnection.getInputStream()));
-        String line = reader.readLine();
-
-        SocketPlayer newPlayer = new SocketPlayer(gameManager.getCurrentGame(), gameManager.getCurrentGame().getPlayers().size(), line);
-        newPlayer.setSocket(newConnection);
+        SocketConnection connection = new SocketConnection(serverSocket.accept());
+        Player newPlayer = new Player(connection, gameManager.getCurrentGame(), gameManager.getCurrentGame().getPlayers().size(), "playername");
         connections.add(newPlayer);
-        print("Just connected to " + line + " on address: " + newConnection.getRemoteSocketAddress());
 
         if (!gameManager.getCurrentGame().isRunning()) {
             gameManager.getCurrentGame().addPlayer(newPlayer);

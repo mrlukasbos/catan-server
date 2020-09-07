@@ -13,7 +13,7 @@ class Game extends Thread {
     private LongestRoadAward longestRoadAward;
     private ArrayList<Player> players = new ArrayList<>();
     private Player currentPlayer;
-    private InterfaceServer iface;
+    private WebSocketConnectionServer iface;
     private int moveCount;
     private ArrayList<Event> events = new ArrayList<>();
     private Response lastResponse;
@@ -28,7 +28,7 @@ class Game extends Thread {
     private MoveBanditPhase moveBanditPhase;
     private ForceDiscardPhase forceDiscardPhase;
 
-    Game(InterfaceServer iface) {
+    Game(WebSocketConnectionServer iface) {
         this.board = new Board();
         this.iface = iface;
     }
