@@ -27,6 +27,8 @@ class Player {
     }
 
     String listen() {
+
+        print("trying to get a reply from player ID: " + getId());
         while (bufferedReply.equals("")) {
             try {
                 wait();

@@ -1,6 +1,5 @@
 import org.java_websocket.WebSocket;
-
-import java.net.Socket;
+import java.nio.channels.AsynchronousSocketChannel;
 
 enum ConnectionType {
     NONE,
@@ -19,7 +18,7 @@ abstract class Connection {
         return null;
     }
 
-    Socket getSocket() {
+    AsynchronousSocketChannel getSocket() {
         return null;
     }
 

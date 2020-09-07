@@ -1,31 +1,40 @@
-import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousSocketChannel;
+import java.nio.charset.StandardCharsets;
 
 public class SocketConnection extends Connection {
     ConnectionType type = ConnectionType.SOCKET;
-    Socket socket;
+    AsynchronousSocketChannel socket;
 
-    SocketConnection(Socket socket) {
+    SocketConnection(AsynchronousSocketChannel socket) {
         this.socket = socket;
     }
 
     boolean isOpen() {
-        return !socket.isClosed();
+        return socket.isOpen();
     }
 
     void send(String message) {
-        if (socket != null && !socket.isClosed()) {
+        if (socket != null && socket.isOpen() && !message.equals("")) {
+            message += "\r\n";
             try {
-                message += "\r\n";
-                BufferedOutputStream bos = new BufferedOutputStream(socket.getOutputStream());
-                bos.write(message.getBytes("UTF-8"));
-                bos.flush();
-            } catch (IOException e) {
+                socket.write(ByteBuffer.wrap(message.getBytes(StandardCharsets.UTF_8)));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+//                    readval.get();
+//                    buffer.flip();
+//                    String str= "I'm fine. Thank you!";
+//                    Future<Integer> writeVal = client.write(
+//                            ByteBuffer.wrap(str.getBytes()));
+//                    System.out.println("Writing back to client: "
+//                            +str);
+//                    writeVal.get();
+//                    buffer.clear();
+
 
     void close() {
         try {
@@ -36,7 +45,7 @@ public class SocketConnection extends Connection {
     }
 
     @Override
-    Socket getSocket() {
+    AsynchronousSocketChannel getSocket() {
         return socket;
     }
 }

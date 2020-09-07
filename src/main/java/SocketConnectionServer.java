@@ -3,17 +3,18 @@
  */
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
+import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousServerSocketChannel;
+import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class SocketConnectionServer extends Thread {
-
-    private ServerSocket serverSocket;
+    AsynchronousServerSocketChannel channel ;
     private GameManager gameManager;
     private ArrayList<Player> connections = new ArrayList<Player>();
     private WebSocketConnectionServer iface;
@@ -21,9 +22,9 @@ public class SocketConnectionServer extends Thread {
     // start a server on this device
     SocketConnectionServer(int port) {
         try {
-            serverSocket = new ServerSocket(port);
-            serverSocket.setSoTimeout(0);
-            print("Players can connect to: " + InetAddress.getLocalHost() + ":" + serverSocket.getLocalPort() + "...");
+            channel = AsynchronousServerSocketChannel.open();
+            channel.bind(new InetSocketAddress(port));
+            print("Players can connect to: " + channel.getLocalAddress() + "...");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,8 +42,15 @@ public class SocketConnectionServer extends Thread {
     public void run() {
         while (true) {
             try {
-                ensureConnections();
                 listen();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                ensureConnections();
             } catch (SocketTimeoutException s) {
                 print("Socket timed out");
                 break;
@@ -53,23 +61,27 @@ public class SocketConnectionServer extends Thread {
         }
     }
 
-    private void listen() {
+    private void listen() throws ExecutionException, InterruptedException {
+        print("listening...");
+
         for (Player connectedPlayer : connections) {
             Connection connection = connectedPlayer.getConnection();
+            print("listening to player ID: " + connectedPlayer.getId());
 
             if (connection.getSocket() != null && connection.isOpen()) {
-                try {
-                    if (connection.getSocket().getInputStream().available() > 2) {
-                        BufferedInputStream bf = new BufferedInputStream(connection.getSocket().getInputStream());
-                        BufferedReader r = new BufferedReader(new InputStreamReader(bf, StandardCharsets.UTF_8));
-                        r.readLine();
-                        connectedPlayer.setBufferedReply(r.readLine());
-                    }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+                ByteBuffer buffer = ByteBuffer.allocate(1024);
+
+                Future<Integer> readval = connection.getSocket().read(buffer);
+                while(!readval.isDone()) {
+                    Thread.sleep(100);
                 }
-
+                if(readval.isDone()) {
+                    readval.get();
+                    String receivedMessage = new String(buffer.array()).trim();
+                    System.out.println("Received from client: " + receivedMessage);
+                    connectedPlayer.setBufferedReply(receivedMessage);
+                }
             }
         }
     }
@@ -77,16 +89,51 @@ public class SocketConnectionServer extends Thread {
     // Ensures connections with the players
     // A player has to connect and return a string immediately (the string will be the name of the player in-game)
     private void ensureConnections() throws IOException {
+        print("ensureConnections...");
 
+        try {
+            Future<AsynchronousSocketChannel> acceptCon = channel.accept();
 
-        SocketConnection connection = new SocketConnection(serverSocket.accept());
-        Player newPlayer = new Player(connection, gameManager.getCurrentGame(), gameManager.getCurrentGame().getPlayers().size(), "playername");
-        connections.add(newPlayer);
+            // try to get a response. if the game is started we must cancel the new player.
+            while(!acceptCon.isDone() && !gameManager.getCurrentGame().isRunning()) {
+                Thread.sleep(300);
+            }
+            if (gameManager.getCurrentGame().isRunning()) {
+                acceptCon.cancel(true);
+                return;
+            }
 
-        if (!gameManager.getCurrentGame().isRunning()) {
-            gameManager.getCurrentGame().addPlayer(newPlayer);
-            Response idAcknowledgement = Constants.ID_ACK.withAdditionalInfo("" + newPlayer.getId());
-            newPlayer.send(idAcknowledgement.toString());
+            AsynchronousSocketChannel client = acceptCon.get();
+
+            if ((client!= null) && (client.isOpen())) {
+                ByteBuffer buffer = ByteBuffer.allocate(1024);
+                Future<Integer> readval = client.read(buffer);
+
+                // try to get a response. if the game is started we must cancel the new player.
+                while(!readval.isDone() && !gameManager.getCurrentGame().isRunning()) {
+                    Thread.sleep(300);
+                }
+                if (gameManager.getCurrentGame().isRunning()) {
+                    readval.cancel(true);
+                    return;
+                }
+                readval.get();
+
+                String receivedMessage = new String(buffer.array()).trim();
+                System.out.println("Received from client: " + receivedMessage);
+
+                SocketConnection connection = new SocketConnection(client);
+                Player newPlayer = new Player(connection, gameManager.getCurrentGame(), gameManager.getCurrentGame().getPlayers().size(), receivedMessage);
+                connections.add(newPlayer);
+
+                if (!gameManager.getCurrentGame().isRunning()) {
+                    gameManager.getCurrentGame().addPlayer(newPlayer);
+                    Response idAcknowledgement = Constants.ID_ACK.withAdditionalInfo("" + newPlayer.getId());
+                    newPlayer.send(idAcknowledgement.toString());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
