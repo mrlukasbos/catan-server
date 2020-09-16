@@ -85,20 +85,19 @@ class Game extends Thread {
 
     // Stop the game and reset all values such that we can eventually restart it
     void quit() {
-        print("Stopping game");
+        print("closing sockets");
+        for(Player player : players) {
+            player.stop();
+        }
+
+        print("Stop running");
         this.running = false;
 
         print("Joining thread");
-
         try {
             join();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        print("closing sockets");
-        for(Player player : players) {
-            player.stop();
         }
 
         print("Stopped game");

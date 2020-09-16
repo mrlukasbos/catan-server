@@ -48,6 +48,8 @@ class BuildPhase implements GamePhase {
             amountOfFailures++;
         } while (game.isRunning() && (jsonArray == null || !commandIsValid(currentPlayer, jsonArray)));
 
+        if (jsonArray == null) return;
+
         // build the structures
         buildStructures(currentPlayer, jsonArray);
         game.sendResponse(currentPlayer, Constants.OK.withAdditionalInfo("Message processed succesfully!"));

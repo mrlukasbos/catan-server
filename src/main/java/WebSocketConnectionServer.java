@@ -2,6 +2,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.google.gson.JsonArray;
@@ -14,9 +15,8 @@ import org.java_websocket.server.WebSocketServer;
 
 public class WebSocketConnectionServer extends WebSocketServer {
     private GameManager gameManager;
-    private SocketConnectionServer socketConnectionServer;
 
-    HashMap<Player, Boolean> registeredPlayers = new HashMap<>();
+    ArrayList<Player> registeredConnections = new ArrayList<>();
 
     // Create an interface for a specific port
     WebSocketConnectionServer(int port) {
@@ -25,9 +25,8 @@ public class WebSocketConnectionServer extends WebSocketServer {
     }
 
     // Start the interface thread
-    void start(SocketConnectionServer socketServer, GameManager gameManager) {
+    void start(GameManager gameManager) {
         this.gameManager = gameManager;
-        this.socketConnectionServer = socketServer;
         start();
     }
 
@@ -61,21 +60,30 @@ public class WebSocketConnectionServer extends WebSocketServer {
 
         switch(model) {
             case "join": {
+                print("a player wants to join");
                 JsonObject attrs = obj.get("attributes").getAsJsonObject();
                 int connectionId = attrs.get("id").getAsInt();
                 boolean reconnection = false;
                 Player player = null;
-                for (Player p : registeredPlayers.keySet()) {
+                for (Player p : registeredConnections) {
                     if (connectionId == p.getId()) {
 
-               //         print("reconnecting player: " + p.getName() + " using id: " + p.getId());
-             //           p.setConnection(conn); // apparently a reconnect: renew the connection
+                        print("reconnecting player: " + p.getName() + " using id: " + p.getId());
+                        Connection newConnection = new WebSocketConnection(conn);
+                        p.setConnection(newConnection); // apparently a reconnect: renew the connection
 
+
+                        boolean participating = false;
+                        for (Player gamePlayer : gameManager.getCurrentGame().getPlayers()) {
+                            if (p.getId() == gamePlayer.getId()) {
+                                participating = true;
+                                break;
+                            }
+                        }
                         // if the player was not joined in the game it must be added again
-                        if (!registeredPlayers.get(p)) {
+                        if (!participating) {
                             gameManager.getCurrentGame().addPlayer(p);
                         }
-                        registeredPlayers.replace(p, true);
 
                         reconnection = true;
                         player = p;
@@ -83,7 +91,7 @@ public class WebSocketConnectionServer extends WebSocketServer {
                     }
                 }
 
-                if (!reconnection || !registeredPlayers.getOrDefault(player, true)) {
+                if (!reconnection || !registeredConnections.contains(player)) {
                     registerPlayer(conn, attrs.get("name").getAsString());
                 }
                 gameManager.getCurrentGame().signalGameChange();
@@ -94,12 +102,11 @@ public class WebSocketConnectionServer extends WebSocketServer {
                 // todo use the new json validator validations here
                 JsonObject attrs = obj.get("attributes").getAsJsonObject();
                 int connectionId = attrs.get("id").getAsInt();
-                for (Player p : registeredPlayers.keySet()) {
+                for (Player p : registeredConnections) {
                     if (connectionId == p.getId()) {
                         print("removing player: " + p.getName() + " using id: " + p.getId());
                         gameManager.getCurrentGame().removePlayer(p);
                         gameManager.getCurrentGame().signalGameChange();
-                        registeredPlayers.replace(p, false);
                     }
                 }
                 break;
@@ -111,7 +118,7 @@ public class WebSocketConnectionServer extends WebSocketServer {
                 break;
             }
             case "client-response": {
-                for (Player player : registeredPlayers.keySet()) {
+                for (Player player : registeredConnections) {
                     if (conn.equals(player.getConnection().getWebSocket())) {
                         // todo use the new json validator validations here
                         JsonArray arr = obj.get("attributes").getAsJsonArray();
@@ -143,11 +150,11 @@ public class WebSocketConnectionServer extends WebSocketServer {
     void registerPlayer(WebSocket conn, String name) {
         WebSocketConnection connection = new WebSocketConnection(conn);
         Player newPlayer = new Player(connection, gameManager.getCurrentGame(), gameManager.getCurrentGame().getPlayers().size(), name);
+        registeredConnections.add(newPlayer);
 
         if (!gameManager.getCurrentGame().isRunning()) {
             print("Registering new interface player: " + name);
             gameManager.getCurrentGame().addPlayer(newPlayer);
-            registeredPlayers.put(newPlayer, true);
             Response idAcknowledgement = Constants.ID_ACK.withAdditionalInfo("" + newPlayer.getId());
             newPlayer.send(idAcknowledgement.toString());
 
@@ -175,11 +182,15 @@ public class WebSocketConnectionServer extends WebSocketServer {
 
     @Override
     public void onClose( WebSocket conn, int code, String reason, boolean remote ) {
-        for (Player player : registeredPlayers.keySet()) {
-//            if (player.getConnection().equals(conn)) {
-//                print("lost connection with player: " + player.getName() + " using id: " + player.getId());
-//            }
+        for (Player player : registeredConnections) {
+            if (player.getConnection().getWebSocket().equals(conn)) {
+                print("lost connection with player: " + player.getName() + " using id: " + player.getId());
+            }
         }
+    }
+
+    void clearConnections() {
+        registeredConnections.clear();
     }
 
     private void print(String msg) {

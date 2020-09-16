@@ -6,6 +6,6 @@ public class Main {
         GameManager gameManager = new GameManager(socketConnectionServer, iface);
 
         socketConnectionServer.start(gameManager);
-        iface.start(socketConnectionServer, gameManager); // the interface starts/ends the game
+        iface.start(gameManager); // the interface starts/ends the game
     }
 }

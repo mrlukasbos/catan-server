@@ -27,13 +27,16 @@ class Player {
     }
 
     String listen() {
-
         print("trying to get a reply from player ID: " + getId());
-        while (bufferedReply.equals("")) {
+        print("current buffered reply: " +  bufferedReply);
+
+        print("game running? " +  game.isRunning());
+        while (bufferedReply.isBlank() && game.isRunning()) {
             try {
                 wait();
             } catch (Exception e) {}
         }  // block until there is a reply
+        print("new buffered reply: " +  bufferedReply);
 
         String reply = bufferedReply;
         bufferedReply = "";
@@ -60,6 +63,10 @@ class Player {
         resources.put(Resource.STONE, 0);
         resources.put(Resource.WOOL, 0);
         resources.put(Resource.WOOD, 0);
+    }
+
+    void setConnection(Connection connection) {
+        this.connection = connection;
     }
 
     public HashMap<Resource, Integer> getResources() {

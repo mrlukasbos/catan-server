@@ -12,7 +12,9 @@ public class WebSocketConnection extends Connection {
     }
 
     void send(String message) {
-         webSocket.send(message);
+        if (webSocket.isOpen()) {
+            webSocket.send(message);
+        }
     }
 
     void close() {

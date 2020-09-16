@@ -16,6 +16,7 @@ public class GameManager {
     public void stopGame() {
         game.quit();
         game = new Game(iface);
+        iface.clearConnections();
         server.clearConnections();
     }
 
