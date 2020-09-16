@@ -1,5 +1,5 @@
 public class Response {
-    private int code = 0;
+    private int code;
     private String title;
     private String description;
     private String additionalInformation;

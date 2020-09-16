@@ -85,7 +85,7 @@ public class PlayerTest {
     void getResourcesAsJsonStringTest() {
         player.addResources(Constants.STREET_COSTS);
         String jsonString = Helpers.getJSONArrayFromHashMap(player.getResources(), "type", "value");
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, jsonString);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(jsonString);
         assertNotNull(jsonArray);
         for (JsonElement element : jsonArray) {
             String typename = element.getAsJsonObject().get("type").getAsString();

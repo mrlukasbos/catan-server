@@ -2,9 +2,7 @@ import com.google.gson.JsonArray;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BuildPhaseTest {
     private InterfaceServer iface = new InterfaceServer(10007);
@@ -22,12 +20,6 @@ class BuildPhaseTest {
     }
 
     @Test
-    void itShouldReturnFalseIfEmptyInputTest() {
-        assertFalse(buildPhase.commandIsValid(player, null));
-        assertEquals(game.getLastResponse().getCode(), Constants.MALFORMED_JSON_ERROR.getCode());
-    }
-
-    @Test
     void phaseNameShouldBeCorrectTest() {
         assertEquals(buildPhase.getPhaseType(), Phase.BUILDING);
     }
@@ -35,7 +27,7 @@ class BuildPhaseTest {
     @Test
     void testBuildingNothing() {
         String message = "[]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertTrue(buildPhase.commandIsValid(player, jsonArray));
     }
 
@@ -46,19 +38,8 @@ class BuildPhaseTest {
         player.addResources(Constants.STREET_COSTS);
 
         String message = "[{ \"structure\": \"street\", \"location\": \"([2,2],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertTrue(buildPhase.commandIsValid(player, jsonArray));
-    }
-
-    @Test
-    void wrongJSONKeyTest() {
-        game.getBoard().placeStreet(player, game.getBoard().getEdge("([3,2],[3,3])"));
-
-        player.addResources(Constants.STREET_COSTS);
-
-        String message = "[{ \"structure\": \"stret\", \"location\": \"([2,2],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
-        assertFalse(buildPhase.commandIsValid(player, jsonArray));
     }
 
     @Test
@@ -68,7 +49,7 @@ class BuildPhaseTest {
         player.addResources(Constants.STREET_COSTS);
 
         String message = "[{ \"structure\": \"street\", \"location\": \"([3,1],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(buildPhase.commandIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.STRUCTURE_NOT_CONNECTED_ERROR.getCode());
     }
@@ -81,7 +62,7 @@ class BuildPhaseTest {
         player.addResources(Constants.STREET_COSTS);
 
         String message = "[{ \"structure\": \"street\", \"location\": \"([3,1],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(buildPhase.commandIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.STRUCTURE_ALREADY_EXISTS_ERROR.getCode());
     }
@@ -94,7 +75,7 @@ class BuildPhaseTest {
         player.addResources(Constants.STREET_COSTS);
 
         String message = "[{ \"structure\": \"street\", \"location\": \"([3,1],[3,2])\" }, { \"structure\": \"street\", \"location\": \"([2,2],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertTrue(buildPhase.commandIsValid(player, jsonArray));
     }
 
@@ -106,7 +87,7 @@ class BuildPhaseTest {
         player.addResources(Resource.STONE, 1);
 
         String message = "[{ \"structure\": \"street\", \"location\": \"([3,1],[3,2])\" }, { \"structure\": \"street\", \"location\": \"([2,2],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(buildPhase.commandIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.INSUFFICIENT_RESOURCES_ERROR.getCode());
     }
@@ -119,7 +100,7 @@ class BuildPhaseTest {
         player.addResources(Constants.VILLAGE_COSTS);
 
         String message = " [{ \"structure\": \"street\", \"location\": \"([2,2],[3,2])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertTrue(buildPhase.commandIsValid(player, jsonArray));
     }
 
@@ -130,7 +111,7 @@ class BuildPhaseTest {
         player.addResources(Constants.VILLAGE_COSTS);
 
         String message = "[{ \"structure\": \"village\", \"location\": \"([1,2],[2,1],[2,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(buildPhase.commandIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.STRUCTURE_NOT_CONNECTED_ERROR.getCode());
     }
@@ -142,7 +123,7 @@ class BuildPhaseTest {
         player.addResources(Constants.VILLAGE_COSTS);
 
         String message = " [{ \"structure\": \"street\", \"location\": \"([2,2],[3,2])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(buildPhase.commandIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.INSUFFICIENT_RESOURCES_ERROR.getCode());
     }
@@ -156,7 +137,7 @@ class BuildPhaseTest {
         player.addResources(Constants.VILLAGE_COSTS);
 
         String message = "[{ \"structure\": \"village\", \"location\": \"([2,2],[3,2],[3,3])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(buildPhase.commandIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.STRUCTURE_TOO_CLOSE_TO_OTHER_STRUCTURE_ERROR.getCode());
     }
@@ -170,7 +151,7 @@ class BuildPhaseTest {
         player.addResources(Constants.VILLAGE_COSTS);
 
         String message = "[{ \"structure\": \"village\", \"location\": \"([2,2],[3,2],[3,3])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(buildPhase.commandIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.STRUCTURE_TOO_CLOSE_TO_OTHER_STRUCTURE_ERROR.getCode());
     }
@@ -184,7 +165,7 @@ class BuildPhaseTest {
         player.addResources(Constants.VILLAGE_COSTS);
 
         String message = "[{ \"structure\": \"village\", \"location\": \"([3,2],[3,3],[4,3])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertTrue(buildPhase.commandIsValid(player, jsonArray));
     }
 
@@ -197,7 +178,7 @@ class BuildPhaseTest {
         player.addResources(Constants.CITY_COSTS);
 
         String message = "[{ \"structure\": \"city\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertTrue(buildPhase.commandIsValid(player, jsonArray));
     }
 
@@ -210,7 +191,7 @@ class BuildPhaseTest {
         player.addResources(Constants.CITY_COSTS);
 
         String message = "[{ \"structure\": \"city\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(buildPhase.commandIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.CITY_NOT_BUILT_ON_VILLAGE_ERROR.getCode());
     }
@@ -224,7 +205,7 @@ class BuildPhaseTest {
         player.addResources(Constants.CITY_COSTS);
 
         String message = "[{ \"structure\": \"city\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(buildPhase.commandIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.CITY_NOT_BUILT_ON_VILLAGE_ERROR.getCode());
     }
@@ -239,7 +220,7 @@ class BuildPhaseTest {
         player.addResources(Constants.CITY_COSTS);
 
         String message = "[{ \"structure\": \"city\", \"location\": \"([2,2],[3,1],[3,2])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertTrue(buildPhase.commandIsValid(player, jsonArray));
     }
 
@@ -251,7 +232,7 @@ class BuildPhaseTest {
         player.addResources(Constants.VILLAGE_COSTS);
 
         String message = "[{ \"structure\": \"city\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(buildPhase.commandIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.INSUFFICIENT_RESOURCES_ERROR.getCode());
     }
@@ -266,7 +247,7 @@ class BuildPhaseTest {
         player.addResources(Constants.CITY_COSTS);
 
         String message = "[{ \"structure\": \"street\", \"location\": \"([2,2],[3,2])\" }, { \"structure\": \"city\", \"location\": \"([2,2],[3,1],[3,2])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertTrue(buildPhase.commandIsValid(player, jsonArray));
 
         assertEquals(game.getBoard().getStreetsFromPlayer(player).size(), 1);

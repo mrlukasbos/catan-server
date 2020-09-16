@@ -48,4 +48,13 @@ public class Helpers {
         }
         return Resource.NONE;
     }
+
+    static Structure getStructureByName(String name) {
+        for (Structure structure : Constants.ALL_STRUCTURES) {
+            if (name.toLowerCase().equals(structure.name().toLowerCase())) {
+                return structure;
+            }
+        }
+        return Structure.NONE;
+    }
 }
