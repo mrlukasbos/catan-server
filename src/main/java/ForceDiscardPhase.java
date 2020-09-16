@@ -63,7 +63,7 @@ public class ForceDiscardPhase implements GamePhase {
 
     JsonArray getJsonIfValid(String message) {
 
-        return jsonValidator.getJsonObjectIfCorrect(message, props);
+        return jsonValidator.getJsonObjectIfCorrect(message, props, game.getBoard());
     }
 
     boolean discardIsValid(Player player, JsonArray jsonArray) {
@@ -89,7 +89,6 @@ public class ForceDiscardPhase implements GamePhase {
             game.sendResponse(player, Constants.NOT_ENOUGH_RESOURCES_DISCARDED_ERROR.withAdditionalInfo("you only discarded " + totalDiscarded + " of the " + amountToDiscard + " resources you need to discard"));
             return false;
         }
-
         return true;
     }
 }

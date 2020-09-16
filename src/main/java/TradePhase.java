@@ -39,12 +39,8 @@ public class TradePhase implements GamePhase {
     void trade(Player player, JsonArray jsonArray) {
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
-
-            Resource resourceFrom;
-            Resource resourceTo;
-
-            resourceFrom = Enum.valueOf(Resource.class, object.get("from").getAsString().toUpperCase());
-            resourceTo = Enum.valueOf(Resource.class, object.get("to").getAsString().toUpperCase());
+            Resource resourceFrom = Helpers.getResourceByName(object.get("from").getAsString());
+            Resource resourceTo = Helpers.getResourceByName(object.get("to").getAsString());
 
             int requiredResourcesForBankTrade = game.getRequiredAmountOfCardsToTrade(player, resourceFrom);
 
@@ -82,9 +78,8 @@ public class TradePhase implements GamePhase {
     }
 
     JsonArray getValidJson(String message) {
-        return jsonValidator.getJsonObjectIfCorrect(message, props);
+        return jsonValidator.getJsonObjectIfCorrect(message, props, game.getBoard());
     }
-
 
     boolean tradeIsValid(Player player, JsonArray jsonArray) {
         // keep track of all the resources we need
@@ -92,23 +87,8 @@ public class TradePhase implements GamePhase {
 
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
-
-            JsonElement fromElement = object.get("from");
-            JsonElement toElement = object.get("to");
-            if (fromElement == null || toElement == null) {
-                game.sendResponse(Constants.INVALID_TRADE_ERROR);
-                return false;
-            }
-
-            Resource resourceFrom;
-            Resource resourceTo;
-            try {
-                resourceFrom = Enum.valueOf(Resource.class, fromElement.getAsString().toUpperCase());
-                resourceTo = Enum.valueOf(Resource.class, toElement.getAsString().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                game.sendResponse(Constants.INVALID_TRADE_ERROR);
-                return false;
-            }
+            Resource resourceFrom = Helpers.getResourceByName(object.get("from").getAsString());
+            Resource resourceTo = Helpers.getResourceByName(object.get("to").getAsString());
 
             int requiredResourcesForBankTrade = game.getRequiredAmountOfCardsToTrade(player, resourceFrom);
 

@@ -78,28 +78,6 @@ public class TradePhaseTest {
     }
 
     @Test
-    public void testWithInvalidResource() {
-        game.setCurrentPlayer(player);
-        player.addResources(Resource.ORE, 4);
-
-        String message = "[{ \"from\": \"lore\", \"to\": \"wood\" }]";
-        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
-        assertFalse(tradePhase.tradeIsValid(player, jsonArray));
-        assertEquals(game.getLastResponse().getCode(), Constants.INVALID_TRADE_ERROR.getCode());
-    }
-
-//    @Test
-//    public void testWithInvalidJsonKey() {
-//        game.setCurrentPlayer(player);
-//        player.addResources(Resource.ORE, 4);
-//
-//        String message = "[{ \"form\": \"lore\", \"to\": \"wood\" }]";
-//        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
-//        assertFalse(tradePhase.tradeIsValid(player, jsonArray));
-//        assertEquals(game.getLastResponse().getCode(), Constants.MALFORMED_JSON_ERROR.getCode());
-//    }
-
-    @Test
     public void testTradingOnBoard() {
         game.setCurrentPlayer(player);
         player.addResources(Resource.ORE, 4);

@@ -33,23 +33,65 @@ public class JsonValidatorTest {
 
     @Test
     public void testValidation() {
+        Board board = new Board();
         String message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": \"street\", \"location\": \"([2,2],[3,1])\" }]\n";
         HashMap<String, ValidationType> props = new HashMap<>() {{
             put("structure", ValidationType.STRUCTURE);
             put("location", ValidationType.STRING);
         }};
-        assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props));
+        assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
 
         // incorrect message (street is misspelled and is thus not a structure)
         message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": \"stret\", \"location\": \"([2,2],[3,1])\" }]\n";
-        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props));
+        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
 
         // incorrect message (structure key is misspelled while it is expected)
         message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structre\": \"street\", \"location\": \"([2,2],[3,1])\" }]\n";
-        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props));
+        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
 
         // incorrect message (child misses a field)
-        message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structre\": \"street\"}]\n";
-        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props));
+        message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": \"street\"}]\n";
+        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+
+        // incorrect message (child has null field)
+        message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": }]\n";
+        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+        message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": null}]\n";
+        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+    }
+
+    @Test
+    public void testEdgeNodeTileKeyValidations() {
+        Board board = new Board();
+        String message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": \"street\", \"location\": \"([2,2],[3,1])\" }]\n";
+        HashMap<String, ValidationType> props = new HashMap<>() {{
+            put("structure", ValidationType.STRUCTURE);
+            put("location", ValidationType.ALL_KEYS);
+        }};
+        assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+
+        message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": \"street\", \"location\": \"([2,2],[3,1])\" }]\n";
+        props = new HashMap<>() {{
+            put("structure", ValidationType.STRUCTURE);
+            put("location", ValidationType.EDGE_OR_NODE_KEYS);
+        }};
+        assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+
+        message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }]\n";
+        props = new HashMap<>() {{
+            put("structure", ValidationType.STRUCTURE);
+            put("location", ValidationType.EDGE_KEYS);
+        }};
+        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+
+        props = new HashMap<>() {{
+            put("structure", ValidationType.STRUCTURE);
+            put("location", ValidationType.NODE_KEYS);
+        }};
+        assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+
+        // node that does not exist
+        message = "[{ \"structure\": \"city\", \"location\": \"([0,2],[2,1],[7,2])\" }]\n";
+        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
     }
 }
