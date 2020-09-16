@@ -32,35 +32,6 @@ class MoveBanditPhaseTest {
         moveBanditPhase.move(player, jsonArray);
         assertEquals(game.getLastResponse().getCode(), Constants.OK.getCode());
     }
-//
-//    @Test
-//    void requiresALocationValueTest() {
-//        String message = "[{}]";
-//        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
-//        assertFalse(moveBanditPhase.moveIsValid(jsonArray));
-//        assertEquals(game.getLastResponse().getCode(), Constants.MALFORMED_JSON_ERROR.getCode());
-//    }
-//
-//    @Test
-//    void requiresAPoperLocationKeuTest() {
-//        String message = "[{loc: \"\"}]";
-//        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
-//        assertFalse(moveBanditPhase.moveIsValid(jsonArray));
-//        assertEquals(game.getLastResponse().getCode(), Constants.MALFORMED_JSON_ERROR.getCode());
-//    }
-//
-//    @Test
-//    void requiresAValidLocationValueTest() {
-//        String message = "[{ \"location\": {} }]";
-//        JsonArray jsonArray = jsonValidator.getAsJsonObject(message);
-//        assertFalse(moveBanditPhase.moveIsValid(jsonArray));
-//        assertEquals(game.getLastResponse().getCode(), Constants.MALFORMED_JSON_ERROR.getCode());
-//
-//        message = "[{ \"location\": \"foo\" }]";
-//        jsonArray = jsonValidator.getAsJsonObject(message);
-//        assertFalse(moveBanditPhase.moveIsValid(jsonArray));
-//        assertEquals(game.getLastResponse().getCode(), Constants.INVALID_BANDIT_MOVE_ERROR.getCode());
-//    }
 
     @Test
     void playerCannotPlaceBanditOnSeaTile() {
