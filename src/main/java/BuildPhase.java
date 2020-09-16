@@ -1,9 +1,16 @@
 import com.google.gson.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 class BuildPhase implements GamePhase {
     Game game;
     Response request;
+
+    // structure of the messages
+    HashMap<String, ValidationType> props = new HashMap<>() {{
+        put("structure", ValidationType.STRUCTURE);
+        put("location", ValidationType.EDGE_OR_NODE_KEYS);
+    }};
 
     BuildPhase(Game game) {
         this.game = game;
@@ -21,7 +28,6 @@ class BuildPhase implements GamePhase {
             game.addEvent(new Event(game, EventType.GENERAL, game.getCurrentPlayer()).withGeneralMessage(" can't build"));
         }
         game.goToNextPlayer();
-
         game.signalGameChange();
         return Phase.THROW_DICE;
     }
@@ -42,10 +48,13 @@ class BuildPhase implements GamePhase {
             amountOfFailures++;
         } while (game.isRunning() && (jsonArray == null || !commandIsValid(currentPlayer, jsonArray)));
 
-
         // build the structures
         buildStructures(currentPlayer, jsonArray);
         game.sendResponse(currentPlayer, Constants.OK.withAdditionalInfo("Message processed succesfully!"));
+    }
+
+    JsonArray getJsonIfValid(String message) {
+        return jsonValidator.getJsonObjectIfCorrect(message, props, game.getBoard());
     }
 
     // build the structures if the command is valid
@@ -89,44 +98,26 @@ class BuildPhase implements GamePhase {
 
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
-
-            String structureString = object.get("structure").getAsString();
-
-            Structure structure;
-            try {
-                structure = Enum.valueOf(Structure.class, structureString.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                game.sendResponse(Constants.INVALID_STRUCTURE_ERROR);
-                return null;
-            }
+            Structure structure = Helpers.getStructureByName(object.get("structure").getAsString());
 
             // validate if data is formatted properly and corresponding objects exist
             if (structure == structuresToReturn) {
                  if (structuresToReturn == Structure.STREET) {
                      String key = object.get("location").getAsString();
-                     if (!edgeExists(game.getBoard().getEdge(key), key)) return null;
                      commands.add(new BuildCommand(currentPlayer, structure, key));
                  } else if (structuresToReturn == Structure.DEVELOPMENT_CARD) {
                      commands.add(new BuildCommand(currentPlayer, structure, null));
                  } else {
                      String key = object.get("location").getAsString();
-                     if (!nodeExists(game.getBoard().getNode(key), key)) return null;
                      commands.add(new BuildCommand(currentPlayer, structure, key));
                  }
             }
         }
-
         return commands;
     }
 
-
     // check for the whole command if the command is valid.
     boolean commandIsValid(Player currentPlayer, JsonArray jsonArray) {
-        if (jsonArray == null) {
-            game.sendResponse(Constants.MALFORMED_JSON_ERROR.withAdditionalInfo("jsonArray is null"));
-            return false;
-        }
-
         ArrayList<BuildCommand> developmentCardRequests = getCommandsFromInput(currentPlayer, jsonArray, Structure.DEVELOPMENT_CARD);
         ArrayList<BuildCommand> streetCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.STREET);
         ArrayList<BuildCommand> villageCommands = getCommandsFromInput(currentPlayer, jsonArray, Structure.VILLAGE);
@@ -195,22 +186,6 @@ class BuildPhase implements GamePhase {
     private boolean edgeIsFree(ArrayList<Edge> otherEdgesInSameCmd, Edge edge) {
         if (edge.isRoad() || otherEdgesInSameCmd.contains(edge)) {
             game.sendResponse(game.getCurrentPlayer(), Constants.STRUCTURE_ALREADY_EXISTS_ERROR.withAdditionalInfo(edge.getKey()));
-            return false;
-        }
-        return true;
-    }
-
-    private boolean edgeExists(Edge edge, String key) {
-        if (edge == null) {
-            game.sendResponse(Constants.EDGE_DOES_NOT_EXIST_ERROR.withAdditionalInfo(key));
-            return false;
-        }
-        return true;
-    }
-
-    private boolean nodeExists(Node node, String key) {
-        if (node == null) {
-            game.sendResponse(Constants.NODE_DOES_NOT_EXIST_ERROR.withAdditionalInfo(key));
             return false;
         }
         return true;
@@ -290,7 +265,7 @@ class BuildPhase implements GamePhase {
 
         String message = currentPlayer.listen();
         game.print("Received message from player " + currentPlayer.getName() + ": " + message);
-        jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);
+        jsonArray = getJsonIfValid(message);
         if (jsonArray == null) {
             game.sendResponse(currentPlayer, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
             return null;

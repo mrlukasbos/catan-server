@@ -8,6 +8,10 @@ import java.util.Map;
 public class TradePhase implements GamePhase {
     Game game;
     Response request = Constants.TRADE_REQUEST;
+    HashMap<String, ValidationType> props = new HashMap<>() {{
+        put("from", ValidationType.RESOURCE);
+        put("to", ValidationType.RESOURCE);
+    }};
 
     TradePhase(Game game) {
         this.game = game;
@@ -35,12 +39,8 @@ public class TradePhase implements GamePhase {
     void trade(Player player, JsonArray jsonArray) {
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
-
-            Resource resourceFrom;
-            Resource resourceTo;
-
-            resourceFrom = Enum.valueOf(Resource.class, object.get("from").getAsString().toUpperCase());
-            resourceTo = Enum.valueOf(Resource.class, object.get("to").getAsString().toUpperCase());
+            Resource resourceFrom = Helpers.getResourceByName(object.get("from").getAsString());
+            Resource resourceTo = Helpers.getResourceByName(object.get("to").getAsString());
 
             int requiredResourcesForBankTrade = game.getRequiredAmountOfCardsToTrade(player, resourceFrom);
 
@@ -66,7 +66,7 @@ public class TradePhase implements GamePhase {
         while (!tradeSucceeded) {
             String message = currentPlayer.listen();
             game.print("Received message from player " + currentPlayer.getName() + ": " + message);
-            jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);
+            jsonArray = getValidJson(message);
             if (jsonArray == null) game.sendResponse(currentPlayer, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
             tradeSucceeded = jsonArray != null && tradeIsValid(currentPlayer, jsonArray);
 
@@ -77,31 +77,18 @@ public class TradePhase implements GamePhase {
         return jsonArray;
     }
 
+    JsonArray getValidJson(String message) {
+        return jsonValidator.getJsonObjectIfCorrect(message, props, game.getBoard());
+    }
 
     boolean tradeIsValid(Player player, JsonArray jsonArray) {
-
         // keep track of all the resources we need
         Map<Resource, Integer> resourcesNeeded = new HashMap<>();
 
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
-
-            JsonElement fromElement = object.get("from");
-            JsonElement toElement = object.get("to");
-            if (fromElement == null || toElement == null) {
-                game.sendResponse(Constants.INVALID_TRADE_ERROR);
-                return false;
-            }
-
-            Resource resourceFrom;
-            Resource resourceTo;
-            try {
-                resourceFrom = Enum.valueOf(Resource.class, fromElement.getAsString().toUpperCase());
-                resourceTo = Enum.valueOf(Resource.class, toElement.getAsString().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                game.sendResponse(Constants.INVALID_TRADE_ERROR);
-                return false;
-            }
+            Resource resourceFrom = Helpers.getResourceByName(object.get("from").getAsString());
+            Resource resourceTo = Helpers.getResourceByName(object.get("to").getAsString());
 
             int requiredResourcesForBankTrade = game.getRequiredAmountOfCardsToTrade(player, resourceFrom);
 
@@ -122,6 +109,4 @@ public class TradePhase implements GamePhase {
         }
         return true;
     }
-
-
 }

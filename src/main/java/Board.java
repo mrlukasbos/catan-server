@@ -488,6 +488,23 @@ class Board {
         }
         return false;
     }
+
+    boolean hasKey(String key) {
+        return hasEdgeKey(key) || hasNodeKey(key) || hasTileKey(key);
+    }
+
+    boolean hasEdgeKey(String key) {
+        return getEdge(key) != null;
+    }
+
+    boolean hasNodeKey(String key) {
+        return getNode(key) != null;
+
+    }
+
+    boolean hasTileKey(String key) {
+        return getTile(key) != null;
+    }
 }
 
 enum DevelopmentCard {

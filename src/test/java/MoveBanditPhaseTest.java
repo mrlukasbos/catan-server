@@ -27,37 +27,16 @@ class MoveBanditPhaseTest {
     @Test
     void playerCanPlaceBanditOnTile() {
         String message = "[{ \"location\": \"" + game.getBoard().getTilesForDiceNumber(8).get(0).getKey() + "\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertTrue(moveBanditPhase.moveIsValid(jsonArray));
         moveBanditPhase.move(player, jsonArray);
         assertEquals(game.getLastResponse().getCode(), Constants.OK.getCode());
     }
 
     @Test
-    void requiresALocationValueTest() {
-        String message = "[{}]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
-        assertFalse(moveBanditPhase.moveIsValid(jsonArray));
-        assertEquals(game.getLastResponse().getCode(), Constants.INVALID_BANDIT_MOVE_ERROR.getCode());
-    }
-
-    @Test
-    void requiresAValidLocationValueTest() {
-        String message = "[{ \"location\": {} }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
-        assertFalse(moveBanditPhase.moveIsValid(jsonArray));
-        assertEquals(game.getLastResponse().getCode(), Constants.INVALID_BANDIT_MOVE_ERROR.getCode());
-
-        message = "[{ \"location\": \"foo\" }]";
-        jsonArray = new jsonValidator().getJsonIfValid(player, message);
-        assertFalse(moveBanditPhase.moveIsValid(jsonArray));
-        assertEquals(game.getLastResponse().getCode(), Constants.INVALID_BANDIT_MOVE_ERROR.getCode());
-    }
-
-    @Test
     void playerCannotPlaceBanditOnSeaTile() {
         String message = "[{ \"location\": \"" + game.getBoard().getTiles().get(0).getKey() + "\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(moveBanditPhase.moveIsValid(jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.CAN_NOT_PLACE_BANDIT_ON_SEA_TILE_ERROR.getCode());
     }
@@ -65,7 +44,7 @@ class MoveBanditPhaseTest {
     @Test
     void playerCannotPlaceBanditOnSameTile() {
         String message = "[{ \"location\": \"" + game.getBoard().getBandit().getTile().getKey() + "\" }]";
-        JsonArray jsonArray = new jsonValidator().getJsonIfValid(player, message);
+        JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(moveBanditPhase.moveIsValid(jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.CAN_NOT_PLACE_BANDIT_ON_SAME_TILE_ERROR.getCode());
     }

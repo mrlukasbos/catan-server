@@ -2,9 +2,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+
 public class MoveBanditPhase implements GamePhase {
     Game game;
     Response request = Constants.MOVE_BANDIT_REQUEST;
+    // we expect a location with a string value as inputs
+    HashMap<String, ValidationType> props = new HashMap<>() {{
+        put("location", ValidationType.TILE_KEYS);
+    }};
 
     MoveBanditPhase(Game game) {
         this.game = game;
@@ -41,7 +47,7 @@ public class MoveBanditPhase implements GamePhase {
         while (game.isRunning() && !moveSucceeded) {
             String message = currentPlayer.listen();
             game.print("Received message from player " + currentPlayer.getName() + ": " + message);
-            jsonArray = new jsonValidator().getJsonIfValid(currentPlayer, message);
+            jsonArray = getJsonIfValid(message);
             if (jsonArray == null) game.sendResponse(currentPlayer, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
             moveSucceeded = jsonArray != null && moveIsValid(jsonArray);
 
@@ -52,28 +58,15 @@ public class MoveBanditPhase implements GamePhase {
         return jsonArray;
     }
 
+    JsonArray getJsonIfValid(String message) {
+        return jsonValidator.getJsonObjectIfCorrect(message, props, game.getBoard());
+    }
+
     boolean moveIsValid(JsonArray jsonArray) {
         if (jsonArray.size() == 0) return false;
-
         JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
-
         JsonElement locationElement = jsonObject.get("location");
-        if (locationElement == null) {
-            game.sendResponse(Constants.INVALID_BANDIT_MOVE_ERROR);
-            return false;
-        }
-
-        Tile tile;
-        try {
-            tile = game.getBoard().getTile(locationElement.getAsString());
-        } catch (Exception e) {
-            game.sendResponse(Constants.INVALID_BANDIT_MOVE_ERROR);
-            return false;
-        }
-        if (tile == null) {
-            game.sendResponse(Constants.INVALID_BANDIT_MOVE_ERROR);
-            return false;
-        }
+        Tile tile = game.getBoard().getTile(locationElement.getAsString());
 
         if (game.getBoard().getBandit().getTile() == tile) {
             game.sendResponse(Constants.CAN_NOT_PLACE_BANDIT_ON_SAME_TILE_ERROR);
@@ -83,7 +76,6 @@ public class MoveBanditPhase implements GamePhase {
             game.sendResponse(Constants.CAN_NOT_PLACE_BANDIT_ON_SEA_TILE_ERROR);
             return false;
         }
-
         return true;
     }
 }
