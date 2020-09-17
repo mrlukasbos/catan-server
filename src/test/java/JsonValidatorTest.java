@@ -1,5 +1,8 @@
+import board.Board;
 import com.google.gson.JsonArray;
 import org.junit.jupiter.api.Test;
+import utils.ValidationType;
+import utils.jsonValidator;
 
 import java.util.HashMap;
 

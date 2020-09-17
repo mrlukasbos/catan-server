@@ -1,3 +1,8 @@
+import board.Board;
+import board.DevelopmentCard;
+import communication.WebSocketConnectionServer;
+import game.Game;
+import game.Player;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

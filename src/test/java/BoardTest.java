@@ -1,3 +1,11 @@
+import board.Board;
+import board.Edge;
+import board.HarbourType;
+import board.Node;
+import communication.WebSocketConnectionServer;
+import game.Game;
+import game.Player;
+import game.phases.BuildPhase;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -6,7 +14,7 @@ class BoardTest {
     private WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     private Game game = new Game(iface);
     private BuildPhase buildPhase = new BuildPhase(game);
-    private  Player player = new PlayerStub(game,0, "tester");
+    private Player player = new PlayerStub(game,0, "tester");
     private  Player player2 = new PlayerStub(game,1, "tester1");
 
     @Test

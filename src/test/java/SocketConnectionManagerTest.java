@@ -1,9 +1,7 @@
+import communication.SocketConnectionManager;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
 import java.nio.channels.AsynchronousSocketChannel;
 
@@ -48,17 +46,17 @@ class SocketConnectionManagerStub extends SocketConnectionManager {
     }
 
     @Override
-    void onOpen(AsynchronousSocketChannel conn) {
+    public void onOpen(AsynchronousSocketChannel conn) {
         actions += "opened-";
     }
 
     @Override
-    void onClose(AsynchronousSocketChannel conn) {
+    public void onClose(AsynchronousSocketChannel conn) {
         actions += "closed-";
     }
 
     @Override
-    void onMessage(AsynchronousSocketChannel conn, String message) {
+    public void onMessage(AsynchronousSocketChannel conn, String message) {
         actions += (message + "-");
     }
 }

@@ -1,3 +1,6 @@
+import communication.Connection;
+import communication.ServerUtils;
+import game.GameManager;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,14 +22,14 @@ public class ServerUtilsTest {
     @Test
     void itHandlesJoinAndLeaveMessages() {
         serverUtils.handleConnect(dummyConnection);
-        assertEquals(0, serverUtils.registeredConnections.size());
+        assertEquals(0, serverUtils.getRegisteredConnections().size());
         serverUtils.handleMessage(dummyConnection, "{ \"model\": \"join\", \"attributes\": { \"id\": 0, \"name\": \"Test\" } }");
-        assertEquals(1, serverUtils.registeredConnections.size());
-        assertEquals("Test", serverUtils.registeredConnections.get(0).getName());
-        assertEquals(1, serverUtils.gameManager.getCurrentGame().getPlayers().size());
+        assertEquals(1, serverUtils.getRegisteredConnections().size());
+        assertEquals("Test", serverUtils.getRegisteredConnections().get(0).getName());
+        assertEquals(1, serverUtils.getGameManager().getCurrentGame().getPlayers().size());
 
         serverUtils.handleMessage(dummyConnection, "{ \"model\": \"leave\", \"attributes\": { \"id\": 0 } }");
-        assertEquals(0, serverUtils.gameManager.getCurrentGame().getPlayers().size());
+        assertEquals(0, serverUtils.getGameManager().getCurrentGame().getPlayers().size());
 
     }
 }
@@ -36,22 +39,22 @@ class dummyConnection extends Connection {
     public int amountClosed = 0;
 
     @Override
-    boolean isOpen() {
+    public boolean isOpen() {
         return true;
     }
 
     @Override
-    void send(String message) {
+    public void send(String message) {
         receivedMessages++;
     }
 
     @Override
-    void close() {
+    public void close() {
         amountClosed--;
     }
 
     @Override
-    boolean equals(Connection other) {
+    public boolean equals(Connection other) {
         return true;
     }
 }

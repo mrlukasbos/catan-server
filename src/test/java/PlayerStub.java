@@ -1,3 +1,6 @@
+import game.Game;
+import game.Player;
+
 class PlayerStub extends Player {
 
     PlayerStub(Game game, int id, String name) {
@@ -5,7 +8,7 @@ class PlayerStub extends Player {
     }
 
     @Override
-    void send(String str) {
+    public void send(String str) {
         // do nothing
     }
 }

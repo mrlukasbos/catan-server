@@ -1,6 +1,14 @@
+import board.Structure;
 import com.google.gson.JsonArray;
+import communication.WebSocketConnectionServer;
+import game.Game;
+import game.Phase;
+import game.Resource;
+import game.phases.BuildPhase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.Constants;
+import utils.jsonValidator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -282,16 +290,4 @@ class BuildPhaseTest {
         assertEquals(player2, game.getCurrentPlayer());
         assertEquals(Phase.THROW_DICE, phase);
     }
-
-//    @Test
-//    void itContinuesIfPlayerKeepsSendingWrongResponse() {
-//        player.addResources(Constants.STREET_COSTS);
-//        String incorrectMessage = "[{ \"structure\": \"straat\", \"location\": \"([3,1],[3,2])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
-//        player.setBufferedReply(incorrectMessage);
-//        assertEquals(player, game.getCurrentPlayer());
-//        buildPhase.execute();
-//
-//        // it should trigger to 'too_much_failure' response
-//        assertEquals(Constants.TOO_MUCH_FAILURES.getCode(), game.getLastResponse().getCode());
-//    }
 }

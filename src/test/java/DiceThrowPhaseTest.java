@@ -1,3 +1,9 @@
+import board.Tile;
+import communication.WebSocketConnectionServer;
+import game.Event;
+import game.Game;
+import game.Phase;
+import game.phases.DiceThrowPhase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
