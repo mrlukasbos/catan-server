@@ -1,4 +1,3 @@
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,14 +17,18 @@ public class ServerUtilsTest {
     }
 
     @Test
-    void itHandlesJoinMessages() {
+    void itHandlesJoinAndLeaveMessages() {
         serverUtils.handleConnect(dummyConnection);
         assertEquals(0, serverUtils.registeredConnections.size());
         serverUtils.handleMessage(dummyConnection, "{ \"model\": \"join\", \"attributes\": { \"id\": 0, \"name\": \"Test\" } }");
         assertEquals(1, serverUtils.registeredConnections.size());
+        assertEquals("Test", serverUtils.registeredConnections.get(0).getName());
+        assertEquals(1, serverUtils.gameManager.getCurrentGame().getPlayers().size());
+
+        serverUtils.handleMessage(dummyConnection, "{ \"model\": \"leave\", \"attributes\": { \"id\": 0 } }");
+        assertEquals(0, serverUtils.gameManager.getCurrentGame().getPlayers().size());
+
     }
-
-
 }
 
 class dummyConnection extends Connection {
