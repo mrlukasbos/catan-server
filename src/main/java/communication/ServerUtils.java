@@ -87,7 +87,7 @@ public class ServerUtils {
 
     void joinPlayer(Connection connection, JsonObject data) {
         HashMap<String, ValidationType> props = new HashMap<>() {{
-            put("id", ValidationType.STRING);
+            put("id", ValidationType.NUMBER);
             put("name", ValidationType.STRING);
         }};
         if (!jsonValidator.objectHasProperties(data, props, null)) return;

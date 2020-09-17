@@ -70,7 +70,11 @@ public class jsonValidator {
         // check the regular types
         switch (validationType) {
             case NUMBER:
-                return element.isJsonPrimitive() && element.getAsJsonPrimitive().isNumber();
+                boolean isNumber = element.isJsonPrimitive() && element.getAsJsonPrimitive().isNumber();
+
+                // a number can be formatted as a string, but still represnt a number
+                boolean isNumberRepresentedThroughString = element.getAsString().matches("\\d+");
+                return isNumber || isNumberRepresentedThroughString;
             case BOOLEAN:
                 return element.isJsonPrimitive() && element.getAsJsonPrimitive().isBoolean();
             case STRING:

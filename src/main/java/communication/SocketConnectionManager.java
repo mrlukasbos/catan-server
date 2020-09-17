@@ -69,10 +69,10 @@ public abstract class SocketConnectionManager extends Thread {
                     // execute the messages line by line
                     String receivedMessage = new String(connection.buffer.array()).trim();
                     for (String msg : receivedMessage.split("\r\n")) {
-//                        if (msg.isEmpty()) {
-//                            toRemove = connection;
-//                            break;
-//                        }
+                        if (msg.isEmpty()) {
+                            toRemove = connection;
+                            break;
+                        }
                         this.onMessage(connection.channel, msg);
                     }
 
