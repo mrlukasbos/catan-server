@@ -14,18 +14,18 @@ class ConnectionElement {
 }
 
 public class SocketConnectionServer extends Thread {
-    AsynchronousServerSocketChannel server;
+    private AsynchronousServerSocketChannel server;
     private GameManager gameManager;
-    private ArrayList<Player> connectedPlayers = new ArrayList<>();
     private ArrayList<ConnectionElement> connections = new ArrayList<>();
-    Future<AsynchronousSocketChannel> acceptCon;
+    private Future<AsynchronousSocketChannel> acceptCon;
+    private ServerUtils serverUtils;
+
 
     // start a server on this device
     SocketConnectionServer(int port) {
         try {
             server = AsynchronousServerSocketChannel.open();
             server.bind(new InetSocketAddress(port));
-            print("Players can connect to port: " + port + "...");
             acceptCon = server.accept(); // set acceptCon
         } catch (IOException e) {
             e.printStackTrace();
@@ -38,45 +38,16 @@ public class SocketConnectionServer extends Thread {
         start();
     }
 
-    /*
-     * Called whenever a new connection opens
-     */
     private void onOpen(AsynchronousSocketChannel conn) {
-        SocketConnection connection = new SocketConnection(conn);
-        Player newPlayer = new Player(connection, gameManager.getCurrentGame(), gameManager.getCurrentGame().getPlayers().size(), "no_name_yet");
-        connectedPlayers.add(newPlayer);
-        print("opened new connection");
-
-        if (!gameManager.getCurrentGame().isRunning()) {
-            gameManager.getCurrentGame().addPlayer(newPlayer);
-            Response idAcknowledgement = Constants.ID_ACK.withAdditionalInfo("" + newPlayer.getId());
-            newPlayer.send(idAcknowledgement.toString());
-            print("added new player to game");
-        }
+        serverUtils.handleConnect(new SocketConnection(conn));
     }
 
-    /*
-     * Called whenever a connection is closed
-     */
     private void onClose(AsynchronousSocketChannel conn) {
-        for (Player connectedPlayer : connectedPlayers) {
-            if (connectedPlayer.getConnection().getSocket() == conn) {
-                print("the connection with player " + connectedPlayer.getName() + " is closed!");
-                gameManager.getCurrentGame().removePlayer(connectedPlayer);
-            }
-        }
+        serverUtils.handleDisconnect(new SocketConnection(conn));
     }
 
-    /*
-     * Called whenever a message is received on a connection
-     */
     private void onMessage(AsynchronousSocketChannel conn, String message) {
-        for (Player connectedPlayer : connectedPlayers) {
-            if (connectedPlayer.getConnection().getSocket() == conn) {
-                print("got message from player " + connectedPlayer.getName() + ": " + message);
-                connectedPlayer.setBufferedReply(message);
-            }
-        }
+        serverUtils.handleMessage(new SocketConnection(conn), message);
     }
 
     // This function gets called automatically by calling start();
@@ -152,22 +123,6 @@ public class SocketConnectionServer extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    void clearConnections() {
-        connectedPlayers.clear();
-    }
-
-    private void print(String msg) {
-        System.out.println("[Server] \t" + msg);
-    }
-
-    public ArrayList<Player> getConnectedPlayers() {
-        return connectedPlayers;
-    }
-
-    public ArrayList<ConnectionElement> getConnections() {
-        return connections;
     }
 }
 

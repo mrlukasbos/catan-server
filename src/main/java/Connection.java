@@ -14,4 +14,8 @@ abstract class Connection {
     AsynchronousSocketChannel getSocket() {
         return null;
     }
+
+    boolean equals(Connection otherConnection) {
+        return getWebSocket() == otherConnection.getWebSocket() || getSocket() == otherConnection.getSocket();
+    }
 }
