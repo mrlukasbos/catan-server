@@ -21,7 +21,7 @@ public class ServerUtils {
         String model = obj.get("model").getAsString();
 
         switch(model) {
-            case "join": {
+            case "join": {git
                 print("a player wants to join");
                 JsonObject attrs = obj.get("attributes").getAsJsonObject();
                 int connectionId = attrs.get("id").getAsInt();
@@ -98,7 +98,7 @@ public class ServerUtils {
 
     void handleDisconnect(Connection connection) {
         for (Player player : registeredConnections) {
-            if (player.getConnection() == connection) {
+            if (player.getConnection().equals(connection)) {
                 print("lost connection with player: " + player.getName() + " using id: " + player.getId());
             }
         }

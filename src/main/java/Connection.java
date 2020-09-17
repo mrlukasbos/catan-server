@@ -16,6 +16,7 @@ abstract class Connection {
     }
 
     boolean equals(Connection otherConnection) {
-        return getWebSocket() == otherConnection.getWebSocket() || getSocket() == otherConnection.getSocket();
+        return (getWebSocket() != null && (getWebSocket() == otherConnection.getWebSocket())
+                || (getSocket() != null && (getSocket() == otherConnection.getSocket())));
     }
 }
