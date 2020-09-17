@@ -32,10 +32,6 @@ public class Player {
     }
 
     public String listen() {
-        print("trying to get a reply from player ID: " + getId());
-        print("current buffered reply: " +  bufferedReply);
-
-        print("game running? " +  game.isRunning());
         while (bufferedReply.isBlank() && game.isRunning()) {
             try {
                 wait();

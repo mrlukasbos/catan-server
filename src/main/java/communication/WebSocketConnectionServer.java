@@ -8,14 +8,17 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 public class WebSocketConnectionServer extends WebSocketServer {
-    ServerUtils serverUtils;
+    private ServerUtils serverUtils;
+    private int port;
 
     public WebSocketConnectionServer(int port) {
         super(new InetSocketAddress(port));
+        this.port = port;
         setReuseAddr(true);
     }
 
     public void start(GameManager gameManager) {
+        System.out.println("Starting WebSocketConnectionServer on port " + port);
         serverUtils = new ServerUtils(gameManager);
         start();
     }

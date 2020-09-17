@@ -12,16 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ServerUtils {
-    public ArrayList<Player> getRegisteredConnections() {
-        return registeredConnections;
-    }
-
     ArrayList<Player> registeredConnections = new ArrayList<>();
-
-    public GameManager getGameManager() {
-        return gameManager;
-    }
-
     GameManager gameManager;
 
     public ServerUtils(GameManager gameManager) {
@@ -65,9 +56,14 @@ public class ServerUtils {
     // the JSON validations will be done in the game phase,
     // since at this point we don't know what to expect yet.
     void handleClientResponse(Connection connection, JsonObject data) {
+        HashMap<String, ValidationType> props = new HashMap<>() {{
+            put("response", ValidationType.ARRAY);
+        }};
+        if (!jsonValidator.objectHasProperties(data, props, null)) return;
+
         for (Player player : registeredConnections) {
             if (connection.equals(player.getConnection())) {
-                String buildRequest =  data.getAsJsonArray().toString();
+                String buildRequest =  data.get("response").toString();
                 player.setBufferedReply(buildRequest);
             }
         }
@@ -91,7 +87,7 @@ public class ServerUtils {
 
     void joinPlayer(Connection connection, JsonObject data) {
         HashMap<String, ValidationType> props = new HashMap<>() {{
-            put("id", ValidationType.NUMBER);
+            put("id", ValidationType.STRING);
             put("name", ValidationType.STRING);
         }};
         if (!jsonValidator.objectHasProperties(data, props, null)) return;
@@ -169,5 +165,13 @@ public class ServerUtils {
         } else {
             print("warning! we must maybe reply with an error here. tryting to register player while game is running");
         }
+    }
+
+    public ArrayList<Player> getRegisteredConnections() {
+        return registeredConnections;
+    }
+
+    public GameManager getGameManager() {
+        return gameManager;
     }
 }
