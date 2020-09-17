@@ -21,7 +21,7 @@ public class ServerUtils {
         String model = obj.get("model").getAsString();
 
         switch(model) {
-            case "join": {git
+            case "join": {
                 print("a player wants to join");
                 JsonObject attrs = obj.get("attributes").getAsJsonObject();
                 int connectionId = attrs.get("id").getAsInt();
