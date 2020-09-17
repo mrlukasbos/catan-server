@@ -78,7 +78,7 @@ public class TradePhase implements GamePhase {
     }
 
     JsonArray getValidJson(String message) {
-        return jsonValidator.getJsonObjectIfCorrect(message, props, game.getBoard());
+        return jsonValidator.getJsonArrayIfCorrect(message, props, game.getBoard());
     }
 
     boolean tradeIsValid(Player player, JsonArray jsonArray) {

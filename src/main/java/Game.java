@@ -79,7 +79,7 @@ class Game extends Thread {
     void signalGameChange() {
         print("Sending board info to players");
         getPlayers().forEach((p) -> p.send(toString()));
-        iface.broadcast(toString());
+        if (iface != null) iface.broadcast(toString());
     }
 
 

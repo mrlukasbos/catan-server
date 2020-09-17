@@ -56,7 +56,7 @@ class BuildPhase implements GamePhase {
     }
 
     JsonArray getJsonIfValid(String message) {
-        return jsonValidator.getJsonObjectIfCorrect(message, props, game.getBoard());
+        return jsonValidator.getJsonArrayIfCorrect(message, props, game.getBoard());
     }
 
     // build the structures if the command is valid

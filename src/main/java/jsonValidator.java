@@ -36,7 +36,25 @@ public class jsonValidator {
         }
     }
 
-    static JsonArray getJsonObjectIfCorrect(String message, Map<String, ValidationType> props, Board board) {
+    static JsonObject getAsJsonObject(String message) {
+        if (message == null) return null;
+
+        try {
+            JsonParser parser = new JsonParser();
+            JsonElement elem = parser.parse(message);
+            return elem.getAsJsonObject();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    static JsonObject getJsonObjectIfCorrect(String message, Map<String, ValidationType> props, Board board) {
+        JsonObject jsonObject = getAsJsonObject(message);
+        return objectHasProperties(jsonObject, props, board) ? jsonObject : null;
+    }
+
+    static JsonArray getJsonArrayIfCorrect(String message, Map<String, ValidationType> props, Board board) {
         JsonArray jsonArray = getAsJsonArray(message);
         return childrenHaveProperties(jsonArray, props, board) ? jsonArray : null;
     }
@@ -45,8 +63,7 @@ public class jsonValidator {
     static boolean objectHasProperties(JsonObject object, Map<String, ValidationType> props, Board board) {
         for (Map.Entry<String, ValidationType> prop : props.entrySet()) {
             if (!object.has(prop.getKey())
-                    || !object.get(prop.getKey()).isJsonPrimitive()
-                    || !typesMatch(prop.getValue(), object.get(prop.getKey()).getAsJsonPrimitive(), board)) return false;
+                    || !typesMatch(prop.getValue(), object.get(prop.getKey()), board)) return false;
         }
         return true;
     }
@@ -60,28 +77,28 @@ public class jsonValidator {
     }
 
     // check if the validationtype matches the primitive type
-    static boolean typesMatch(ValidationType validationType, JsonPrimitive primitive, Board board) {
+    static boolean typesMatch(ValidationType validationType, JsonElement element, Board board) {
 
         // check the regular types
         switch (validationType) {
             case NUMBER:
-                return primitive.isNumber();
+                return element.isJsonPrimitive() && element.getAsJsonPrimitive().isNumber();
             case BOOLEAN:
-                return primitive.isBoolean();
+                return element.isJsonPrimitive() && element.getAsJsonPrimitive().isBoolean();
             case STRING:
-                return primitive.isString();
+                return element.isJsonPrimitive() && element.getAsJsonPrimitive().isString();
             case OBJECT:
-                return primitive.isJsonObject();
+                return element.isJsonObject();
             case NULL:
-                return primitive.isJsonNull();
+                return element.isJsonNull();
             case ARRAY:
-                return primitive.isJsonArray();
+                return element.isJsonArray();
             default:
                 // if we expect a custom type (resources, structure, key, etc) then it must for now be seen as String
-                if (!primitive.isString()) return false;
+                if (!(element.isJsonPrimitive() && element.getAsJsonPrimitive().isString())) return false;
         }
 
-        String value = primitive.getAsString();
+        String value = element.getAsJsonPrimitive().getAsString();
         switch (validationType) {
             case RESOURCE: {
                 return Helpers.getResourceByName(value) != Resource.NONE;

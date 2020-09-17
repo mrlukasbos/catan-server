@@ -18,9 +18,11 @@ public class ServerUtilsTest {
     }
 
     @Test
-    void itHandlesMessages() {
+    void itHandlesJoinMessages() {
         serverUtils.handleConnect(dummyConnection);
-       // serverUtils.handleMessage(dummyConnection, "Hello");
+        assertEquals(0, serverUtils.registeredConnections.size());
+        serverUtils.handleMessage(dummyConnection, "{ \"model\": \"join\", \"attributes\": { \"id\": 0, \"name\": \"Test\" } }");
+        assertEquals(1, serverUtils.registeredConnections.size());
     }
 
 
