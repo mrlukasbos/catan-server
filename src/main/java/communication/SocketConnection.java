@@ -21,11 +21,7 @@ public class SocketConnection extends Connection {
         if (connectionElement.channel != null && connectionElement.channel.isOpen() && !message.equals("")) {
             message += "\r\n";
             try {
-                // wait until we can write
-                while (connectionElement.isReading) { }
-                connectionElement.isWriting = true;
                 connectionElement.channel.write(ByteBuffer.wrap(message.getBytes(StandardCharsets.UTF_8)));
-                connectionElement.isWriting = false;
             } catch (Exception e) {
                 e.printStackTrace();
             }

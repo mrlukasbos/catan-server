@@ -66,40 +66,25 @@ public abstract class SocketConnectionManager extends Thread {
                         toRemove = connection;
                     }
 
-                    // execute the messages line by line
+                    // Read the data from the buffer.
+                    // The data always starts at index 0, and 'result' contains the amount of bytes.
+                    String receivedMessage = new String(connection.buffer.array(), 0, result);
 
-
-                    byte[] bytes = connection.buffer.array();
-                    String receivedMessage = new String(bytes, 0, result);
-
-                    System.out.println(" ------ full received message: " + receivedMessage);
-
-
-
+                    // append the received message to a possibly earlier received partial message
                     connection.partialMsg += receivedMessage;
-                    System.out.println("new partial msg: " + connection.partialMsg);
 
-                    String[] splittedData = connection.partialMsg.split("\r\n", 2); // split the data on the first \r\n
+                    // split the data on the first \r\n
+                    String[] splittedData = connection.partialMsg.split("\r\n", 2);
 
+                    // if there was a \r\n we can send all data before it.
                     if (splittedData.length > 1) {
-                        // got a full line. lets propagate it
                         this.onMessage(connection, splittedData[0].trim());
                         connection.partialMsg = splittedData[1].trim();
-                        System.out.println("----- continueing with: " + connection.partialMsg);
-                    } else {
-                        System.out.println("----- we did not receive a complete message, so we wait until more data arrives " + connection.partialMsg);
-
-                    }
-
+                    } /* else: we did not receive a complete message, so we wait until more data arrives */
 
                     // set up the connection element for the next message
-
-//                    if (!connection.isWriting) {
-//                        connection.isReading = true;
-                    connection.buffer = ByteBuffer.allocate(2048);
+                    connection.buffer.clear();
                     connection.result = connection.channel.read(connection.buffer);
-//                        connection.isReading = false;
-//                    }
                 }
             } else {
                 connection.result.cancel(true);
