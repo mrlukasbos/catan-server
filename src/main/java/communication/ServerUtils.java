@@ -157,13 +157,13 @@ public class ServerUtils {
         registeredConnections.add(newPlayer);
 
         if (!gameManager.getCurrentGame().isRunning()) {
-            print("Registering new interface player: " + name);
+            print("Registering new player: " + name);
             gameManager.getCurrentGame().addPlayer(newPlayer);
             Response idAcknowledgement = Constants.ID_ACK.withAdditionalInfo("" + newPlayer.getId());
             newPlayer.send(idAcknowledgement.toString());
 
         } else {
-            print("warning! we must maybe reply with an error here. tryting to register player while game is running");
+            print("warning! we must maybe reply with an error here. trying to register player while game is running");
         }
     }
 

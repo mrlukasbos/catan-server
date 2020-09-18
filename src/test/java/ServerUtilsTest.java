@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 public class ServerUtilsTest {
     GameManager manager = new GameManager(null, null);
     ServerUtils serverUtils = new ServerUtils(manager);
@@ -30,7 +29,6 @@ public class ServerUtilsTest {
 
         serverUtils.handleMessage(dummyConnection, "{ \"model\": \"leave\", \"attributes\": { \"id\": 0 } }");
         assertEquals(0, serverUtils.getGameManager().getCurrentGame().getPlayers().size());
-
     }
 }
 

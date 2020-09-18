@@ -49,6 +49,7 @@ public class jsonValidator {
 
     // determine whether the key and types are as expected
     public static boolean objectHasProperties(JsonObject object, Map<String, ValidationType> props, Board board) {
+        if (object == null) return false;
         for (Map.Entry<String, ValidationType> prop : props.entrySet()) {
             if (!object.has(prop.getKey())
                     || !typesMatch(prop.getValue(), object.get(prop.getKey()), board)) return false;
