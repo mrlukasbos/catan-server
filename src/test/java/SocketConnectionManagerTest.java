@@ -1,9 +1,9 @@
+import communication.ConnectionElement;
 import communication.SocketConnectionManager;
 import org.junit.jupiter.api.Test;
 
 import java.io.DataOutputStream;
 import java.net.Socket;
-import java.nio.channels.AsynchronousSocketChannel;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -46,17 +46,17 @@ class SocketConnectionManagerStub extends SocketConnectionManager {
     }
 
     @Override
-    public void onOpen(AsynchronousSocketChannel conn) {
+    public void onOpen(ConnectionElement conn) {
         actions += "opened-";
     }
 
     @Override
-    public void onClose(AsynchronousSocketChannel conn) {
+    public void onClose(ConnectionElement conn) {
         actions += "closed-";
     }
 
     @Override
-    public void onMessage(AsynchronousSocketChannel conn, String message) {
+    public void onMessage(ConnectionElement conn, String message) {
         actions += (message + "-");
     }
 }

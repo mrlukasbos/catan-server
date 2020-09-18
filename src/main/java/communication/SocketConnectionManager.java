@@ -9,20 +9,14 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-class ConnectionElement {
-    AsynchronousSocketChannel channel;
-    Future<Integer> result;
-    ByteBuffer buffer;
-}
-
 public abstract class SocketConnectionManager extends Thread {
     private AsynchronousServerSocketChannel server;
     private ArrayList<ConnectionElement> connections = new ArrayList<>();
     private Future<AsynchronousSocketChannel> acceptCon;
 
-    protected abstract void onOpen(AsynchronousSocketChannel conn);
-    protected abstract void onClose(AsynchronousSocketChannel conn);
-    protected abstract void onMessage(AsynchronousSocketChannel conn, String message);
+    protected abstract void onOpen(ConnectionElement conn);
+    protected abstract void onClose(ConnectionElement conn);
+    protected abstract void onMessage(ConnectionElement conn, String message);
 
     // start a server on this device
     public SocketConnectionManager(int port) {
@@ -73,16 +67,17 @@ public abstract class SocketConnectionManager extends Thread {
                     // execute the messages line by line
                     String receivedMessage = new String(connection.buffer.array()).trim();
                     for (String msg : receivedMessage.split("\r\n")) {
-//                        if (msg.isEmpty()) {
-//                            toRemove = connection;
-//                            break;
-//                        }
-                        this.onMessage(connection.channel, msg);
+                        this.onMessage(connection, msg);
                     }
 
                     // set up the connection element for the next message
-                    connection.buffer = ByteBuffer.allocate(2048);
-                    connection.result = connection.channel.read(connection.buffer);
+
+                    if (!connection.isWriting) {
+                        connection.isReading = true;
+                        connection.buffer = ByteBuffer.allocate(2048);
+                        connection.result = connection.channel.read(connection.buffer);
+                        connection.isReading = false;
+                    }
                 }
             } else {
                 connection.result.cancel(true);
@@ -90,7 +85,7 @@ public abstract class SocketConnectionManager extends Thread {
             }
         }
         if (toRemove != null) {
-            this.onClose(toRemove.channel);
+            this.onClose(toRemove);
             connections.remove(toRemove);
         }
     }
@@ -110,7 +105,7 @@ public abstract class SocketConnectionManager extends Thread {
                     elem.result = elem.channel.read(elem.buffer);
                     this.connections.add(elem);
 
-                    this.onOpen(client);
+                    this.onOpen(elem);
                 }
             }
         } catch (Exception e) {

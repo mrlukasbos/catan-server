@@ -20,17 +20,17 @@ public class SocketConnectionServer extends SocketConnectionManager {
     }
 
     @Override
-    public void onOpen(AsynchronousSocketChannel conn) {
+    public void onOpen(ConnectionElement conn) {
         serverUtils.handleConnect(new SocketConnection(conn));
     }
 
     @Override
-    public void onClose(AsynchronousSocketChannel conn) {
+    public void onClose(ConnectionElement conn) {
         serverUtils.handleDisconnect(new SocketConnection(conn));
     }
 
     @Override
-    public void onMessage(AsynchronousSocketChannel conn, String message) {
+    public void onMessage(ConnectionElement conn, String message) {
         serverUtils.handleMessage(new SocketConnection(conn), message);
     }
 }

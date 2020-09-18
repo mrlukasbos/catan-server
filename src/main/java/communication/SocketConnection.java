@@ -6,22 +6,26 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.charset.StandardCharsets;
 
 public class SocketConnection extends Connection {
-    AsynchronousSocketChannel socket;
+    ConnectionElement connectionElement;
 
-    SocketConnection(AsynchronousSocketChannel socket) {
-        this.socket = socket;
+    SocketConnection(ConnectionElement connectionElement) {
+        this.connectionElement = connectionElement;
     }
 
     public boolean isOpen() {
-        return socket.isOpen();
+        return connectionElement.channel.isOpen();
     }
 
     public void send(String message) {
         // set up the connection element for the next message
-        if (socket != null && socket.isOpen() && !message.equals("")) {
+        if (connectionElement.channel != null && connectionElement.channel.isOpen() && !message.equals("")) {
             message += "\r\n";
             try {
-                socket.write(ByteBuffer.wrap(message.getBytes(StandardCharsets.UTF_8)));
+                // wait until we can write
+                while (connectionElement.isReading) { }
+                connectionElement.isWriting = true;
+                connectionElement.channel.write(ByteBuffer.wrap(message.getBytes(StandardCharsets.UTF_8)));
+                connectionElement.isWriting = false;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -30,7 +34,7 @@ public class SocketConnection extends Connection {
 
     public void close() {
         try {
-            socket.close();
+            connectionElement.channel.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -38,6 +42,6 @@ public class SocketConnection extends Connection {
 
     @Override
     public AsynchronousSocketChannel getSocket() {
-        return socket;
+        return connectionElement.channel;
     }
 }
