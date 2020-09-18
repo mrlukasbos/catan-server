@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SocketConnectionManagerTest {
 
     @Test
-    void itConnectsNewConnections() {
+    void itConnectsNewConnections() throws InterruptedException {
         SocketConnectionManagerStub socketConnectionManager = new SocketConnectionManagerStub(10006);
         socketConnectionManager.start();
 
@@ -23,7 +23,7 @@ public class SocketConnectionManagerTest {
         try {
             s = new Socket("localhost", 10006);
             dout = new DataOutputStream(s.getOutputStream());
-            dout.writeUTF("Hello\r\ngoodbye");
+            dout.writeUTF("Hello\r\ngoodbye\r\n");
             dout.flush();
             dout.close();
             s.close();
@@ -33,7 +33,11 @@ public class SocketConnectionManagerTest {
             System.out.println(e);
         }
 
-        await().atMost(1, SECONDS).until(() -> socketConnectionManager.actions.equals("opened-Hello-goodbye-closed-"));
+        Thread.sleep(1000);
+
+
+
+        await().atMost(3, SECONDS).until(() -> socketConnectionManager.actions.equals("opened-Hello-goodbye-closed-"));
         assertEquals("opened-Hello-goodbye-closed-", socketConnectionManager.actions);
     }
 }

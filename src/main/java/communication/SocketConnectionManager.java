@@ -74,13 +74,17 @@ public abstract class SocketConnectionManager extends Thread {
                     connection.partialMsg += receivedMessage;
 
                     // split the data on the first \r\n
-                    String[] splittedData = connection.partialMsg.split("\r\n", 2);
+                    String[] splittedData = connection.partialMsg.split("\r\n");
 
                     // if there was a \r\n we can send all data before it.
-                    if (splittedData.length > 1) {
-                        this.onMessage(connection, splittedData[0].trim());
-                        connection.partialMsg = splittedData[1].trim();
-                    } /* else: we did not receive a complete message, so we wait until more data arrives */
+                    boolean lastLineEnded = connection.partialMsg.endsWith("\r\n");
+                    int lineCount =  lastLineEnded ? splittedData.length : splittedData.length - 1;
+                    for (int i = 0; i < lineCount; i++) {
+                        this.onMessage(connection, splittedData[i].trim());
+                    }
+
+                    // the remained is kept for when there is more data.
+                    if (!lastLineEnded) connection.partialMsg = splittedData[splittedData.length - 1].trim();
 
                     // set up the connection element for the next message
                     connection.buffer.clear();
