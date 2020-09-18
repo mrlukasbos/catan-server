@@ -20,6 +20,10 @@ public class BuildPhase implements GamePhase {
         put("location", ValidationType.EDGE_OR_NODE_KEYS);
     }};
 
+    HashMap<String, ValidationType> propsDevelopmentCard = new HashMap<>() {{
+        put("structure", ValidationType.DEVELOPMENT_CARD);
+    }};
+
     public BuildPhase(Game game) {
         this.game = game;
         request = Constants.BUILD_REQUEST;
@@ -64,7 +68,13 @@ public class BuildPhase implements GamePhase {
     }
 
     JsonArray getJsonIfValid(String message) {
-        return jsonValidator.getJsonArrayIfCorrect(message, props, game.getBoard());
+        // Try if the message fits a structure with a location
+        JsonArray structureArray = jsonValidator.getJsonArrayIfCorrect(message, props, game.getBoard());
+        if (structureArray == null) {
+            // otherwise, it may be a development card (which has no location)
+            return jsonValidator.getJsonArrayIfCorrect(message, propsDevelopmentCard, game.getBoard());
+        }
+        return structureArray;ix
     }
 
     // build the structures if the command is valid

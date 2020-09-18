@@ -9,6 +9,7 @@ public enum ValidationType {
     ARRAY,
     RESOURCE,
     STRUCTURE,
+    DEVELOPMENT_CARD,
     ALL_KEYS,
     EDGE_KEYS,
     NODE_KEYS,

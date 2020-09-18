@@ -99,6 +99,9 @@ public class jsonValidator {
             case STRUCTURE: {
                 return Helpers.getStructureByName(value) != Structure.NONE;
             }
+            case DEVELOPMENT_CARD: {
+                return  Helpers.getStructureByName(value) == Structure.DEVELOPMENT_CARD;
+            }
             case ALL_KEYS: {
                 return board.hasKey(value);
             }
