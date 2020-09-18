@@ -74,7 +74,7 @@ public class BuildPhase implements GamePhase {
             // otherwise, it may be a development card (which has no location)
             return jsonValidator.getJsonArrayIfCorrect(message, propsDevelopmentCard, game.getBoard());
         }
-        return structureArray;ix
+        return structureArray;
     }
 
     // build the structures if the command is valid
