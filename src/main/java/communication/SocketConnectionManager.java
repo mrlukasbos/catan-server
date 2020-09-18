@@ -60,7 +60,11 @@ public abstract class SocketConnectionManager extends Thread {
             if (connection.channel != null && connection.channel.isOpen()) {
                 if (connection.result.isDone()) {
                     try {
-                        connection.result.get();
+                        int result = connection.result.get();
+                        if (result < 0) {
+                            toRemove = connection;
+                            break;
+                        }
                     } catch (InterruptedException | ExecutionException e) {
                         connection.result.cancel(true);
                         toRemove = connection;
@@ -69,10 +73,10 @@ public abstract class SocketConnectionManager extends Thread {
                     // execute the messages line by line
                     String receivedMessage = new String(connection.buffer.array()).trim();
                     for (String msg : receivedMessage.split("\r\n")) {
-                        if (msg.isEmpty()) {
-                            toRemove = connection;
-                            break;
-                        }
+//                        if (msg.isEmpty()) {
+//                            toRemove = connection;
+//                            break;
+//                        }
                         this.onMessage(connection.channel, msg);
                     }
 

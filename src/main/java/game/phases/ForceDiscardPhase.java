@@ -52,7 +52,8 @@ public class ForceDiscardPhase implements GamePhase {
 
     // keep running this function until we get valid output from the user
     JsonArray getValidCommandFromUser(Player player) {
-        player.send(request.withAdditionalInfo(Double.toString(Math.floor(player.countResources()/2.0))).toString());
+        game.sendResponse(player,request.withAdditionalInfo(Double.toString(Math.floor(player.countResources()/2.0))));
+
         boolean discardSucceeded = false;
         JsonArray jsonArray = null;
 
@@ -63,7 +64,7 @@ public class ForceDiscardPhase implements GamePhase {
             if (jsonArray == null) game.sendResponse(player, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
             discardSucceeded = jsonArray != null && discardIsValid(player, jsonArray);
             if (!discardSucceeded) {
-                player.send(request.withAdditionalInfo(Double.toString(Math.floor(player.countResources()/2.0))).toString());
+                game.sendResponse(player,request.withAdditionalInfo(Double.toString(Math.floor(player.countResources()/2.0))));
             }
         }
         return jsonArray;

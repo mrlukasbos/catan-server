@@ -177,6 +177,7 @@ public class Game extends Thread {
 
     // Respond to user input for current player, can be an error or an acknowledgement
     public void sendResponse(Response response) {
+        print("sending response to player " + getCurrentPlayer().getName() + ": " + response.getTitle());
         sendResponse(getCurrentPlayer(), response);
     }
 

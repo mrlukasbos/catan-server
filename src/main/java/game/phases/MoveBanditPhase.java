@@ -47,7 +47,8 @@ public class MoveBanditPhase implements GamePhase {
 
     // keep running this function until we get valid output from the user
     public JsonArray getValidCommandFromUser(Player currentPlayer) {
-        currentPlayer.send(request.toString());
+        game.sendResponse(currentPlayer, request);
+
         boolean moveSucceeded = false;
         JsonArray jsonArray = null;
 
@@ -59,7 +60,7 @@ public class MoveBanditPhase implements GamePhase {
             moveSucceeded = jsonArray != null && moveIsValid(jsonArray);
 
             if (!moveSucceeded) {
-                currentPlayer.send(request.toString());
+                game.sendResponse(currentPlayer, request);
             }
         }
         return jsonArray;

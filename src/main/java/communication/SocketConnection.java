@@ -17,6 +17,7 @@ public class SocketConnection extends Connection {
     }
 
     public void send(String message) {
+        // set up the connection element for the next message
         if (socket != null && socket.isOpen() && !message.equals("")) {
             message += "\r\n";
             try {
