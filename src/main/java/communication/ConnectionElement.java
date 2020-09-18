@@ -10,4 +10,5 @@ public class ConnectionElement {
     AsynchronousSocketChannel channel;
     Future<Integer> result;
     ByteBuffer buffer;
+    String partialMsg = "";
 }
