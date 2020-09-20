@@ -74,7 +74,10 @@ public class TradePhase implements GamePhase {
             String message = currentPlayer.listen();
             game.print("Received message from player " + currentPlayer.getName() + ": " + message);
             jsonArray = getValidJson(message);
-            if (jsonArray == null) game.sendResponse(currentPlayer, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
+            if (jsonArray == null) {
+                game.print("got an invalid trade message!");
+                game.sendResponse(currentPlayer, Constants.MALFORMED_JSON_ERROR.withAdditionalInfo(message));
+            }
             tradeSucceeded = jsonArray != null && tradeIsValid(currentPlayer, jsonArray);
 
             if (!tradeSucceeded) {

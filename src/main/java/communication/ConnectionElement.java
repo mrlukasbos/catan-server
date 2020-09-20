@@ -5,10 +5,9 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.util.concurrent.Future;
 
 public class ConnectionElement {
-    boolean isReading = false;
-    boolean isWriting = false;
     AsynchronousSocketChannel channel;
     Future<Integer> result;
+    Future<Integer> writeResult;
     ByteBuffer buffer;
     String partialMsg = "";
 }

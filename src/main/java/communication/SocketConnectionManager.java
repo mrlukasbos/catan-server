@@ -5,7 +5,6 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -84,8 +83,11 @@ public abstract class SocketConnectionManager extends Thread {
                     }
 
                     // the remained is kept for when there is more data.
-                    if (!lastLineEnded) connection.partialMsg = splittedData[splittedData.length - 1].trim();
-
+                    if (!lastLineEnded) {
+                        connection.partialMsg = splittedData[splittedData.length - 1].trim();
+                    } else {
+                        connection.partialMsg = "";
+                    }
                     // set up the connection element for the next message
                     connection.buffer.clear();
                     connection.result = connection.channel.read(connection.buffer);

@@ -1,5 +1,8 @@
 package game;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 public class Response {
     private int code;
     private String title;
@@ -34,13 +37,20 @@ public class Response {
 
     @Override
     public String toString() {
+        Gson g = new Gson();
+        String additionalInformationEscaped = g.toJson(additionalInformation);
+
+        if (additionalInformationEscaped.equals("null")) {
+            additionalInformationEscaped = "\"\"";
+        }
+
         return  "{" +
                 "\"model\": \"response\", " +
                 "\"attributes\": {" +
                 "\"title\": \"" + title + "\", " +
                 "\"is_error\": " + (code > 200) + ", " +
                 "\"code\": " + code + ", " +
-                "\"additional_info\": \"" + additionalInformation + "\", " +
+                "\"additional_info\": " + additionalInformationEscaped + ", " +
                 "\"description\": \"" + description + "\"" +
                 "}" +
                 '}';

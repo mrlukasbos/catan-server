@@ -41,7 +41,7 @@ public class ServerUtils {
     }
 
     public void handleConnect(Connection connection) {
-        connection.send(gameManager.getCurrentGame().toString());
+     //   connection.send(gameManager.getCurrentGame().toString());
     }
 
     void handleDisconnect(Connection connection) {
