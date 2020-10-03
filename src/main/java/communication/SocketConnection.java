@@ -28,7 +28,13 @@ public class SocketConnection extends Connection {
                 while (bytesWritten < amountOfBytesToWrite) {
                     connectionElement.writeResult = connectionElement.channel.write(ByteBuffer.wrap(message.getBytes(StandardCharsets.UTF_8)));
                     bytesWritten += connectionElement.writeResult.get(); // block until the write operation is finished.
+
+                    if (amountOfBytesToWrite != bytesWritten) {
+                        System.out.println("--------------------------------------- DID NOT WRITE FULL MESSAGE! ------------------------------------------");
+                    }
+
                     Thread.onSpinWait();
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
