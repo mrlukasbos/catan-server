@@ -32,7 +32,7 @@ public class Player {
     }
 
     public String listen() {
-        while (bufferedReply.isBlank() && game.isRunning()) {
+        while (bufferedReply.trim().length() == 0 && game.isRunning()) {
             try {
                 wait();
             } catch (Exception e) {}
