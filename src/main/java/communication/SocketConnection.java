@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.Future;
 
 public class SocketConnection extends Connection {
     ConnectionElement connectionElement;
@@ -22,9 +21,15 @@ public class SocketConnection extends Connection {
         if (connectionElement.channel != null && connectionElement.channel.isOpen() && !message.equals("")) {
             message += "\r\n";
             try {
-                while (connectionElement.writeResult != null && connectionElement.writeResult.isDone()) { Thread.onSpinWait(); }
-                connectionElement.writeResult = connectionElement.channel.write(ByteBuffer.wrap(message.getBytes(StandardCharsets.UTF_8)));
-                connectionElement.writeResult.get(); // block until the write operation is finished.
+//                while (connectionElement.writeResult != null && connectionElement.writeResult.isDone()) { Thread.onSpinWait(); }
+                int amountOfBytesToWrite = message.getBytes(StandardCharsets.UTF_8).length;
+                int bytesWritten = 0;
+
+                while (bytesWritten < amountOfBytesToWrite) {
+                    connectionElement.writeResult = connectionElement.channel.write(ByteBuffer.wrap(message.getBytes(StandardCharsets.UTF_8)));
+                    bytesWritten += connectionElement.writeResult.get(); // block until the write operation is finished.
+                    Thread.onSpinWait();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
