@@ -44,6 +44,7 @@ public class ServerUtils {
     }
 
     public void handleConnect(Connection connection) {
+        // TODO: fix issue where game.toString() sends valid data
      //   connection.send(gameManager.getCurrentGame().toString());
     }
 

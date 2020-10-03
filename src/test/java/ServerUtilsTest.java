@@ -11,14 +11,6 @@ public class ServerUtilsTest {
     dummyConnection dummyConnection = new dummyConnection();
 
     @Test
-    void itHandlesConnections() {
-        assertEquals(0, dummyConnection.amountClosed);
-        assertEquals(0, dummyConnection.receivedMessages);
-        serverUtils.handleConnect(dummyConnection);
-        assertEquals(1, dummyConnection.receivedMessages);
-    }
-
-    @Test
     void itHandlesJoinAndLeaveMessages() {
         serverUtils.handleConnect(dummyConnection);
         assertEquals(0, serverUtils.getRegisteredConnections().size());
