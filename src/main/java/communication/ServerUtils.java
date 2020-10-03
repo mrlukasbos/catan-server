@@ -26,10 +26,13 @@ public class ServerUtils {
             put("attributes", ValidationType.OBJECT);
         }};
         JsonObject object = jsonValidator.getJsonObjectIfCorrect(message, props, null);
+        conn.send(Constants.MALFORMED_JSON_ERROR.toString());
         if (object == null) return;
 
         String model = object.get("model").getAsString();
         JsonObject attrs = object.get("attributes").getAsJsonObject();
+
+
 
         switch(model) {
             case "join": joinPlayer(conn, attrs); break;
@@ -68,6 +71,7 @@ public class ServerUtils {
             }
         }
     }
+
 
     void leavePlayer(Connection connection, JsonObject data) {
         HashMap<String, ValidationType> props = new HashMap<>() {{
