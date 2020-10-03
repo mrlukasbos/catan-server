@@ -1,10 +1,21 @@
+import board.Board;
+import board.Edge;
+import board.HarbourType;
+import board.Node;
 import com.google.gson.JsonArray;
+import communication.WebSocketConnectionServer;
+import game.Game;
+import game.Phase;
+import game.Resource;
+import game.phases.TradePhase;
 import org.junit.jupiter.api.Test;
+import utils.Constants;
+import utils.jsonValidator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TradePhaseTest {
-    InterfaceServer iface = new InterfaceServer(10007);
+    WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     Game game = new Game(iface);
     TradePhase tradePhase = new TradePhase(game);
     PlayerStub player = new PlayerStub(game,0, "tester");
@@ -166,7 +177,7 @@ public class TradePhaseTest {
 
     @Test
     void itHandlesUserCommandsTest() {
-        player.setMessageFromPlayer("[{ \"from\": \"stone\", \"to\": \"wood\" }]");
+        player.setBufferedReply("[{ \"from\": \"stone\", \"to\": \"wood\" }]");
         player.addResources(Resource.STONE, 4);
         JsonArray jsonArray = tradePhase.getValidCommandFromUser(player);
         assertTrue(tradePhase.tradeIsValid(player, jsonArray));
@@ -174,7 +185,7 @@ public class TradePhaseTest {
 
     @Test
     void itExecutes() {
-        player.setMessageFromPlayer("[{ \"from\": \"stone\", \"to\": \"wood\" }]");
+        player.setBufferedReply("[{ \"from\": \"stone\", \"to\": \"wood\" }]");
         player.addResources(Resource.STONE, 4);
         game.setCurrentPlayer(player);
         Phase phase = tradePhase.execute();

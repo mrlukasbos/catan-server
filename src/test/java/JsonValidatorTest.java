@@ -1,5 +1,8 @@
+import board.Board;
 import com.google.gson.JsonArray;
 import org.junit.jupiter.api.Test;
+import utils.ValidationType;
+import utils.jsonValidator;
 
 import java.util.HashMap;
 
@@ -39,25 +42,25 @@ public class JsonValidatorTest {
             put("structure", ValidationType.STRUCTURE);
             put("location", ValidationType.STRING);
         }};
-        assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+        assertNotNull(jsonValidator.getJsonArrayIfCorrect(message, props, board));
 
         // incorrect message (street is misspelled and is thus not a structure)
         message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": \"stret\", \"location\": \"([2,2],[3,1])\" }]\n";
-        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+        assertNull(jsonValidator.getJsonArrayIfCorrect(message, props, board));
 
         // incorrect message (structure key is misspelled while it is expected)
         message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structre\": \"street\", \"location\": \"([2,2],[3,1])\" }]\n";
-        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+        assertNull(jsonValidator.getJsonArrayIfCorrect(message, props, board));
 
         // incorrect message (child misses a field)
         message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": \"street\"}]\n";
-        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+        assertNull(jsonValidator.getJsonArrayIfCorrect(message, props, board));
 
         // incorrect message (child has null field)
         message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": }]\n";
-        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+        assertNull(jsonValidator.getJsonArrayIfCorrect(message, props, board));
         message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": null}]\n";
-        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+        assertNull(jsonValidator.getJsonArrayIfCorrect(message, props, board));
     }
 
     @Test
@@ -68,30 +71,30 @@ public class JsonValidatorTest {
             put("structure", ValidationType.STRUCTURE);
             put("location", ValidationType.ALL_KEYS);
         }};
-        assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+        assertNotNull(jsonValidator.getJsonArrayIfCorrect(message, props, board));
 
         message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }, { \"structure\": \"street\", \"location\": \"([2,2],[3,1])\" }]\n";
         props = new HashMap<>() {{
             put("structure", ValidationType.STRUCTURE);
             put("location", ValidationType.EDGE_OR_NODE_KEYS);
         }};
-        assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+        assertNotNull(jsonValidator.getJsonArrayIfCorrect(message, props, board));
 
         message = "[{ \"structure\": \"city\", \"location\": \"([1,2],[2,1],[2,2])\" }]\n";
         props = new HashMap<>() {{
             put("structure", ValidationType.STRUCTURE);
             put("location", ValidationType.EDGE_KEYS);
         }};
-        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+        assertNull(jsonValidator.getJsonArrayIfCorrect(message, props, board));
 
         props = new HashMap<>() {{
             put("structure", ValidationType.STRUCTURE);
             put("location", ValidationType.NODE_KEYS);
         }};
-        assertNotNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+        assertNotNull(jsonValidator.getJsonArrayIfCorrect(message, props, board));
 
         // node that does not exist
         message = "[{ \"structure\": \"city\", \"location\": \"([0,2],[2,1],[7,2])\" }]\n";
-        assertNull(jsonValidator.getJsonObjectIfCorrect(message, props, board));
+        assertNull(jsonValidator.getJsonArrayIfCorrect(message, props, board));
     }
 }

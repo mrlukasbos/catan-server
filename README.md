@@ -22,11 +22,11 @@ Catan AI client (Rust): https://github.com/mrlukasbos/catan-client
 - you can connect as a player using a TCP socket on port 10006. You can write your own program, or use telnet
 
 ## Definitions
-| Type | Description                                                                                       |
+| board.Type | Description                                                                                       |
 |------|---------------------------------------------------------------------------------------------------|
-| Tile | A tile represents a physical tile of which the board is compromised.                              |
-| Edge | Represents the edge between two tiles. Roads can be placed on edges.                              |
-| Node | Represents the point where three tiles come together. Villages and cities can be placed on nodes. |
+| board.Tile | A tile represents a physical tile of which the board is compromised.                              |
+| board.Edge | Represents the edge between two tiles. Roads can be placed on edges.                              |
+| board.Node | Represents the point where three tiles come together. Villages and cities can be placed on nodes. |
 
 ## Coordinate system
 Every tile is given a offset coordinate using the 'even-r' horizontal layout. Columns are named col (q). Rows are named row (r).
@@ -48,7 +48,7 @@ For the build phase a command is a JSON array which consists of all the building
 
 > Note: For the initial building phase this array should contain a street and a village only.
 
-> Note: when sending multiple build commands the order is not important, the socketServer is able to find a legal combination, if any.
+> Note: when sending multiple build commands the order is not important, the socketConnectionServer is able to find a legal combination, if any.
 
 ### Rules
 
@@ -62,9 +62,9 @@ During the build phase there is a specific set of rules on what can be built and
 - To build you need to have enough resources to do so
 - Cities can only be built by replacing a village
 
-### Game phases
+### game.Game phases
 The following UML state diagram shows the different game phases and their relation.
-![Game phases](./CatanStateDiagram.png)
+![game.Game phases](./CatanStateDiagram.png)
 
 ### Legal build commands
 

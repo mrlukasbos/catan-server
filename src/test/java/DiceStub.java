@@ -1,3 +1,5 @@
+import board.Dice;
+
 import java.util.ArrayList;
 
 class DiceStub extends Dice {
@@ -10,7 +12,7 @@ class DiceStub extends Dice {
     }
 
     @Override
-    int throwDice() {
+    public int throwDice() {
         if (throwsMultipleValues) {
             int value = values.get(0);
             values.remove(0);

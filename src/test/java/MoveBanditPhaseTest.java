@@ -1,11 +1,17 @@
 import com.google.gson.JsonArray;
+import communication.WebSocketConnectionServer;
+import game.Game;
+import game.Phase;
+import game.phases.MoveBanditPhase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.Constants;
+import utils.jsonValidator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class MoveBanditPhaseTest {
-    private InterfaceServer iface = new InterfaceServer(10007);
+    private WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     private Game game = new Game(iface);
     private MoveBanditPhase moveBanditPhase = new MoveBanditPhase(game);
     private  PlayerStub player = new PlayerStub(game,0, "tester");
@@ -52,7 +58,7 @@ class MoveBanditPhaseTest {
     @Test
     void itHandlesUserCommandsTest() {
         String message = "[{ \"location\": \"" + game.getBoard().getTilesForDiceNumber(8).get(0).getKey() + "\" }]";
-        player.setMessageFromPlayer(message);
+        player.setBufferedReply(message);
         JsonArray jsonArray = moveBanditPhase.getValidCommandFromUser(player);
         assertTrue(moveBanditPhase.moveIsValid(jsonArray));
         moveBanditPhase.move(player, jsonArray);

@@ -1,13 +1,18 @@
+import board.Board;
+import board.DevelopmentCard;
+import communication.WebSocketConnectionServer;
+import game.Game;
+import game.Player;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class CalculateScoreTest {
-    private Game game = new Game(new InterfaceServer(8888));
+    private Game game = new Game(new WebSocketConnectionServer(8888));
 
     @Test
     void getPlayerScore() {
-        Player player = new Player(game, 1, "test");
+        Player player = new PlayerStub(game, 1, "test");
         game.addPlayer(player);
         game.startGame();
 
@@ -24,9 +29,9 @@ class CalculateScoreTest {
 
     @Test
     void assignLongestRoadScore() {
-        Player player = new Player(game, 1, "test");
+        Player player = new PlayerStub(game, 1, "test");
         game.addPlayer(player);
-        Player player2 = new Player(game, 2, "test2");
+        Player player2 = new PlayerStub(game, 2, "test2");
         game.addPlayer(player2);
         game.startGame();
 
@@ -93,9 +98,9 @@ class CalculateScoreTest {
 
     @Test
     void assignLargestArmyScore() {
-        Player player = new Player(game, 1, "test");
+        Player player = new PlayerStub(game, 1, "test");
         game.addPlayer(player);
-        Player player2 = new Player(game, 2, "test2");
+        Player player2 = new PlayerStub(game, 2, "test2");
         game.addPlayer(player2);
         game.startGame();
 
@@ -137,7 +142,7 @@ class CalculateScoreTest {
 
     @Test
     void calculateVillagesScore() {
-        Player player = new Player(game, 1, "test");
+        Player player = new PlayerStub(game, 1, "test");
         game.addPlayer(player);
         game.startGame();
 
@@ -151,7 +156,7 @@ class CalculateScoreTest {
 
     @Test
     void calculateCitiesScore() {
-        Player player = new Player(game, 1, "test");
+        Player player = new PlayerStub(game, 1, "test");
         game.addPlayer(player);
         game.startGame();
 
@@ -165,7 +170,7 @@ class CalculateScoreTest {
 
     @Test
     void calculateDevelopmentcardsScore() {
-        Player player = new Player(game, 1, "test");
+        Player player = new PlayerStub(game, 1, "test");
         game.addPlayer(player);
         game.startGame();
 
@@ -179,7 +184,7 @@ class CalculateScoreTest {
 
     @Test
     void getsWinner() {
-        Player player = new Player(game, 1, "test");
+        Player player = new PlayerStub(game, 1, "test");
         game.addPlayer(player);
         game.startGame();
 

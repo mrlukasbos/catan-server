@@ -1,17 +1,22 @@
+import communication.WebSocketConnectionServer;
+import game.Game;
+import game.Phase;
+import game.Player;
+import game.phases.SetupPhase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 
 public class SetupPhaseTest {
-    private InterfaceServer iface = new InterfaceServer(10007);
+    private WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     private Game game = new Game(iface);
     private DiceStub diceStub = new DiceStub();
     private SetupPhase setupPhase = new SetupPhase(game, diceStub);
-    private  Player player = new Player(game,0, "tester");
-    private  Player player2 = new Player(game,1, "tester1");
-    private  Player player3 = new Player(game,2, "tester2");
-    private  Player player4 = new Player(game,3, "tester3");
+    private  Player player = new PlayerStub(game,0, "tester");
+    private  Player player2 = new PlayerStub(game,1, "tester1");
+    private Player player3 = new PlayerStub(game,2, "tester2");
+    private  Player player4 = new PlayerStub(game,3, "tester3");
 
     @BeforeEach
     void beforeTest() {

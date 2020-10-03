@@ -1,11 +1,18 @@
 import com.google.gson.JsonArray;
+import communication.WebSocketConnectionServer;
+import game.Game;
+import game.Phase;
+import game.Resource;
+import game.phases.ForceDiscardPhase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.Constants;
+import utils.jsonValidator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ForceDiscardPhaseTest {
-    private InterfaceServer iface = new InterfaceServer(10007);
+    private WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     private Game game = new Game(iface);
     private ForceDiscardPhase forceDiscardPhase = new ForceDiscardPhase(game);
     private  PlayerStub player = new PlayerStub(game,0, "tester");
@@ -69,17 +76,5 @@ class ForceDiscardPhaseTest {
         JsonArray jsonArray = jsonValidator.getAsJsonArray(message);
         assertFalse(forceDiscardPhase.discardIsValid(player, jsonArray));
         assertEquals(game.getLastResponse().getCode(), Constants.MORE_RESOURCES_DISCARDED_THAN_OWNED_ERROR.getCode());
-    }
-
-
-    @Test
-    void itHandlesUserCommandsTest() {
-        player.addResources(Resource.GRAIN, 8);
-        player.addResources(Resource.ORE, 6);
-        player.setMessageFromPlayer(" [{\"type\":\"grain\", \"value\": 4}, {\"type\":\"ore\", \"value\": 4}]");
-        JsonArray jsonArray = forceDiscardPhase.getValidCommandFromUser(player);
-        forceDiscardPhase.discard(player, jsonArray);
-        assertEquals(4, player.countResources(Resource.GRAIN));
-        assertEquals(2, player.countResources(Resource.ORE));
     }
 }

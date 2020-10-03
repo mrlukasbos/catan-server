@@ -1,3 +1,9 @@
+import board.Tile;
+import communication.WebSocketConnectionServer;
+import game.Event;
+import game.Game;
+import game.Phase;
+import game.phases.DiceThrowPhase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -6,12 +12,12 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DiceThrowPhaseTest {
-    private InterfaceServer iface = new InterfaceServer(10007);
+    private WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     private Game game = new Game(iface);
     private DiceStub diceStub = new DiceStub();
     private DiceThrowPhase diceThrowPhase = new DiceThrowPhase(game, diceStub);
-    private  Player player = new Player(game,0, "tester");
-    private  Player player2 = new Player(game,1, "tester1");
+    private PlayerStub player = new PlayerStub(game,0, "tester");
+    private PlayerStub player2 = new PlayerStub(game,1, "tester1");
 
     @BeforeEach
     void beforeTest() {

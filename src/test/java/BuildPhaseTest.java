@@ -1,11 +1,19 @@
+import board.Structure;
 import com.google.gson.JsonArray;
+import communication.WebSocketConnectionServer;
+import game.Game;
+import game.Phase;
+import game.Resource;
+import game.phases.BuildPhase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.Constants;
+import utils.jsonValidator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class BuildPhaseTest {
-    private InterfaceServer iface = new InterfaceServer(10007);
+    private WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     private Game game = new Game(iface);
     private BuildPhase buildPhase = new BuildPhase(game);
     private  PlayerStub player = new PlayerStub(game,0, "tester");
@@ -266,7 +274,7 @@ class BuildPhaseTest {
     @Test
     void itExecutes() {
         String message = "[{ \"structure\": \"street\", \"location\": \"([3,1],[3,2])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
-        player.setMessageFromPlayer(message);
+        player.setBufferedReply(message);
         assertEquals(player, game.getCurrentPlayer());
         Phase phase = buildPhase.execute();
         assertEquals(player2, game.getCurrentPlayer());
@@ -276,22 +284,10 @@ class BuildPhaseTest {
     @Test
     void itContinuesIfPlayerCantBuild() {
         String incorrectMessage = "";
-        player.setMessageFromPlayer(incorrectMessage);
+        player.setBufferedReply(incorrectMessage);
         assertEquals(player, game.getCurrentPlayer());
         Phase phase = buildPhase.execute();
         assertEquals(player2, game.getCurrentPlayer());
         assertEquals(Phase.THROW_DICE, phase);
-    }
-
-    @Test
-    void itContinuesIfPlayerKeepsSendingWrongResponse() {
-        player.addResources(Constants.STREET_COSTS);
-        String incorrectMessage = "[{ \"structure\": \"straat\", \"location\": \"([3,1],[3,2])\" }, { \"structure\": \"village\", \"location\": \"([2,2],[3,1],[3,2])\" }]";
-        player.setMessageFromPlayer(incorrectMessage);
-        assertEquals(player, game.getCurrentPlayer());
-        buildPhase.execute();
-
-        // it should trigger to 'too_much_failure' response
-        assertEquals(Constants.TOO_MUCH_FAILURES.getCode(), game.getLastResponse().getCode());
     }
 }

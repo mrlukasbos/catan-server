@@ -1,14 +1,22 @@
+import board.Structure;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import communication.WebSocketConnectionServer;
+import game.Game;
+import game.Player;
+import game.Resource;
 import org.junit.jupiter.api.Test;
+import utils.Constants;
+import utils.Helpers;
+import utils.jsonValidator;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PlayerTest {
-    InterfaceServer iface = new InterfaceServer(10007);
+    WebSocketConnectionServer iface = new WebSocketConnectionServer(10007);
     Game game = new Game(iface);
-    Player player = new Player(game,0, "tester");
+    Player player = new PlayerStub(game,0, "tester");
 
     @Test
     void itAddsAndRemovesRecourcesTest() {
