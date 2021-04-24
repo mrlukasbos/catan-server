@@ -21,20 +21,19 @@ public class SocketConnection extends Connection {
         if (connectionElement.channel != null && connectionElement.channel.isOpen() && !message.equals("")) {
             message += "\r\n";
             try {
-//                while (connectionElement.writeResult != null && connectionElement.writeResult.isDone()) { Thread.onSpinWait(); }
-                int amountOfBytesToWrite = message.getBytes(StandardCharsets.UTF_8).length;
+                byte[] messageAsBytes = message.getBytes(StandardCharsets.UTF_8);
                 int bytesWritten = 0;
 
-                while (bytesWritten < amountOfBytesToWrite) {
-                    connectionElement.writeResult = connectionElement.channel.write(ByteBuffer.wrap(message.getBytes(StandardCharsets.UTF_8)));
+                /*
+                    Async sending does not necessarily write the entire buffer at once.
+                    We use async sockets because we want to receive messages async.
+                    But for sending it is preferred to block the process to prevent overlapping messages.
+                    Therefore we only continue when we have confirmation that all bytes are written.
+                 */
+                while (bytesWritten < messageAsBytes.length) {
+                    connectionElement.writeResult = connectionElement.channel.write(ByteBuffer.wrap(messageAsBytes));
                     bytesWritten += connectionElement.writeResult.get(); // block until the write operation is finished.
-
-                    if (amountOfBytesToWrite != bytesWritten) {
-                        System.out.println("--------------------------------------- DID NOT WRITE FULL MESSAGE! ------------------------------------------");
-                    }
-
                     Thread.onSpinWait();
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
